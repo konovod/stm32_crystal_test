@@ -1,0 +1,9 @@
+MEMORY
+{
+    FLASH_TEXT (rx) : ORIGIN = 0x8000000, LENGTH = __flash_size
+    RAM (rwx)       : ORIGIN = 0x20000000, LENGTH = __ram_size
+}
+
+_stack_size = 1024;
+
+INCLUDE "boot/arm.ld"
