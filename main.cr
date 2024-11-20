@@ -8,10 +8,10 @@ end
 # 9 8 10 15 11 14 12 13
 # 1 2 4  6  8  7  5  3
 # 9 8 15 14 13 12 11 10
-LED_INDEX = {9,8,15,14,13,12,11,10}
+# LED_INDEX = {9,8,15,14,13,12,11,10}
 
 def led(n, v)
-n = LED_INDEX[n]-8
+# n = LED_INDEX[n]-8
 case n
   when 0
     v ? GPIOE::BSRR.bs9=true : GPIOE::BSRR.br9=true
