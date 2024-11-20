@@ -175,6 +175,11 @@ end
       def &(other : {{type}}) : {{type}}
       end
 
+      # Bitwise XOR of `self` and *other*.
+      @[Primitive(:binary)]
+      def ^(other : {{type}}) : {{type}}
+      end
+      
       # Bitwise OR of `self` and *other*.
       @[Primitive(:binary)]
       def |(other : {{type}}) : {{type}}

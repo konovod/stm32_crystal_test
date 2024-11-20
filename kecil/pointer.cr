@@ -153,4 +153,10 @@ struct Pointer(T)
       store(value)
     end
   end
+
+  def update(*, volatile : Bool = false, &)
+    old = load(volatile: volatile)
+    new = yield(old)
+    store(new, volatile: volatile)
+  end
 end
