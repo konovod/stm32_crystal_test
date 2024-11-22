@@ -37,8 +37,10 @@ while true
   LEDS.at(3).turn(!BTNS[0].read)
   i = 6
   LEDS[i].turn(true) # works
-  LEDS[7].turn(true)              # halts
-  # LEDS[7u8].turn(true)
+  # LEDS[7].turn(true)              # halts
+  # LEDS[7i32].turn(true)              # halts
+  LEDS[7u32].turn(true)
+  LEDS[7i8].turn(true)
 
   wait
   next
