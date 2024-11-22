@@ -1,34 +1,44 @@
-require "./bindings/*"
+# require "./bindings/*"
 require "./stm32/*"
 
-LEDS   = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE::BASE_ADDRESS, i) }
-BUTTON = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0)
+module RCC
+  BASE_ADDRESS = 0x40021000_u64
+  AHBENR = Register.new(BASE_ADDRESS + 0x14_u64)
+end
+module GPIOA
+  BASE_ADDRESS = 0x48000000_u64
+end
+module GPIOE
+  BASE_ADDRESS = 0x48001000_u64
+end
 
-#
+
+LEDS   = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE::BASE_ADDRESS, i) }
+button = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0)
+# BUTTON = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0) doesn't work
+BTNS = StaticArray[STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0)]
 
 def wait
   100_0000.times { asm("nop" :::: "volatile") }
 end
 
 STM32.init
-reg = Register.new(RCC::AHBENR.pointer)
-reg.set_bit(21, true)
+RCC::AHBENR.set_bit(21, true)
 wait
-reg.set_bit(17, true)
+RCC::AHBENR.set_bit(17, true)
 wait
 LEDS.each &.configure
-# BUTTON.configure # somehow breaks program
+button.configure         
 
 while true
-  LEDS.at(0).turn(true)
-  LEDS.at(1).turn(!LEDS.at(1).read)
-
-  LEDS.at(2).turn(BUTTON.read)
-  LEDS.at(3).turn(!BUTTON.read)
-
+  LEDS.at(0).turn(true)             # works
+  LEDS.at(1).turn(!LEDS.at(1).read) # works
+  LEDS.at(2).turn(button.read)
+  LEDS.at(3).turn(!BTNS[0].read)
   i = 6
-  LEDS[i].turn(true)
-  LEDS[7u8].turn(true) # somehow LEDS[7] breaks program
+  LEDS[i].turn(true) # works
+  LEDS[7].turn(true)              # halts
+  # LEDS[7u8].turn(true)
 
   wait
   next

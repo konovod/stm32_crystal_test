@@ -50,4 +50,9 @@ struct Tuple
       yield self[{{i}}]
     {% end %}
   end
+
+  private macro element_type(index)
+    x = uninitialized self
+    x[{{ index }}]
+  end
 end

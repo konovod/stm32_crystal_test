@@ -7,6 +7,10 @@ end
 struct Register
   def initialize(@raw : Pointer(UInt32))
   end
+  
+  def initialize(addr : UInt64)
+    @raw = Pointer(UInt32).new(addr)
+  end
 
   def set_bit(bit, value : Bool)
     if value
