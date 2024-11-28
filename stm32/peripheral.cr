@@ -4,24 +4,19 @@ struct UInt32
   end
 end
 
-struct Register
-  def initialize(@raw : Pointer(UInt32))
-  end
-  
-  def initialize(addr : UInt64)
-    @raw = Pointer(UInt32).new(addr)
-  end
+module Register
+  abstract def pointer : Pointer(UInt32)
 
   def set_bit(bit, value : Bool)
     if value
-      @raw.update(volatile: true) { |v| v | (1u32 << bit) }
+      pointer.update(volatile: true) { |v| v | (1u32 << bit) }
     else
-      @raw.update(volatile: true) { |v| v & ~(1u32 << bit) }
+      pointer.update(volatile: true) { |v| v & ~(1u32 << bit) }
     end
   end
 
   def set_bits(bit, count, value : UInt32)
-    @raw.update(volatile: true) do |v|
+    pointer.update(volatile: true) do |v|
       mask = (1u32 << count) - 1
       v &= ~(mask << bit)
       v | (value << bit)
@@ -38,10 +33,41 @@ struct Register
   end
 
   def value
-    @raw.load(volatile: true)
+    pointer.load(volatile: true)
   end
 
   def value=(v)
-    @raw.store(v, volatile: true)
+    pointer.store(v, volatile: true)
+  end
+end
+
+struct CustomRegister
+  include Register
+
+  def initialize(@raw : Pointer(UInt32))
+  end
+  
+  def initialize(addr : UInt64)
+    @raw = Pointer(UInt32).new(addr)
+  end
+
+  @[AlwaysInline]
+  def pointer : Pointer(UInt32)
+    @raw
+  end
+end
+
+module FixedRegister
+  include Register  
+  @[AlwaysInline]
+  def pointer : Pointer(UInt32)
+    ADDRESS
+  end
+end
+
+module Peripheral
+  @[AlwaysInline]
+  def register(offset : Int32)
+    CustomRegister.new(base_address + offset)
   end
 end

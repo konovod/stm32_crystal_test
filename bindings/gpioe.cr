@@ -3,6 +3,11 @@ module GPIOE
   VERSION      = nil
   BASE_ADDRESS = 0x48001000_u64
 
+  extend Peripheral
+  def self.base_address
+    BASE_ADDRESS
+  end
+
   # GPIO port mode register
   struct MODER
     ADDRESS = BASE_ADDRESS + 0x0_u64

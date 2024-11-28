@@ -2133,6 +2133,8 @@ module RCC
 
   # AHB Peripheral Clock enable register          (RCC_AHBENR)
   struct AHBENR
+    extend FixedRegister
+
     ADDRESS = BASE_ADDRESS + 0x14_u64
 
     protected def self.address : UInt64

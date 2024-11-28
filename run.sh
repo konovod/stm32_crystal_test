@@ -1,3 +1,4 @@
+rm a.out*
 set -e
 CRYSTAL_PATH=/mnt/crystal/stm32/kecil crystal build --cross-compile --release --no-debug --target arm-none-eabi --mcpu cortex-m4 main.cr
 clang --target=arm-none-eabi -mcpu=cortex-m4 -c boot/vector_table.S

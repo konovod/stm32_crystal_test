@@ -1,7 +1,13 @@
+require "../stm32/peripheral"
 # General-purpose I/Os
 module GPIOA
   VERSION      = nil
   BASE_ADDRESS = 0x48000000_u64
+
+  extend Peripheral
+  def self.base_address
+    BASE_ADDRESS
+  end
 
   # GPIO port mode register
   struct MODER

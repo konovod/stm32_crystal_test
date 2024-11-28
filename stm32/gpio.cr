@@ -1,17 +1,13 @@
 module STM32
   module GPIOPin
-    @base_addr : UInt64
+    @base : Peripheral
     @index : Int32
 
-    def initialize(@base_addr, @index)
-    end
-
-    def register(offset : UInt64)
-      Register.new(Pointer(UInt32).new(@base_addr + offset))
+    def initialize(@base, @index)
     end
 
     def read
-      register(0x10).get_bit(@index)
+      @base.register(0x10).get_bit(@index)
     end
   end
 
@@ -19,11 +15,11 @@ module STM32
     include GPIOPin
 
     def configure
-      register(0).set_bits(2*@index, 2, 1)
+      @base.register(0).set_bits(2*@index, 2, 1)
     end
 
     def turn(value : Bool)
-      register(0x18).value = 1u32 << (@index + (value ? 0 : 16))
+      @base.register(0x18).value = 1u32 << (@index + (value ? 0 : 16))
     end
   end
 
@@ -31,7 +27,7 @@ module STM32
     include GPIOPin
 
     def configure
-      register(0).set_bits(2*@index, 2, 0)
+      @base.register(0).set_bits(2*@index, 2, 0)
     end
   end
 end

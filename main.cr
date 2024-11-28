@@ -1,22 +1,22 @@
-# require "./bindings/*"
+require "./bindings/*"
 require "./stm32/*"
 
-module RCC
-  BASE_ADDRESS = 0x40021000_u64
-  AHBENR = Register.new(BASE_ADDRESS + 0x14_u64)
-end
-module GPIOA
-  BASE_ADDRESS = 0x48000000_u64
-end
-module GPIOE
-  BASE_ADDRESS = 0x48001000_u64
-end
+# module RCC
+#   BASE_ADDRESS = 0x40021000_u64
+#   AHBENR = CustomRegister.new(BASE_ADDRESS + 0x14_u64)
+# end
+# module GPIOA
+#   BASE_ADDRESS = 0x48000000_u64
+# end
+# module GPIOE
+#   BASE_ADDRESS = 0x48001000_u64
+# end
 
 
-LEDS   = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE::BASE_ADDRESS, i) }
-button = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0)
+LEDS   = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE, i) }
+button = STM32::InputPin.new(GPIOA, 0)
 # BUTTON = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0) doesn't work
-BTNS = StaticArray[STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0)]
+BTNS = StaticArray[STM32::InputPin.new(GPIOA, 0)]
 
 def wait
   100_0000.times { asm("nop" :::: "volatile") }
