@@ -1,6 +1,6 @@
 module STM32
   module GPIOPin
-    @base : Peripheral
+    @base : GPIO
     @index : Int32
 
     def initialize(@base, @index)

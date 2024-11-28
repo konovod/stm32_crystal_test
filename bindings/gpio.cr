@@ -1,12 +1,8 @@
-# General-purpose I/Os
-module GPIOE
-  VERSION      = nil
-  BASE_ADDRESS = 0x48001000_u64
+require "../stm32/peripheral"
 
-  extend Peripheral
-  def self.base_address
-    BASE_ADDRESS
-  end
+# General-purpose I/Os
+module GPIO
+  VERSION = nil
 
   # GPIO port mode register
   struct MODER
@@ -26,7 +22,7 @@ module GPIOE
     end
 
     def self.reset_value : self
-      new(0x0_u64)
+      new(0xa8000000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -958,7 +954,7 @@ module GPIOE
     end
 
     def self.reset_value : self
-      new(0x0_u64)
+      new(0xc000000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -1424,7 +1420,7 @@ module GPIOE
     end
 
     def self.reset_value : self
-      new(0x0_u64)
+      new(0x64000000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -4529,4 +4525,84 @@ module GPIOE
     end
   end # struct
 
+end
+
+module GPIOA
+  BASE_ADDRESS = 0x48000000_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOB
+  BASE_ADDRESS = 0x48000400_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOC
+  BASE_ADDRESS = 0x48000800_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOD
+  BASE_ADDRESS = 0x48000c00_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOE
+  BASE_ADDRESS = 0x48001000_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOF
+  BASE_ADDRESS = 0x48001400_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOG
+  BASE_ADDRESS = 0x48001800_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOH
+  BASE_ADDRESS = 0x48001c00_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
 end

@@ -1,19 +1,7 @@
 require "./bindings/*"
 require "./stm32/*"
 
-# module RCC
-#   BASE_ADDRESS = 0x40021000_u64
-#   AHBENR = CustomRegister.new(BASE_ADDRESS + 0x14_u64)
-# end
-# module GPIOA
-#   BASE_ADDRESS = 0x48000000_u64
-# end
-# module GPIOE
-#   BASE_ADDRESS = 0x48001000_u64
-# end
-
-
-LEDS   = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE, i) }
+LEDS = {9, 8, 15, 14, 13, 12, 11, 10}.map { |i| STM32::OutputPin.new(GPIOE, i) }
 button = STM32::InputPin.new(GPIOA, 0)
 # BUTTON = STM32::InputPin.new(GPIOA::BASE_ADDRESS, 0) doesn't work
 BTNS = StaticArray[STM32::InputPin.new(GPIOA, 0)]
@@ -23,12 +11,10 @@ def wait
 end
 
 STM32.init
-RCC::AHBENR.set_bit(21, true)
-wait
-RCC::AHBENR.set_bit(17, true)
+RCC::AHBENR.set(iopaen: true, iopeen: true)
 wait
 LEDS.each &.configure
-button.configure         
+button.configure
 
 while true
   LEDS.at(0).turn(true)             # works

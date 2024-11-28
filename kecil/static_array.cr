@@ -1,7 +1,7 @@
 struct StaticArray(T, N)
   def to_unsafe : Pointer(T)
     pointerof(@buffer)
-  end 
+  end
 
   macro [](*args)
     %array = uninitialized StaticArray(typeof({{args.splat}}), {{args.size}})
@@ -13,7 +13,6 @@ struct StaticArray(T, N)
 
   @[AlwaysInline]
   def [](index : Int) : T
-    (to_unsafe+index).load
-  end 
-
-end 
+    (to_unsafe + index).load
+  end
+end

@@ -46,7 +46,7 @@ struct CustomRegister
 
   def initialize(@raw : Pointer(UInt32))
   end
-  
+
   def initialize(addr : UInt64)
     @raw = Pointer(UInt32).new(addr)
   end
@@ -58,7 +58,7 @@ struct CustomRegister
 end
 
 module FixedRegister
-  include Register  
+  include Register
   @[AlwaysInline]
   def pointer : Pointer(UInt32)
     ADDRESS
