@@ -279,36 +279,18 @@ module GPIO
       value
     end
 
-    enum N0 : UInt8
-      # Input mode (reset state)
-      INPUT = 0x0_u64
-
-      # General purpose output mode
-      OUTPUT = 0x1_u64
-
-      # Alternate function mode
-      ALTERNATE = 0x2_u64
-
-      # Analog mode
-      ANALOG = 0x3_u64
-
-      def self.reset_value : N0
-        MODER.reset_value._0
-      end
+    # Port x configuration bits (y =              0..15)
+    def _0 : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
     end
 
     # Port x configuration bits (y =              0..15)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Port x configuration bits (y =              0..15)
-    def self._0 : N0
+    def self._0 : UInt8
       value._0
     end
 
     # Port x configuration bits (y =              0..15)
-    def self._0=(value : N0) : N0
+    def self._0=(value : UInt8) : UInt8
       self.set(_0: value)
       value
     end
@@ -346,7 +328,7 @@ module GPIO
 
       _1 : UInt8? = nil,
 
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : self
       value = @value
 
@@ -450,7 +432,7 @@ module GPIO
       _3 : UInt8? = nil,
       _2 : UInt8? = nil,
       _1 : UInt8? = nil,
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _15: _15,
@@ -748,30 +730,18 @@ module GPIO
       value
     end
 
-    enum OT0 : UInt8
-      # Output push-pull (reset state)
-      PUSHPULL = 0x0_u64
-
-      # Output open-drain
-      OPENDRAIN = 0x1_u64
-
-      def self.reset_value : OT0
-        OTYPER.reset_value.ot0
-      end
+    # Port x configuration bits (y =              0..15)
+    def ot0 : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Port x configuration bits (y =              0..15)
-    def ot0 : OT0
-      OT0.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Port x configuration bits (y =              0..15)
-    def self.ot0 : OT0
+    def self.ot0 : Bool
       value.ot0
     end
 
     # Port x configuration bits (y =              0..15)
-    def self.ot0=(value : OT0) : OT0
+    def self.ot0=(value : Bool) : Bool
       self.set(ot0: value)
       value
     end
@@ -809,7 +779,7 @@ module GPIO
 
       ot1 : Bool? = nil,
 
-      ot0 : OT0? = nil
+      ot0 : Bool? = nil
     ) : self
       value = @value
 
@@ -913,7 +883,7 @@ module GPIO
       ot3 : Bool? = nil,
       ot2 : Bool? = nil,
       ot1 : Bool? = nil,
-      ot0 : OT0? = nil
+      ot0 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ot15: ot15,
@@ -954,7 +924,7 @@ module GPIO
     end
 
     def self.reset_value : self
-      new(0xc000000_u64)
+      new(0x0_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -1211,33 +1181,18 @@ module GPIO
       value
     end
 
-    enum N0 : UInt8
-      # Low speed
-      LOWSPEED = 0x0_u64
-
-      # Medium speed
-      MEDIUMSPEED = 0x1_u64
-
-      # High speed
-      HIGHSPEED = 0x3_u64
-
-      def self.reset_value : N0
-        OSPEEDR.reset_value._0
-      end
+    # Port x configuration bits (y =              0..15)
+    def _0 : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
     end
 
     # Port x configuration bits (y =              0..15)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Port x configuration bits (y =              0..15)
-    def self._0 : N0
+    def self._0 : UInt8
       value._0
     end
 
     # Port x configuration bits (y =              0..15)
-    def self._0=(value : N0) : N0
+    def self._0=(value : UInt8) : UInt8
       self.set(_0: value)
       value
     end
@@ -1275,7 +1230,7 @@ module GPIO
 
       _1 : UInt8? = nil,
 
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : self
       value = @value
 
@@ -1379,7 +1334,7 @@ module GPIO
       _3 : UInt8? = nil,
       _2 : UInt8? = nil,
       _1 : UInt8? = nil,
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _15: _15,
@@ -1677,33 +1632,18 @@ module GPIO
       value
     end
 
-    enum N0 : UInt8
-      # No pull-up, pull-down
-      FLOATING = 0x0_u64
-
-      # Pull-up
-      PULLUP = 0x1_u64
-
-      # Pull-down
-      PULLDOWN = 0x2_u64
-
-      def self.reset_value : N0
-        PUPDR.reset_value._0
-      end
+    # Port x configuration bits (y =              0..15)
+    def _0 : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
     end
 
     # Port x configuration bits (y =              0..15)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Port x configuration bits (y =              0..15)
-    def self._0 : N0
+    def self._0 : UInt8
       value._0
     end
 
     # Port x configuration bits (y =              0..15)
-    def self._0=(value : N0) : N0
+    def self._0=(value : UInt8) : UInt8
       self.set(_0: value)
       value
     end
@@ -1741,7 +1681,7 @@ module GPIO
 
       _1 : UInt8? = nil,
 
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : self
       value = @value
 
@@ -1845,7 +1785,7 @@ module GPIO
       _3 : UInt8? = nil,
       _2 : UInt8? = nil,
       _1 : UInt8? = nil,
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _15: _15,
@@ -2053,25 +1993,13 @@ module GPIO
       value._1
     end
 
-    enum N0 : UInt8
-      # Input is logic high
-      HIGH = 0x1_u64
-
-      # Input is logic low
-      LOW = 0x0_u64
-
-      def self.reset_value : N0
-        IDR.reset_value._0
-      end
+    # Port input data (y =              0..15)
+    def _0 : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Port input data (y =              0..15)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Port input data (y =              0..15)
-    def self._0 : N0
+    def self._0 : Bool
       value._0
     end
   end # struct
@@ -2351,30 +2279,18 @@ module GPIO
       value
     end
 
-    enum N0 : UInt8
-      # Set output to logic high
-      HIGH = 0x1_u64
-
-      # Set output to logic low
-      LOW = 0x0_u64
-
-      def self.reset_value : N0
-        ODR.reset_value._0
-      end
+    # Port output data (y =              0..15)
+    def _0 : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Port output data (y =              0..15)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Port output data (y =              0..15)
-    def self._0 : N0
+    def self._0 : Bool
       value._0
     end
 
     # Port output data (y =              0..15)
-    def self._0=(value : N0) : N0
+    def self._0=(value : Bool) : Bool
       self.set(_0: value)
       value
     end
@@ -2412,7 +2328,7 @@ module GPIO
 
       _1 : Bool? = nil,
 
-      _0 : N0? = nil
+      _0 : Bool? = nil
     ) : self
       value = @value
 
@@ -2516,7 +2432,7 @@ module GPIO
       _3 : Bool? = nil,
       _2 : Bool? = nil,
       _1 : Bool? = nil,
-      _0 : N0? = nil
+      _0 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _15: _15,
@@ -2664,17 +2580,8 @@ module GPIO
       value
     end
 
-    enum BR0 : UInt8
-      # Resets the corresponding ODRx bit
-      RESET = 0x1_u64
-
-      def self.reset_value : BR0
-        BSRR.reset_value.br0
-      end
-    end
-
     # Port x set bit y (y=              0..15)
-    def self.br0=(value : BR0) : BR0
+    def self.br0=(value : Bool) : Bool
       self.set(br0: value)
       value
     end
@@ -2769,17 +2676,8 @@ module GPIO
       value
     end
 
-    enum BS0 : UInt8
-      # Sets the corresponding ODRx bit
-      SET = 0x1_u64
-
-      def self.reset_value : BS0
-        BSRR.reset_value.bs0
-      end
-    end
-
     # Port x set bit y (y=              0..15)
-    def self.bs0=(value : BS0) : BS0
+    def self.bs0=(value : Bool) : Bool
       self.set(bs0: value)
       value
     end
@@ -2817,7 +2715,7 @@ module GPIO
 
       br1 : Bool? = nil,
 
-      br0 : BR0? = nil,
+      br0 : Bool? = nil,
 
       bs15 : Bool? = nil,
 
@@ -2849,7 +2747,7 @@ module GPIO
 
       bs1 : Bool? = nil,
 
-      bs0 : BS0? = nil
+      bs0 : Bool? = nil
     ) : self
       value = @value
 
@@ -3033,7 +2931,7 @@ module GPIO
       br3 : Bool? = nil,
       br2 : Bool? = nil,
       br1 : Bool? = nil,
-      br0 : BR0? = nil,
+      br0 : Bool? = nil,
       bs15 : Bool? = nil,
       bs14 : Bool? = nil,
       bs13 : Bool? = nil,
@@ -3049,7 +2947,7 @@ module GPIO
       bs3 : Bool? = nil,
       bs2 : Bool? = nil,
       bs1 : Bool? = nil,
-      bs0 : BS0? = nil
+      bs0 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         br15: br15,
@@ -3123,30 +3021,18 @@ module GPIO
       value
     end
 
-    enum LCKK : UInt8
-      # Port configuration lock key not active
-      NOTACTIVE = 0x0_u64
-
-      # Port configuration lock key active
-      ACTIVE = 0x1_u64
-
-      def self.reset_value : LCKK
-        LCKR.reset_value.lckk
-      end
+    # Port x lock bit y (y=              0..15)
+    def lckk : Bool
+      @value.bits_set?(0x10000_u32)
     end
 
-    # Lok Key
-    def lckk : LCKK
-      LCKK.new!((@value >> 16) & 0x1_u32)
-    end
-
-    # Lok Key
-    def self.lckk : LCKK
+    # Port x lock bit y (y=              0..15)
+    def self.lckk : Bool
       value.lckk
     end
 
-    # Lok Key
-    def self.lckk=(value : LCKK) : LCKK
+    # Port x lock bit y (y=              0..15)
+    def self.lckk=(value : Bool) : Bool
       self.set(lckk: value)
       value
     end
@@ -3231,30 +3117,18 @@ module GPIO
       value
     end
 
-    enum LCK10 : UInt8
-      # Port configuration not locked
-      UNLOCKED = 0x0_u64
-
-      # Port configuration locked
-      LOCKED = 0x1_u64
-
-      def self.reset_value : LCK10
-        LCKR.reset_value.lck10
-      end
+    # Port x lock bit y (y=              0..15)
+    def lck10 : Bool
+      @value.bits_set?(0x400_u32)
     end
 
     # Port x lock bit y (y=              0..15)
-    def lck10 : LCK10
-      LCK10.new!((@value >> 10) & 0x1_u32)
-    end
-
-    # Port x lock bit y (y=              0..15)
-    def self.lck10 : LCK10
+    def self.lck10 : Bool
       value.lck10
     end
 
     # Port x lock bit y (y=              0..15)
-    def self.lck10=(value : LCK10) : LCK10
+    def self.lck10=(value : Bool) : Bool
       self.set(lck10: value)
       value
     end
@@ -3403,30 +3277,18 @@ module GPIO
       value
     end
 
-    enum LCK0 : UInt8
-      # Port configuration not locked
-      UNLOCKED = 0x0_u64
-
-      # Port configuration locked
-      LOCKED = 0x1_u64
-
-      def self.reset_value : LCK0
-        LCKR.reset_value.lck0
-      end
+    # Port x lock bit y (y=              0..15)
+    def lck0 : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Port x lock bit y (y=              0..15)
-    def lck0 : LCK0
-      LCK0.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Port x lock bit y (y=              0..15)
-    def self.lck0 : LCK0
+    def self.lck0 : Bool
       value.lck0
     end
 
     # Port x lock bit y (y=              0..15)
-    def self.lck0=(value : LCK0) : LCK0
+    def self.lck0=(value : Bool) : Bool
       self.set(lck0: value)
       value
     end
@@ -3434,7 +3296,7 @@ module GPIO
     def copy_with(
       *,
 
-      lckk : LCKK? = nil,
+      lckk : Bool? = nil,
 
       lck15 : Bool? = nil,
 
@@ -3446,7 +3308,7 @@ module GPIO
 
       lck11 : Bool? = nil,
 
-      lck10 : LCK10? = nil,
+      lck10 : Bool? = nil,
 
       lck9 : Bool? = nil,
 
@@ -3466,7 +3328,7 @@ module GPIO
 
       lck1 : Bool? = nil,
 
-      lck0 : LCK0? = nil
+      lck0 : Bool? = nil
     ) : self
       value = @value
 
@@ -3560,13 +3422,13 @@ module GPIO
 
     def self.set(
       *,
-      lckk : LCKK? = nil,
+      lckk : Bool? = nil,
       lck15 : Bool? = nil,
       lck14 : Bool? = nil,
       lck13 : Bool? = nil,
       lck12 : Bool? = nil,
       lck11 : Bool? = nil,
-      lck10 : LCK10? = nil,
+      lck10 : Bool? = nil,
       lck9 : Bool? = nil,
       lck8 : Bool? = nil,
       lck7 : Bool? = nil,
@@ -3576,7 +3438,7 @@ module GPIO
       lck3 : Bool? = nil,
       lck2 : Bool? = nil,
       lck1 : Bool? = nil,
-      lck0 : LCK0? = nil
+      lck0 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         lckk: lckk,
@@ -3747,72 +3609,18 @@ module GPIO
       value
     end
 
-    enum N0 : UInt8
-      # AF0
-      AF0 = 0x0_u64
-
-      # AF1
-      AF1 = 0x1_u64
-
-      # AF2
-      AF2 = 0x2_u64
-
-      # AF3
-      AF3 = 0x3_u64
-
-      # AF4
-      AF4 = 0x4_u64
-
-      # AF5
-      AF5 = 0x5_u64
-
-      # AF6
-      AF6 = 0x6_u64
-
-      # AF7
-      AF7 = 0x7_u64
-
-      # AF8
-      AF8 = 0x8_u64
-
-      # AF9
-      AF9 = 0x9_u64
-
-      # AF10
-      AF10 = 0xa_u64
-
-      # AF11
-      AF11 = 0xb_u64
-
-      # AF12
-      AF12 = 0xc_u64
-
-      # AF13
-      AF13 = 0xd_u64
-
-      # AF14
-      AF14 = 0xe_u64
-
-      # AF15
-      AF15 = 0xf_u64
-
-      def self.reset_value : N0
-        AFRL.reset_value._0
-      end
+    # Alternate function selection for port x              bit y (y = 0..7)
+    def _0 : UInt8
+      UInt8.new!((@value >> 0) & 0xf_u32)
     end
 
     # Alternate function selection for port x              bit y (y = 0..7)
-    def _0 : N0
-      N0.new!((@value >> 0) & 0xf_u32)
-    end
-
-    # Alternate function selection for port x              bit y (y = 0..7)
-    def self._0 : N0
+    def self._0 : UInt8
       value._0
     end
 
     # Alternate function selection for port x              bit y (y = 0..7)
-    def self._0=(value : N0) : N0
+    def self._0=(value : UInt8) : UInt8
       self.set(_0: value)
       value
     end
@@ -3834,7 +3642,7 @@ module GPIO
 
       _1 : UInt8? = nil,
 
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : self
       value = @value
 
@@ -3890,7 +3698,7 @@ module GPIO
       _3 : UInt8? = nil,
       _2 : UInt8? = nil,
       _1 : UInt8? = nil,
-      _0 : N0? = nil
+      _0 : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _7: _7,
@@ -4052,72 +3860,18 @@ module GPIO
       value
     end
 
-    enum N8 : UInt8
-      # AF0
-      AF0 = 0x0_u64
-
-      # AF1
-      AF1 = 0x1_u64
-
-      # AF2
-      AF2 = 0x2_u64
-
-      # AF3
-      AF3 = 0x3_u64
-
-      # AF4
-      AF4 = 0x4_u64
-
-      # AF5
-      AF5 = 0x5_u64
-
-      # AF6
-      AF6 = 0x6_u64
-
-      # AF7
-      AF7 = 0x7_u64
-
-      # AF8
-      AF8 = 0x8_u64
-
-      # AF9
-      AF9 = 0x9_u64
-
-      # AF10
-      AF10 = 0xa_u64
-
-      # AF11
-      AF11 = 0xb_u64
-
-      # AF12
-      AF12 = 0xc_u64
-
-      # AF13
-      AF13 = 0xd_u64
-
-      # AF14
-      AF14 = 0xe_u64
-
-      # AF15
-      AF15 = 0xf_u64
-
-      def self.reset_value : N8
-        AFRH.reset_value._8
-      end
+    # Alternate function selection for port x              bit y (y = 8..15)
+    def _8 : UInt8
+      UInt8.new!((@value >> 0) & 0xf_u32)
     end
 
     # Alternate function selection for port x              bit y (y = 8..15)
-    def _8 : N8
-      N8.new!((@value >> 0) & 0xf_u32)
-    end
-
-    # Alternate function selection for port x              bit y (y = 8..15)
-    def self._8 : N8
+    def self._8 : UInt8
       value._8
     end
 
     # Alternate function selection for port x              bit y (y = 8..15)
-    def self._8=(value : N8) : N8
+    def self._8=(value : UInt8) : UInt8
       self.set(_8: value)
       value
     end
@@ -4139,7 +3893,7 @@ module GPIO
 
       _9 : UInt8? = nil,
 
-      _8 : N8? = nil
+      _8 : UInt8? = nil
     ) : self
       value = @value
 
@@ -4195,7 +3949,7 @@ module GPIO
       _11 : UInt8? = nil,
       _10 : UInt8? = nil,
       _9 : UInt8? = nil,
-      _8 : N8? = nil
+      _8 : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         _15: _15,
@@ -4210,325 +3964,10 @@ module GPIO
     end
   end # struct
 
-  # Port bit reset register
-  struct BRR
-    ADDRESS = BASE_ADDRESS + 0x28_u64
-
-    protected def self.address : UInt64
-      ADDRESS
-    end
-
-    @value : UInt32
-
-    def initialize(@value : UInt32)
-    end
-
-    def to_int : UInt32
-      @value
-    end
-
-    def self.reset_value : self
-      new(0x0_u64)
-    end
-
-    def self.pointer : Pointer(UInt32)
-      Pointer(UInt32).new(self.address)
-    end
-
-    def self.value : self
-      value = self.pointer.load(volatile: true)
-      new(value)
-    end
-
-    def self.value=(value : self) : self
-      self.pointer.store(value.to_int, volatile: true)
-      value
-    end
-
-    enum BR0 : UInt8
-      # No action on the corresponding ODx bit
-      NOACTION = 0x0_u64
-
-      # Reset the ODx bit
-      RESET = 0x1_u64
-
-      def self.reset_value : BR0
-        BRR.reset_value.br0
-      end
-    end
-
-    # Port x Reset bit y
-    def self.br0=(value : BR0) : BR0
-      self.set(br0: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br1=(value : Bool) : Bool
-      self.set(br1: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br2=(value : Bool) : Bool
-      self.set(br2: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br3=(value : Bool) : Bool
-      self.set(br3: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br4=(value : Bool) : Bool
-      self.set(br4: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br5=(value : Bool) : Bool
-      self.set(br5: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br6=(value : Bool) : Bool
-      self.set(br6: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br7=(value : Bool) : Bool
-      self.set(br7: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br8=(value : Bool) : Bool
-      self.set(br8: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br9=(value : Bool) : Bool
-      self.set(br9: value)
-      value
-    end
-
-    enum BR10 : UInt8
-      # No action on the corresponding ODx bit
-      NOACTION = 0x0_u64
-
-      # Reset the ODx bit
-      RESET = 0x1_u64
-
-      def self.reset_value : BR10
-        BRR.reset_value.br10
-      end
-    end
-
-    # Port x Reset bit y
-    def self.br10=(value : BR10) : BR10
-      self.set(br10: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br11=(value : Bool) : Bool
-      self.set(br11: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br12=(value : Bool) : Bool
-      self.set(br12: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br13=(value : Bool) : Bool
-      self.set(br13: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br14=(value : Bool) : Bool
-      self.set(br14: value)
-      value
-    end
-
-    # Port x Reset bit y
-    def self.br15=(value : Bool) : Bool
-      self.set(br15: value)
-      value
-    end
-
-    def copy_with(
-      *,
-
-      br0 : BR0? = nil,
-
-      br1 : Bool? = nil,
-
-      br2 : Bool? = nil,
-
-      br3 : Bool? = nil,
-
-      br4 : Bool? = nil,
-
-      br5 : Bool? = nil,
-
-      br6 : Bool? = nil,
-
-      br7 : Bool? = nil,
-
-      br8 : Bool? = nil,
-
-      br9 : Bool? = nil,
-
-      br10 : BR10? = nil,
-
-      br11 : Bool? = nil,
-
-      br12 : Bool? = nil,
-
-      br13 : Bool? = nil,
-
-      br14 : Bool? = nil,
-
-      br15 : Bool? = nil
-    ) : self
-      value = @value
-
-      unless br0.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(br0.to_int).&(0x1_u32) << 0
-      end
-
-      unless br1.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(br1.to_int).&(0x1_u32) << 1
-      end
-
-      unless br2.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(br2.to_int).&(0x1_u32) << 2
-      end
-
-      unless br3.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(br3.to_int).&(0x1_u32) << 3
-      end
-
-      unless br4.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(br4.to_int).&(0x1_u32) << 4
-      end
-
-      unless br5.nil?
-        value = (value & 0xffffffdf_u32) |
-                UInt32.new!(br5.to_int).&(0x1_u32) << 5
-      end
-
-      unless br6.nil?
-        value = (value & 0xffffffbf_u32) |
-                UInt32.new!(br6.to_int).&(0x1_u32) << 6
-      end
-
-      unless br7.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(br7.to_int).&(0x1_u32) << 7
-      end
-
-      unless br8.nil?
-        value = (value & 0xfffffeff_u32) |
-                UInt32.new!(br8.to_int).&(0x1_u32) << 8
-      end
-
-      unless br9.nil?
-        value = (value & 0xfffffdff_u32) |
-                UInt32.new!(br9.to_int).&(0x1_u32) << 9
-      end
-
-      unless br10.nil?
-        value = (value & 0xfffffbff_u32) |
-                UInt32.new!(br10.to_int).&(0x1_u32) << 10
-      end
-
-      unless br11.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(br11.to_int).&(0x1_u32) << 11
-      end
-
-      unless br12.nil?
-        value = (value & 0xffffefff_u32) |
-                UInt32.new!(br12.to_int).&(0x1_u32) << 12
-      end
-
-      unless br13.nil?
-        value = (value & 0xffffdfff_u32) |
-                UInt32.new!(br13.to_int).&(0x1_u32) << 13
-      end
-
-      unless br14.nil?
-        value = (value & 0xffffbfff_u32) |
-                UInt32.new!(br14.to_int).&(0x1_u32) << 14
-      end
-
-      unless br15.nil?
-        value = (value & 0xffff7fff_u32) |
-                UInt32.new!(br15.to_int).&(0x1_u32) << 15
-      end
-
-      self.class.new(value)
-    end
-
-    def self.set(
-      *,
-      br0 : BR0? = nil,
-      br1 : Bool? = nil,
-      br2 : Bool? = nil,
-      br3 : Bool? = nil,
-      br4 : Bool? = nil,
-      br5 : Bool? = nil,
-      br6 : Bool? = nil,
-      br7 : Bool? = nil,
-      br8 : Bool? = nil,
-      br9 : Bool? = nil,
-      br10 : BR10? = nil,
-      br11 : Bool? = nil,
-      br12 : Bool? = nil,
-      br13 : Bool? = nil,
-      br14 : Bool? = nil,
-      br15 : Bool? = nil
-    ) : Nil
-      self.value = self.value.copy_with(
-        br0: br0,
-        br1: br1,
-        br2: br2,
-        br3: br3,
-        br4: br4,
-        br5: br5,
-        br6: br6,
-        br7: br7,
-        br8: br8,
-        br9: br9,
-        br10: br10,
-        br11: br11,
-        br12: br12,
-        br13: br13,
-        br14: br14,
-        br15: br15,
-      )
-    end
-  end # struct
-
 end
 
 module GPIOA
-  BASE_ADDRESS = 0x48000000_u64
+  BASE_ADDRESS = 0x40020000_u64
   extend Peripheral
   extend GPIO
 
@@ -4538,7 +3977,7 @@ module GPIOA
 end
 
 module GPIOB
-  BASE_ADDRESS = 0x48000400_u64
+  BASE_ADDRESS = 0x40020400_u64
   extend Peripheral
   extend GPIO
 
@@ -4548,7 +3987,7 @@ module GPIOB
 end
 
 module GPIOC
-  BASE_ADDRESS = 0x48000800_u64
+  BASE_ADDRESS = 0x48020800_u64
   extend Peripheral
   extend GPIO
 
@@ -4558,7 +3997,7 @@ module GPIOC
 end
 
 module GPIOD
-  BASE_ADDRESS = 0x48000c00_u64
+  BASE_ADDRESS = 0x48020c00_u64
   extend Peripheral
   extend GPIO
 
@@ -4568,7 +4007,7 @@ module GPIOD
 end
 
 module GPIOE
-  BASE_ADDRESS = 0x48001000_u64
+  BASE_ADDRESS = 0x48021000_u64
   extend Peripheral
   extend GPIO
 
@@ -4578,7 +4017,7 @@ module GPIOE
 end
 
 module GPIOF
-  BASE_ADDRESS = 0x48001400_u64
+  BASE_ADDRESS = 0x48021400_u64
   extend Peripheral
   extend GPIO
 
@@ -4588,7 +4027,7 @@ module GPIOF
 end
 
 module GPIOG
-  BASE_ADDRESS = 0x48001800_u64
+  BASE_ADDRESS = 0x48021800_u64
   extend Peripheral
   extend GPIO
 
@@ -4598,7 +4037,37 @@ module GPIOG
 end
 
 module GPIOH
-  BASE_ADDRESS = 0x48001c00_u64
+  BASE_ADDRESS = 0x48021c00_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOI
+  BASE_ADDRESS = 0x40022000_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOJ
+  BASE_ADDRESS = 0x40022400_u64
+  extend Peripheral
+  extend GPIO
+
+  def self.base_address
+    BASE_ADDRESS
+  end
+end
+
+module GPIOK
+  BASE_ADDRESS = 0x40022800_u64
   extend Peripheral
   extend GPIO
 

@@ -1,4 +1,4 @@
-# General purpose timer
+# General purpose timers
 module TIM2
   VERSION      = nil
   BASE_ADDRESS = 0x40000000_u64
@@ -38,306 +38,158 @@ module TIM2
       value
     end
 
-    enum CEN : UInt8
-      # Counter disabled
-      DISABLED = 0x0_u64
-
-      # Counter enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : CEN
-        CR1.reset_value.cen
-      end
-    end
-
-    # Counter enable
-    def cen : CEN
-      CEN.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Counter enable
-    def self.cen : CEN
-      value.cen
-    end
-
-    # Counter enable
-    def self.cen=(value : CEN) : CEN
-      self.set(cen: value)
-      value
-    end
-
-    enum UDIS : UInt8
-      # Update event enabled
-      ENABLED = 0x0_u64
-
-      # Update event disabled
-      DISABLED = 0x1_u64
-
-      def self.reset_value : UDIS
-        CR1.reset_value.udis
-      end
-    end
-
-    # Update disable
-    def udis : UDIS
-      UDIS.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Update disable
-    def self.udis : UDIS
-      value.udis
-    end
-
-    # Update disable
-    def self.udis=(value : UDIS) : UDIS
-      self.set(udis: value)
-      value
-    end
-
-    enum URS : UInt8
-      # Any of counter overflow/underflow, setting UG, or update through slave mode, generates an update interrupt or DMA request
-      ANYEVENT = 0x0_u64
-
-      # Only counter overflow/underflow generates an update interrupt or DMA request
-      COUNTERONLY = 0x1_u64
-
-      def self.reset_value : URS
-        CR1.reset_value.urs
-      end
-    end
-
-    # Update request source
-    def urs : URS
-      URS.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # Update request source
-    def self.urs : URS
-      value.urs
-    end
-
-    # Update request source
-    def self.urs=(value : URS) : URS
-      self.set(urs: value)
-      value
-    end
-
-    enum OPM : UInt8
-      # Counter is not stopped at update event
-      DISABLED = 0x0_u64
-
-      # Counter stops counting at the next update event (clearing the CEN bit)
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OPM
-        CR1.reset_value.opm
-      end
-    end
-
-    # One-pulse mode
-    def opm : OPM
-      OPM.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # One-pulse mode
-    def self.opm : OPM
-      value.opm
-    end
-
-    # One-pulse mode
-    def self.opm=(value : OPM) : OPM
-      self.set(opm: value)
-      value
-    end
-
-    enum DIR : UInt8
-      # Counter used as upcounter
-      UP = 0x0_u64
-
-      # Counter used as downcounter
-      DOWN = 0x1_u64
-
-      def self.reset_value : DIR
-        CR1.reset_value.dir
-      end
-    end
-
-    # Direction
-    def dir : DIR
-      DIR.new!((@value >> 4) & 0x1_u32)
-    end
-
-    # Direction
-    def self.dir : DIR
-      value.dir
-    end
-
-    # Direction
-    def self.dir=(value : DIR) : DIR
-      self.set(dir: value)
-      value
-    end
-
-    enum CMS : UInt8
-      # The counter counts up or down depending on the direction bit
-      EDGEALIGNED = 0x0_u64
-
-      # The counter counts up and down alternatively. Output compare interrupt flags are set only when the counter is counting down.
-      CENTERALIGNED1 = 0x1_u64
-
-      # The counter counts up and down alternatively. Output compare interrupt flags are set only when the counter is counting up.
-      CENTERALIGNED2 = 0x2_u64
-
-      # The counter counts up and down alternatively. Output compare interrupt flags are set both when the counter is counting up or down.
-      CENTERALIGNED3 = 0x3_u64
-
-      def self.reset_value : CMS
-        CR1.reset_value.cms
-      end
-    end
-
-    # Center-aligned mode              selection
-    def cms : CMS
-      CMS.new!((@value >> 5) & 0x3_u32)
-    end
-
-    # Center-aligned mode              selection
-    def self.cms : CMS
-      value.cms
-    end
-
-    # Center-aligned mode              selection
-    def self.cms=(value : CMS) : CMS
-      self.set(cms: value)
-      value
-    end
-
-    enum ARPE : UInt8
-      # TIMx_APRR register is not buffered
-      DISABLED = 0x0_u64
-
-      # TIMx_APRR register is buffered
-      ENABLED = 0x1_u64
-
-      def self.reset_value : ARPE
-        CR1.reset_value.arpe
-      end
-    end
-
-    # Auto-reload preload enable
-    def arpe : ARPE
-      ARPE.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Auto-reload preload enable
-    def self.arpe : ARPE
-      value.arpe
-    end
-
-    # Auto-reload preload enable
-    def self.arpe=(value : ARPE) : ARPE
-      self.set(arpe: value)
-      value
-    end
-
-    enum CKD : UInt8
-      # t_DTS = t_CK_INT
-      DIV1 = 0x0_u64
-
-      # t_DTS = 2 × t_CK_INT
-      DIV2 = 0x1_u64
-
-      # t_DTS = 4 × t_CK_INT
-      DIV4 = 0x2_u64
-
-      def self.reset_value : CKD
-        CR1.reset_value.ckd
-      end
+    # Clock division
+    def ckd : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
     end
 
     # Clock division
-    def ckd : CKD
-      CKD.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # Clock division
-    def self.ckd : CKD
+    def self.ckd : UInt8
       value.ckd
     end
 
     # Clock division
-    def self.ckd=(value : CKD) : CKD
+    def self.ckd=(value : UInt8) : UInt8
       self.set(ckd: value)
       value
     end
 
-    # UIF status bit remapping
-    def uifremap : Bool
-      @value.bits_set?(0x800_u32)
+    # Auto-reload preload enable
+    def arpe : Bool
+      @value.bits_set?(0x80_u32)
     end
 
-    # UIF status bit remapping
-    def self.uifremap : Bool
-      value.uifremap
+    # Auto-reload preload enable
+    def self.arpe : Bool
+      value.arpe
     end
 
-    # UIF status bit remapping
-    def self.uifremap=(value : Bool) : Bool
-      self.set(uifremap: value)
+    # Auto-reload preload enable
+    def self.arpe=(value : Bool) : Bool
+      self.set(arpe: value)
+      value
+    end
+
+    # Center-aligned mode              selection
+    def cms : UInt8
+      UInt8.new!((@value >> 5) & 0x3_u32)
+    end
+
+    # Center-aligned mode              selection
+    def self.cms : UInt8
+      value.cms
+    end
+
+    # Center-aligned mode              selection
+    def self.cms=(value : UInt8) : UInt8
+      self.set(cms: value)
+      value
+    end
+
+    # Direction
+    def dir : Bool
+      @value.bits_set?(0x10_u32)
+    end
+
+    # Direction
+    def self.dir : Bool
+      value.dir
+    end
+
+    # Direction
+    def self.dir=(value : Bool) : Bool
+      self.set(dir: value)
+      value
+    end
+
+    # One-pulse mode
+    def opm : Bool
+      @value.bits_set?(0x8_u32)
+    end
+
+    # One-pulse mode
+    def self.opm : Bool
+      value.opm
+    end
+
+    # One-pulse mode
+    def self.opm=(value : Bool) : Bool
+      self.set(opm: value)
+      value
+    end
+
+    # Update request source
+    def urs : Bool
+      @value.bits_set?(0x4_u32)
+    end
+
+    # Update request source
+    def self.urs : Bool
+      value.urs
+    end
+
+    # Update request source
+    def self.urs=(value : Bool) : Bool
+      self.set(urs: value)
+      value
+    end
+
+    # Update disable
+    def udis : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Update disable
+    def self.udis : Bool
+      value.udis
+    end
+
+    # Update disable
+    def self.udis=(value : Bool) : Bool
+      self.set(udis: value)
+      value
+    end
+
+    # Counter enable
+    def cen : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Counter enable
+    def self.cen : Bool
+      value.cen
+    end
+
+    # Counter enable
+    def self.cen=(value : Bool) : Bool
+      self.set(cen: value)
       value
     end
 
     def copy_with(
       *,
 
-      cen : CEN? = nil,
+      ckd : UInt8? = nil,
 
-      udis : UDIS? = nil,
+      arpe : Bool? = nil,
 
-      urs : URS? = nil,
+      cms : UInt8? = nil,
 
-      opm : OPM? = nil,
+      dir : Bool? = nil,
 
-      dir : DIR? = nil,
+      opm : Bool? = nil,
 
-      cms : CMS? = nil,
+      urs : Bool? = nil,
 
-      arpe : ARPE? = nil,
+      udis : Bool? = nil,
 
-      ckd : CKD? = nil,
-
-      uifremap : Bool? = nil
+      cen : Bool? = nil
     ) : self
       value = @value
 
-      unless cen.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(cen.to_int).&(0x1_u32) << 0
-      end
-
-      unless udis.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(udis.to_int).&(0x1_u32) << 1
-      end
-
-      unless urs.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(urs.to_int).&(0x1_u32) << 2
-      end
-
-      unless opm.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(opm.to_int).&(0x1_u32) << 3
-      end
-
-      unless dir.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(dir.to_int).&(0x1_u32) << 4
-      end
-
-      unless cms.nil?
-        value = (value & 0xffffff9f_u32) |
-                UInt32.new!(cms.to_int).&(0x3_u32) << 5
+      unless ckd.nil?
+        value = (value & 0xfffffcff_u32) |
+                UInt32.new!(ckd.to_int).&(0x3_u32) << 8
       end
 
       unless arpe.nil?
@@ -345,14 +197,34 @@ module TIM2
                 UInt32.new!(arpe.to_int).&(0x1_u32) << 7
       end
 
-      unless ckd.nil?
-        value = (value & 0xfffffcff_u32) |
-                UInt32.new!(ckd.to_int).&(0x3_u32) << 8
+      unless cms.nil?
+        value = (value & 0xffffff9f_u32) |
+                UInt32.new!(cms.to_int).&(0x3_u32) << 5
       end
 
-      unless uifremap.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(uifremap.to_int).&(0x1_u32) << 11
+      unless dir.nil?
+        value = (value & 0xffffffef_u32) |
+                UInt32.new!(dir.to_int).&(0x1_u32) << 4
+      end
+
+      unless opm.nil?
+        value = (value & 0xfffffff7_u32) |
+                UInt32.new!(opm.to_int).&(0x1_u32) << 3
+      end
+
+      unless urs.nil?
+        value = (value & 0xfffffffb_u32) |
+                UInt32.new!(urs.to_int).&(0x1_u32) << 2
+      end
+
+      unless udis.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(udis.to_int).&(0x1_u32) << 1
+      end
+
+      unless cen.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(cen.to_int).&(0x1_u32) << 0
       end
 
       self.class.new(value)
@@ -360,26 +232,24 @@ module TIM2
 
     def self.set(
       *,
-      cen : CEN? = nil,
-      udis : UDIS? = nil,
-      urs : URS? = nil,
-      opm : OPM? = nil,
-      dir : DIR? = nil,
-      cms : CMS? = nil,
-      arpe : ARPE? = nil,
-      ckd : CKD? = nil,
-      uifremap : Bool? = nil
+      ckd : UInt8? = nil,
+      arpe : Bool? = nil,
+      cms : UInt8? = nil,
+      dir : Bool? = nil,
+      opm : Bool? = nil,
+      urs : Bool? = nil,
+      udis : Bool? = nil,
+      cen : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cen: cen,
-        udis: udis,
-        urs: urs,
-        opm: opm,
-        dir: dir,
-        cms: cms,
-        arpe: arpe,
         ckd: ckd,
-        uifremap: uifremap,
+        arpe: arpe,
+        cms: cms,
+        dir: dir,
+        opm: opm,
+        urs: urs,
+        udis: udis,
+        cen: cen,
       )
     end
   end # struct
@@ -419,104 +289,50 @@ module TIM2
       value
     end
 
-    enum TI1S : UInt8
-      # The TIMx_CH1 pin is connected to TI1 input
-      NORMAL = 0x0_u64
-
-      # The TIMx_CH1, CH2, CH3 pins are connected to TI1 input
-      XOR = 0x1_u64
-
-      def self.reset_value : TI1S
-        CR2.reset_value.ti1_s
-      end
+    # TI1 selection
+    def ti1_s : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # TI1 selection
-    def ti1_s : TI1S
-      TI1S.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # TI1 selection
-    def self.ti1_s : TI1S
+    def self.ti1_s : Bool
       value.ti1_s
     end
 
     # TI1 selection
-    def self.ti1_s=(value : TI1S) : TI1S
+    def self.ti1_s=(value : Bool) : Bool
       self.set(ti1_s: value)
       value
     end
 
-    enum MMS : UInt8
-      # The UG bit from the TIMx_EGR register is used as trigger output
-      RESET = 0x0_u64
-
-      # The counter enable signal, CNT_EN, is used as trigger output
-      ENABLE = 0x1_u64
-
-      # The update event is selected as trigger output
-      UPDATE = 0x2_u64
-
-      # The trigger output send a positive pulse when the CC1IF flag it to be set, as soon as a capture or a compare match occurred
-      COMPAREPULSE = 0x3_u64
-
-      # OC1REF signal is used as trigger output
-      COMPAREOC1 = 0x4_u64
-
-      # OC2REF signal is used as trigger output
-      COMPAREOC2 = 0x5_u64
-
-      # OC3REF signal is used as trigger output
-      COMPAREOC3 = 0x6_u64
-
-      # OC4REF signal is used as trigger output
-      COMPAREOC4 = 0x7_u64
-
-      def self.reset_value : MMS
-        CR2.reset_value.mms
-      end
+    # Master mode selection
+    def mms : UInt8
+      UInt8.new!((@value >> 4) & 0x7_u32)
     end
 
     # Master mode selection
-    def mms : MMS
-      MMS.new!((@value >> 4) & 0x7_u32)
-    end
-
-    # Master mode selection
-    def self.mms : MMS
+    def self.mms : UInt8
       value.mms
     end
 
     # Master mode selection
-    def self.mms=(value : MMS) : MMS
+    def self.mms=(value : UInt8) : UInt8
       self.set(mms: value)
       value
     end
 
-    enum CCDS : UInt8
-      # CCx DMA request sent when CCx event occurs
-      ONCOMPARE = 0x0_u64
-
-      # CCx DMA request sent when update event occurs
-      ONUPDATE = 0x1_u64
-
-      def self.reset_value : CCDS
-        CR2.reset_value.ccds
-      end
+    # Capture/compare DMA              selection
+    def ccds : Bool
+      @value.bits_set?(0x8_u32)
     end
 
     # Capture/compare DMA              selection
-    def ccds : CCDS
-      CCDS.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # Capture/compare DMA              selection
-    def self.ccds : CCDS
+    def self.ccds : Bool
       value.ccds
     end
 
     # Capture/compare DMA              selection
-    def self.ccds=(value : CCDS) : CCDS
+    def self.ccds=(value : Bool) : Bool
       self.set(ccds: value)
       value
     end
@@ -524,11 +340,11 @@ module TIM2
     def copy_with(
       *,
 
-      ti1_s : TI1S? = nil,
+      ti1_s : Bool? = nil,
 
-      mms : MMS? = nil,
+      mms : UInt8? = nil,
 
-      ccds : CCDS? = nil
+      ccds : Bool? = nil
     ) : self
       value = @value
 
@@ -552,9 +368,9 @@ module TIM2
 
     def self.set(
       *,
-      ti1_s : TI1S? = nil,
-      mms : MMS? = nil,
-      ccds : CCDS? = nil
+      ti1_s : Bool? = nil,
+      mms : UInt8? = nil,
+      ccds : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ti1_s: ti1_s,
@@ -599,366 +415,140 @@ module TIM2
       value
     end
 
-    enum SMS : UInt8
-      # Slave mode disabled - if CEN = ‘1 then the prescaler is clocked directly by the internal clock.
-      DISABLED = 0x0_u64
-
-      # Encoder mode 1 - Counter counts up/down on TI2FP1 edge depending on TI1FP2 level.
-      ENCODER_MODE_1 = 0x1_u64
-
-      # Encoder mode 2 - Counter counts up/down on TI1FP2 edge depending on TI2FP1 level.
-      ENCODER_MODE_2 = 0x2_u64
-
-      # Encoder mode 3 - Counter counts up/down on both TI1FP1 and TI2FP2 edges depending on the level of the other input.
-      ENCODER_MODE_3 = 0x3_u64
-
-      # Reset Mode - Rising edge of the selected trigger input (TRGI) reinitializes the counter and generates an update of the registers.
-      RESET_MODE = 0x4_u64
-
-      # Gated Mode - The counter clock is enabled when the trigger input (TRGI) is high. The counter stops (but is not reset) as soon as the trigger becomes low. Both start and stop of the counter are controlled.
-      GATED_MODE = 0x5_u64
-
-      # Trigger Mode - The counter starts at a rising edge of the trigger TRGI (but it is not reset). Only the start of the counter is controlled.
-      TRIGGER_MODE = 0x6_u64
-
-      # External Clock Mode 1 - Rising edges of the selected trigger (TRGI) clock the counter.
-      EXT_CLOCK_MODE = 0x7_u64
-
-      def self.reset_value : SMS
-        SMCR.reset_value.sms
-      end
-    end
-
-    # Slave mode selection
-    def sms : SMS
-      SMS.new!((@value >> 0) & 0x7_u32)
-    end
-
-    # Slave mode selection
-    def self.sms : SMS
-      value.sms
-    end
-
-    # Slave mode selection
-    def self.sms=(value : SMS) : SMS
-      self.set(sms: value)
-      value
-    end
-
-    # OCREF clear selection
-    def occs : Bool
-      @value.bits_set?(0x8_u32)
-    end
-
-    # OCREF clear selection
-    def self.occs : Bool
-      value.occs
-    end
-
-    # OCREF clear selection
-    def self.occs=(value : Bool) : Bool
-      self.set(occs: value)
-      value
-    end
-
-    enum TS : UInt8
-      # Internal Trigger 0 (ITR0)
-      ITR0 = 0x0_u64
-
-      # Internal Trigger 1 (ITR1)
-      ITR1 = 0x1_u64
-
-      # Internal Trigger 2 (ITR2)
-      ITR2 = 0x2_u64
-
-      # TI1 Edge Detector (TI1F_ED)
-      TI1F_ED = 0x4_u64
-
-      # Filtered Timer Input 1 (TI1FP1)
-      TI1FP1 = 0x5_u64
-
-      # Filtered Timer Input 2 (TI2FP2)
-      TI2FP2 = 0x6_u64
-
-      # External Trigger input (ETRF)
-      ETRF = 0x7_u64
-
-      def self.reset_value : TS
-        SMCR.reset_value.ts
-      end
-    end
-
-    # Trigger selection
-    def ts : TS
-      TS.new!((@value >> 4) & 0x7_u32)
-    end
-
-    # Trigger selection
-    def self.ts : TS
-      value.ts
-    end
-
-    # Trigger selection
-    def self.ts=(value : TS) : TS
-      self.set(ts: value)
-      value
-    end
-
-    enum MSM : UInt8
-      # No action
-      NOSYNC = 0x0_u64
-
-      # The effect of an event on the trigger input (TRGI) is delayed to allow a perfect synchronization between the current timer and its slaves (through TRGO). It is useful if we want to synchronize several timers on a single external event.
-      SYNC = 0x1_u64
-
-      def self.reset_value : MSM
-        SMCR.reset_value.msm
-      end
-    end
-
-    # Master/Slave mode
-    def msm : MSM
-      MSM.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Master/Slave mode
-    def self.msm : MSM
-      value.msm
-    end
-
-    # Master/Slave mode
-    def self.msm=(value : MSM) : MSM
-      self.set(msm: value)
-      value
-    end
-
-    enum ETF : UInt8
-      # No filter, sampling is done at fDTS
-      NOFILTER = 0x0_u64
-
-      # fSAMPLING=fCK_INT, N=2
-      FCK_INT_N2 = 0x1_u64
-
-      # fSAMPLING=fCK_INT, N=4
-      FCK_INT_N4 = 0x2_u64
-
-      # fSAMPLING=fCK_INT, N=8
-      FCK_INT_N8 = 0x3_u64
-
-      # fSAMPLING=fDTS/2, N=6
-      FDTS_DIV2_N6 = 0x4_u64
-
-      # fSAMPLING=fDTS/2, N=8
-      FDTS_DIV2_N8 = 0x5_u64
-
-      # fSAMPLING=fDTS/4, N=6
-      FDTS_DIV4_N6 = 0x6_u64
-
-      # fSAMPLING=fDTS/4, N=8
-      FDTS_DIV4_N8 = 0x7_u64
-
-      # fSAMPLING=fDTS/8, N=6
-      FDTS_DIV8_N6 = 0x8_u64
-
-      # fSAMPLING=fDTS/8, N=8
-      FDTS_DIV8_N8 = 0x9_u64
-
-      # fSAMPLING=fDTS/16, N=5
-      FDTS_DIV16_N5 = 0xa_u64
-
-      # fSAMPLING=fDTS/16, N=6
-      FDTS_DIV16_N6 = 0xb_u64
-
-      # fSAMPLING=fDTS/16, N=8
-      FDTS_DIV16_N8 = 0xc_u64
-
-      # fSAMPLING=fDTS/32, N=5
-      FDTS_DIV32_N5 = 0xd_u64
-
-      # fSAMPLING=fDTS/32, N=6
-      FDTS_DIV32_N6 = 0xe_u64
-
-      # fSAMPLING=fDTS/32, N=8
-      FDTS_DIV32_N8 = 0xf_u64
-
-      def self.reset_value : ETF
-        SMCR.reset_value.etf
-      end
-    end
-
-    # External trigger filter
-    def etf : ETF
-      ETF.new!((@value >> 8) & 0xf_u32)
-    end
-
-    # External trigger filter
-    def self.etf : ETF
-      value.etf
-    end
-
-    # External trigger filter
-    def self.etf=(value : ETF) : ETF
-      self.set(etf: value)
-      value
-    end
-
-    enum ETPS : UInt8
-      # Prescaler OFF
-      DIV1 = 0x0_u64
-
-      # ETRP frequency divided by 2
-      DIV2 = 0x1_u64
-
-      # ETRP frequency divided by 4
-      DIV4 = 0x2_u64
-
-      # ETRP frequency divided by 8
-      DIV8 = 0x3_u64
-
-      def self.reset_value : ETPS
-        SMCR.reset_value.etps
-      end
-    end
-
-    # External trigger prescaler
-    def etps : ETPS
-      ETPS.new!((@value >> 12) & 0x3_u32)
-    end
-
-    # External trigger prescaler
-    def self.etps : ETPS
-      value.etps
-    end
-
-    # External trigger prescaler
-    def self.etps=(value : ETPS) : ETPS
-      self.set(etps: value)
-      value
-    end
-
-    enum ECE : UInt8
-      # External clock mode 2 disabled
-      DISABLED = 0x0_u64
-
-      # External clock mode 2 enabled. The counter is clocked by any active edge on the ETRF signal.
-      ENABLED = 0x1_u64
-
-      def self.reset_value : ECE
-        SMCR.reset_value.ece
-      end
-    end
-
-    # External clock enable
-    def ece : ECE
-      ECE.new!((@value >> 14) & 0x1_u32)
-    end
-
-    # External clock enable
-    def self.ece : ECE
-      value.ece
-    end
-
-    # External clock enable
-    def self.ece=(value : ECE) : ECE
-      self.set(ece: value)
-      value
-    end
-
-    enum ETP : UInt8
-      # ETR is noninverted, active at high level or rising edge
-      NOTINVERTED = 0x0_u64
-
-      # ETR is inverted, active at low level or falling edge
-      INVERTED = 0x1_u64
-
-      def self.reset_value : ETP
-        SMCR.reset_value.etp
-      end
+    # External trigger polarity
+    def etp : Bool
+      @value.bits_set?(0x8000_u32)
     end
 
     # External trigger polarity
-    def etp : ETP
-      ETP.new!((@value >> 15) & 0x1_u32)
-    end
-
-    # External trigger polarity
-    def self.etp : ETP
+    def self.etp : Bool
       value.etp
     end
 
     # External trigger polarity
-    def self.etp=(value : ETP) : ETP
+    def self.etp=(value : Bool) : Bool
       self.set(etp: value)
       value
     end
 
-    # Slave mode selection bit3
-    def sms_3 : Bool
-      @value.bits_set?(0x10000_u32)
+    # External clock enable
+    def ece : Bool
+      @value.bits_set?(0x4000_u32)
     end
 
-    # Slave mode selection bit3
-    def self.sms_3 : Bool
-      value.sms_3
+    # External clock enable
+    def self.ece : Bool
+      value.ece
     end
 
-    # Slave mode selection bit3
-    def self.sms_3=(value : Bool) : Bool
-      self.set(sms_3: value)
+    # External clock enable
+    def self.ece=(value : Bool) : Bool
+      self.set(ece: value)
+      value
+    end
+
+    # External trigger prescaler
+    def etps : UInt8
+      UInt8.new!((@value >> 12) & 0x3_u32)
+    end
+
+    # External trigger prescaler
+    def self.etps : UInt8
+      value.etps
+    end
+
+    # External trigger prescaler
+    def self.etps=(value : UInt8) : UInt8
+      self.set(etps: value)
+      value
+    end
+
+    # External trigger filter
+    def etf : UInt8
+      UInt8.new!((@value >> 8) & 0xf_u32)
+    end
+
+    # External trigger filter
+    def self.etf : UInt8
+      value.etf
+    end
+
+    # External trigger filter
+    def self.etf=(value : UInt8) : UInt8
+      self.set(etf: value)
+      value
+    end
+
+    # Master/Slave mode
+    def msm : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # Master/Slave mode
+    def self.msm : Bool
+      value.msm
+    end
+
+    # Master/Slave mode
+    def self.msm=(value : Bool) : Bool
+      self.set(msm: value)
+      value
+    end
+
+    # Trigger selection
+    def ts : UInt8
+      UInt8.new!((@value >> 4) & 0x7_u32)
+    end
+
+    # Trigger selection
+    def self.ts : UInt8
+      value.ts
+    end
+
+    # Trigger selection
+    def self.ts=(value : UInt8) : UInt8
+      self.set(ts: value)
+      value
+    end
+
+    # Slave mode selection
+    def sms : UInt8
+      UInt8.new!((@value >> 0) & 0x7_u32)
+    end
+
+    # Slave mode selection
+    def self.sms : UInt8
+      value.sms
+    end
+
+    # Slave mode selection
+    def self.sms=(value : UInt8) : UInt8
+      self.set(sms: value)
       value
     end
 
     def copy_with(
       *,
 
-      sms : SMS? = nil,
+      etp : Bool? = nil,
 
-      occs : Bool? = nil,
+      ece : Bool? = nil,
 
-      ts : TS? = nil,
+      etps : UInt8? = nil,
 
-      msm : MSM? = nil,
+      etf : UInt8? = nil,
 
-      etf : ETF? = nil,
+      msm : Bool? = nil,
 
-      etps : ETPS? = nil,
+      ts : UInt8? = nil,
 
-      ece : ECE? = nil,
-
-      etp : ETP? = nil,
-
-      sms_3 : Bool? = nil
+      sms : UInt8? = nil
     ) : self
       value = @value
 
-      unless sms.nil?
-        value = (value & 0xfffffff8_u32) |
-                UInt32.new!(sms.to_int).&(0x7_u32) << 0
-      end
-
-      unless occs.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(occs.to_int).&(0x1_u32) << 3
-      end
-
-      unless ts.nil?
-        value = (value & 0xffffff8f_u32) |
-                UInt32.new!(ts.to_int).&(0x7_u32) << 4
-      end
-
-      unless msm.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(msm.to_int).&(0x1_u32) << 7
-      end
-
-      unless etf.nil?
-        value = (value & 0xfffff0ff_u32) |
-                UInt32.new!(etf.to_int).&(0xf_u32) << 8
-      end
-
-      unless etps.nil?
-        value = (value & 0xffffcfff_u32) |
-                UInt32.new!(etps.to_int).&(0x3_u32) << 12
+      unless etp.nil?
+        value = (value & 0xffff7fff_u32) |
+                UInt32.new!(etp.to_int).&(0x1_u32) << 15
       end
 
       unless ece.nil?
@@ -966,14 +556,29 @@ module TIM2
                 UInt32.new!(ece.to_int).&(0x1_u32) << 14
       end
 
-      unless etp.nil?
-        value = (value & 0xffff7fff_u32) |
-                UInt32.new!(etp.to_int).&(0x1_u32) << 15
+      unless etps.nil?
+        value = (value & 0xffffcfff_u32) |
+                UInt32.new!(etps.to_int).&(0x3_u32) << 12
       end
 
-      unless sms_3.nil?
-        value = (value & 0xfffeffff_u32) |
-                UInt32.new!(sms_3.to_int).&(0x1_u32) << 16
+      unless etf.nil?
+        value = (value & 0xfffff0ff_u32) |
+                UInt32.new!(etf.to_int).&(0xf_u32) << 8
+      end
+
+      unless msm.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(msm.to_int).&(0x1_u32) << 7
+      end
+
+      unless ts.nil?
+        value = (value & 0xffffff8f_u32) |
+                UInt32.new!(ts.to_int).&(0x7_u32) << 4
+      end
+
+      unless sms.nil?
+        value = (value & 0xfffffff8_u32) |
+                UInt32.new!(sms.to_int).&(0x7_u32) << 0
       end
 
       self.class.new(value)
@@ -981,26 +586,22 @@ module TIM2
 
     def self.set(
       *,
-      sms : SMS? = nil,
-      occs : Bool? = nil,
-      ts : TS? = nil,
-      msm : MSM? = nil,
-      etf : ETF? = nil,
-      etps : ETPS? = nil,
-      ece : ECE? = nil,
-      etp : ETP? = nil,
-      sms_3 : Bool? = nil
+      etp : Bool? = nil,
+      ece : Bool? = nil,
+      etps : UInt8? = nil,
+      etf : UInt8? = nil,
+      msm : Bool? = nil,
+      ts : UInt8? = nil,
+      sms : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        sms: sms,
-        occs: occs,
-        ts: ts,
-        msm: msm,
-        etf: etf,
-        etps: etps,
-        ece: ece,
         etp: etp,
-        sms_3: sms_3,
+        ece: ece,
+        etps: etps,
+        etf: etf,
+        msm: msm,
+        ts: ts,
+        sms: sms,
       )
     end
   end # struct
@@ -1040,30 +641,18 @@ module TIM2
       value
     end
 
-    enum TDE : UInt8
-      # Trigger DMA request disabled
-      DISABLED = 0x0_u64
-
-      # Trigger DMA request enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : TDE
-        DIER.reset_value.tde
-      end
+    # Trigger DMA request enable
+    def tde : Bool
+      @value.bits_set?(0x4000_u32)
     end
 
     # Trigger DMA request enable
-    def tde : TDE
-      TDE.new!((@value >> 14) & 0x1_u32)
-    end
-
-    # Trigger DMA request enable
-    def self.tde : TDE
+    def self.tde : Bool
       value.tde
     end
 
     # Trigger DMA request enable
-    def self.tde=(value : TDE) : TDE
+    def self.tde=(value : Bool) : Bool
       self.set(tde: value)
       value
     end
@@ -1116,86 +705,50 @@ module TIM2
       value
     end
 
-    enum CC1DE : UInt8
-      # CCx DMA request disabled
-      DISABLED = 0x0_u64
-
-      # CCx DMA request enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : CC1DE
-        DIER.reset_value.cc1_de
-      end
+    # Capture/Compare 1 DMA request              enable
+    def cc1_de : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Capture/Compare 1 DMA request              enable
-    def cc1_de : CC1DE
-      CC1DE.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Capture/Compare 1 DMA request              enable
-    def self.cc1_de : CC1DE
+    def self.cc1_de : Bool
       value.cc1_de
     end
 
     # Capture/Compare 1 DMA request              enable
-    def self.cc1_de=(value : CC1DE) : CC1DE
+    def self.cc1_de=(value : Bool) : Bool
       self.set(cc1_de: value)
       value
     end
 
-    enum UDE : UInt8
-      # Update DMA request disabled
-      DISABLED = 0x0_u64
-
-      # Update DMA request enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : UDE
-        DIER.reset_value.ude
-      end
+    # Update DMA request enable
+    def ude : Bool
+      @value.bits_set?(0x100_u32)
     end
 
     # Update DMA request enable
-    def ude : UDE
-      UDE.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # Update DMA request enable
-    def self.ude : UDE
+    def self.ude : Bool
       value.ude
     end
 
     # Update DMA request enable
-    def self.ude=(value : UDE) : UDE
+    def self.ude=(value : Bool) : Bool
       self.set(ude: value)
       value
     end
 
-    enum TIE : UInt8
-      # Trigger interrupt disabled
-      DISABLED = 0x0_u64
-
-      # Trigger interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : TIE
-        DIER.reset_value.tie
-      end
+    # Trigger interrupt enable
+    def tie : Bool
+      @value.bits_set?(0x40_u32)
     end
 
     # Trigger interrupt enable
-    def tie : TIE
-      TIE.new!((@value >> 6) & 0x1_u32)
-    end
-
-    # Trigger interrupt enable
-    def self.tie : TIE
+    def self.tie : Bool
       value.tie
     end
 
     # Trigger interrupt enable
-    def self.tie=(value : TIE) : TIE
+    def self.tie=(value : Bool) : Bool
       self.set(tie: value)
       value
     end
@@ -1248,58 +801,34 @@ module TIM2
       value
     end
 
-    enum CC1IE : UInt8
-      # CCx interrupt disabled
-      DISABLED = 0x0_u64
-
-      # CCx interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : CC1IE
-        DIER.reset_value.cc1_ie
-      end
+    # Capture/Compare 1 interrupt              enable
+    def cc1_ie : Bool
+      @value.bits_set?(0x2_u32)
     end
 
     # Capture/Compare 1 interrupt              enable
-    def cc1_ie : CC1IE
-      CC1IE.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Capture/Compare 1 interrupt              enable
-    def self.cc1_ie : CC1IE
+    def self.cc1_ie : Bool
       value.cc1_ie
     end
 
     # Capture/Compare 1 interrupt              enable
-    def self.cc1_ie=(value : CC1IE) : CC1IE
+    def self.cc1_ie=(value : Bool) : Bool
       self.set(cc1_ie: value)
       value
     end
 
-    enum UIE : UInt8
-      # Update interrupt disabled
-      DISABLED = 0x0_u64
-
-      # Update interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : UIE
-        DIER.reset_value.uie
-      end
+    # Update interrupt enable
+    def uie : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Update interrupt enable
-    def uie : UIE
-      UIE.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Update interrupt enable
-    def self.uie : UIE
+    def self.uie : Bool
       value.uie
     end
 
     # Update interrupt enable
-    def self.uie=(value : UIE) : UIE
+    def self.uie=(value : Bool) : Bool
       self.set(uie: value)
       value
     end
@@ -1307,7 +836,7 @@ module TIM2
     def copy_with(
       *,
 
-      tde : TDE? = nil,
+      tde : Bool? = nil,
 
       cc4_de : Bool? = nil,
 
@@ -1315,11 +844,11 @@ module TIM2
 
       cc2_de : Bool? = nil,
 
-      cc1_de : CC1DE? = nil,
+      cc1_de : Bool? = nil,
 
-      ude : UDE? = nil,
+      ude : Bool? = nil,
 
-      tie : TIE? = nil,
+      tie : Bool? = nil,
 
       cc4_ie : Bool? = nil,
 
@@ -1327,9 +856,9 @@ module TIM2
 
       cc2_ie : Bool? = nil,
 
-      cc1_ie : CC1IE? = nil,
+      cc1_ie : Bool? = nil,
 
-      uie : UIE? = nil
+      uie : Bool? = nil
     ) : self
       value = @value
 
@@ -1398,18 +927,18 @@ module TIM2
 
     def self.set(
       *,
-      tde : TDE? = nil,
+      tde : Bool? = nil,
       cc4_de : Bool? = nil,
       cc3_de : Bool? = nil,
       cc2_de : Bool? = nil,
-      cc1_de : CC1DE? = nil,
-      ude : UDE? = nil,
-      tie : TIE? = nil,
+      cc1_de : Bool? = nil,
+      ude : Bool? = nil,
+      tie : Bool? = nil,
       cc4_ie : Bool? = nil,
       cc3_ie : Bool? = nil,
       cc2_ie : Bool? = nil,
-      cc1_ie : CC1IE? = nil,
-      uie : UIE? = nil
+      cc1_ie : Bool? = nil,
+      uie : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         tde: tde,
@@ -1511,55 +1040,34 @@ module TIM2
       value
     end
 
-    enum CC1OF : UInt8
-      # The counter value has been captured in TIMx_CCRx register while CCxIF flag was already set
-      OVERCAPTURE = 0x1_u64
-
-      def self.reset_value : CC1OF
-        SR.reset_value.cc1_of
-      end
+    # Capture/Compare 1 overcapture              flag
+    def cc1_of : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Capture/Compare 1 overcapture              flag
-    def cc1_of : CC1OF
-      CC1OF.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Capture/Compare 1 overcapture              flag
-    def self.cc1_of : CC1OF
+    def self.cc1_of : Bool
       value.cc1_of
     end
 
     # Capture/Compare 1 overcapture              flag
-    def self.cc1_of=(value : CC1OF) : CC1OF
+    def self.cc1_of=(value : Bool) : Bool
       self.set(cc1_of: value)
       value
     end
 
-    enum TIF : UInt8
-      # No trigger event occurred
-      NOTRIGGER = 0x0_u64
-
-      # Trigger interrupt pending
-      TRIGGER = 0x1_u64
-
-      def self.reset_value : TIF
-        SR.reset_value.tif
-      end
+    # Trigger interrupt flag
+    def tif : Bool
+      @value.bits_set?(0x40_u32)
     end
 
     # Trigger interrupt flag
-    def tif : TIF
-      TIF.new!((@value >> 6) & 0x1_u32)
-    end
-
-    # Trigger interrupt flag
-    def self.tif : TIF
+    def self.tif : Bool
       value.tif
     end
 
     # Trigger interrupt flag
-    def self.tif=(value : TIF) : TIF
+    def self.tif=(value : Bool) : Bool
       self.set(tif: value)
       value
     end
@@ -1612,55 +1120,34 @@ module TIM2
       value
     end
 
-    enum CC1IF : UInt8
-      # If CC1 is an output: The content of the counter TIMx_CNT matches the content of the TIMx_CCR1 register. If CC1 is an input: The counter value has been captured in TIMx_CCR1 register.
-      MATCH = 0x1_u64
-
-      def self.reset_value : CC1IF
-        SR.reset_value.cc1_if
-      end
+    # Capture/compare 1 interrupt              flag
+    def cc1_if : Bool
+      @value.bits_set?(0x2_u32)
     end
 
     # Capture/compare 1 interrupt              flag
-    def cc1_if : CC1IF
-      CC1IF.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Capture/compare 1 interrupt              flag
-    def self.cc1_if : CC1IF
+    def self.cc1_if : Bool
       value.cc1_if
     end
 
     # Capture/compare 1 interrupt              flag
-    def self.cc1_if=(value : CC1IF) : CC1IF
+    def self.cc1_if=(value : Bool) : Bool
       self.set(cc1_if: value)
       value
     end
 
-    enum UIF : UInt8
-      # No update occurred
-      CLEAR = 0x0_u64
-
-      # Update interrupt pending.
-      UPDATEPENDING = 0x1_u64
-
-      def self.reset_value : UIF
-        SR.reset_value.uif
-      end
+    # Update interrupt flag
+    def uif : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Update interrupt flag
-    def uif : UIF
-      UIF.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Update interrupt flag
-    def self.uif : UIF
+    def self.uif : Bool
       value.uif
     end
 
     # Update interrupt flag
-    def self.uif=(value : UIF) : UIF
+    def self.uif=(value : Bool) : Bool
       self.set(uif: value)
       value
     end
@@ -1674,9 +1161,9 @@ module TIM2
 
       cc2_of : Bool? = nil,
 
-      cc1_of : CC1OF? = nil,
+      cc1_of : Bool? = nil,
 
-      tif : TIF? = nil,
+      tif : Bool? = nil,
 
       cc4_if : Bool? = nil,
 
@@ -1684,9 +1171,9 @@ module TIM2
 
       cc2_if : Bool? = nil,
 
-      cc1_if : CC1IF? = nil,
+      cc1_if : Bool? = nil,
 
-      uif : UIF? = nil
+      uif : Bool? = nil
     ) : self
       value = @value
 
@@ -1748,13 +1235,13 @@ module TIM2
       cc4_of : Bool? = nil,
       cc3_of : Bool? = nil,
       cc2_of : Bool? = nil,
-      cc1_of : CC1OF? = nil,
-      tif : TIF? = nil,
+      cc1_of : Bool? = nil,
+      tif : Bool? = nil,
       cc4_if : Bool? = nil,
       cc3_if : Bool? = nil,
       cc2_if : Bool? = nil,
-      cc1_if : CC1IF? = nil,
-      uif : UIF? = nil
+      cc1_if : Bool? = nil,
+      uif : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         cc4_of: cc4_of,
@@ -1806,17 +1293,8 @@ module TIM2
       value
     end
 
-    enum TG : UInt8
-      # The TIF flag is set in TIMx_SR register. Related interrupt or DMA transfer can occur if enabled.
-      TRIGGER = 0x1_u64
-
-      def self.reset_value : TG
-        EGR.reset_value.tg
-      end
-    end
-
     # Trigger generation
-    def self.tg=(value : TG) : TG
+    def self.tg=(value : Bool) : Bool
       self.set(tg: value)
       value
     end
@@ -1839,32 +1317,14 @@ module TIM2
       value
     end
 
-    enum CC1G : UInt8
-      # If CC1 is an output: CC1IF flag is set, Corresponding interrupt or DMA request is sent if enabled. If CC1 is an input: The current value of the counter is captured in TIMx_CCR1 register.
-      TRIGGER = 0x1_u64
-
-      def self.reset_value : CC1G
-        EGR.reset_value.cc1_g
-      end
-    end
-
     # Capture/compare 1              generation
-    def self.cc1_g=(value : CC1G) : CC1G
+    def self.cc1_g=(value : Bool) : Bool
       self.set(cc1_g: value)
       value
     end
 
-    enum UG : UInt8
-      # Re-initializes the timer counter and generates an update of the registers.
-      UPDATE = 0x1_u64
-
-      def self.reset_value : UG
-        EGR.reset_value.ug
-      end
-    end
-
     # Update generation
-    def self.ug=(value : UG) : UG
+    def self.ug=(value : Bool) : Bool
       self.set(ug: value)
       value
     end
@@ -1872,7 +1332,7 @@ module TIM2
     def copy_with(
       *,
 
-      tg : TG? = nil,
+      tg : Bool? = nil,
 
       cc4_g : Bool? = nil,
 
@@ -1880,9 +1340,9 @@ module TIM2
 
       cc2_g : Bool? = nil,
 
-      cc1_g : CC1G? = nil,
+      cc1_g : Bool? = nil,
 
-      ug : UG? = nil
+      ug : Bool? = nil
     ) : self
       value = @value
 
@@ -1921,12 +1381,12 @@ module TIM2
 
     def self.set(
       *,
-      tg : TG? = nil,
+      tg : Bool? = nil,
       cc4_g : Bool? = nil,
       cc3_g : Bool? = nil,
       cc2_g : Bool? = nil,
-      cc1_g : CC1G? = nil,
-      ug : UG? = nil
+      cc1_g : Bool? = nil,
+      ug : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         tg: tg,
@@ -1974,349 +1434,194 @@ module TIM2
       value
     end
 
-    enum CC1S : UInt8
-      # CC1 channel is configured as output
-      OUTPUT = 0x0_u64
-
-      def self.reset_value : CC1S
-        CCMR1_Output.reset_value.cc1_s
-      end
-    end
-
-    # Capture/Compare 1              selection
-    def cc1_s : CC1S
-      CC1S.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Capture/Compare 1              selection
-    def self.cc1_s : CC1S
-      value.cc1_s
-    end
-
-    # Capture/Compare 1              selection
-    def self.cc1_s=(value : CC1S) : CC1S
-      self.set(cc1_s: value)
-      value
-    end
-
-    # Output compare 1 fast              enable
-    def oc1_fe : Bool
-      @value.bits_set?(0x4_u32)
-    end
-
-    # Output compare 1 fast              enable
-    def self.oc1_fe : Bool
-      value.oc1_fe
-    end
-
-    # Output compare 1 fast              enable
-    def self.oc1_fe=(value : Bool) : Bool
-      self.set(oc1_fe: value)
-      value
-    end
-
-    enum OC1PE : UInt8
-      # Preload register on CCR1 disabled. New values written to CCR1 are taken into account immediately
-      DISABLED = 0x0_u64
-
-      # Preload register on CCR1 enabled. Preload value is loaded into active register on each update event
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OC1PE
-        CCMR1_Output.reset_value.oc1_pe
-      end
-    end
-
-    # Output compare 1 preload              enable
-    def oc1_pe : OC1PE
-      OC1PE.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # Output compare 1 preload              enable
-    def self.oc1_pe : OC1PE
-      value.oc1_pe
-    end
-
-    # Output compare 1 preload              enable
-    def self.oc1_pe=(value : OC1PE) : OC1PE
-      self.set(oc1_pe: value)
-      value
-    end
-
-    enum OC1M : UInt8
-      # The comparison between the output compare register TIMx_CCRy and the counter TIMx_CNT has no effect on the outputs / OpmMode1: Retriggerable OPM mode 1 - In up-counting mode, the channel is active until a trigger event is detected (on TRGI signal). In down-counting mode, the channel is inactive
-      FROZEN = 0x0_u64
-
-      # Set channel to active level on match. OCyREF signal is forced high when the counter matches the capture/compare register / OpmMode2: Inversely to OpmMode1
-      ACTIVEONMATCH = 0x1_u64
-
-      # Set channel to inactive level on match. OCyREF signal is forced low when the counter matches the capture/compare register / Reserved
-      INACTIVEONMATCH = 0x2_u64
-
-      # OCyREF toggles when TIMx_CNT=TIMx_CCRy / Reserved
-      TOGGLE = 0x3_u64
-
-      # OCyREF is forced low / CombinedPwmMode1: OCyREF has the same behavior as in PWM mode 1. OCyREFC is the logical OR between OC1REF and OC2REF
-      FORCEINACTIVE = 0x4_u64
-
-      # OCyREF is forced high / CombinedPwmMode2: OCyREF has the same behavior as in PWM mode 2. OCyREFC is the logical AND between OC1REF and OC2REF
-      FORCEACTIVE = 0x5_u64
-
-      # In upcounting, channel is active as long as TIMx_CNT<TIMx_CCRy else inactive. In downcounting, channel is inactive as long as TIMx_CNT>TIMx_CCRy else active / AsymmetricPwmMode1: OCyREF has the same behavior as in PWM mode 1. OCyREFC outputs OC1REF when the counter is counting up, OC2REF when it is counting down
-      PWMMODE1 = 0x6_u64
-
-      # Inversely to PwmMode1 / AsymmetricPwmMode2: Inversely to AsymmetricPwmMode1
-      PWMMODE2 = 0x7_u64
-
-      def self.reset_value : OC1M
-        CCMR1_Output.reset_value.oc1_m
-      end
-    end
-
-    # Output compare 1 mode
-    def oc1_m : OC1M
-      OC1M.new!((@value >> 4) & 0x7_u32)
-    end
-
-    # Output compare 1 mode
-    def self.oc1_m : OC1M
-      value.oc1_m
-    end
-
-    # Output compare 1 mode
-    def self.oc1_m=(value : OC1M) : OC1M
-      self.set(oc1_m: value)
-      value
-    end
-
-    # Output compare 1 clear              enable
-    def oc1_ce : Bool
-      @value.bits_set?(0x80_u32)
-    end
-
-    # Output compare 1 clear              enable
-    def self.oc1_ce : Bool
-      value.oc1_ce
-    end
-
-    # Output compare 1 clear              enable
-    def self.oc1_ce=(value : Bool) : Bool
-      self.set(oc1_ce: value)
-      value
-    end
-
-    enum CC2S : UInt8
-      # CC2 channel is configured as output
-      OUTPUT = 0x0_u64
-
-      def self.reset_value : CC2S
-        CCMR1_Output.reset_value.cc2_s
-      end
-    end
-
-    # Capture/Compare 2              selection
-    def cc2_s : CC2S
-      CC2S.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # Capture/Compare 2              selection
-    def self.cc2_s : CC2S
-      value.cc2_s
-    end
-
-    # Capture/Compare 2              selection
-    def self.cc2_s=(value : CC2S) : CC2S
-      self.set(cc2_s: value)
-      value
-    end
-
-    # Output compare 2 fast              enable
-    def oc2_fe : Bool
-      @value.bits_set?(0x400_u32)
-    end
-
-    # Output compare 2 fast              enable
-    def self.oc2_fe : Bool
-      value.oc2_fe
-    end
-
-    # Output compare 2 fast              enable
-    def self.oc2_fe=(value : Bool) : Bool
-      self.set(oc2_fe: value)
-      value
-    end
-
-    enum OC2PE : UInt8
-      # Preload register on CCR2 disabled. New values written to CCR2 are taken into account immediately
-      DISABLED = 0x0_u64
-
-      # Preload register on CCR2 enabled. Preload value is loaded into active register on each update event
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OC2PE
-        CCMR1_Output.reset_value.oc2_pe
-      end
-    end
-
-    # Output compare 2 preload              enable
-    def oc2_pe : OC2PE
-      OC2PE.new!((@value >> 11) & 0x1_u32)
-    end
-
-    # Output compare 2 preload              enable
-    def self.oc2_pe : OC2PE
-      value.oc2_pe
-    end
-
-    # Output compare 2 preload              enable
-    def self.oc2_pe=(value : OC2PE) : OC2PE
-      self.set(oc2_pe: value)
-      value
-    end
-
-    # Output compare 2 mode
-    def oc2_m : UInt8
-      UInt8.new!((@value >> 12) & 0x7_u32)
-    end
-
-    # Output compare 2 mode
-    def self.oc2_m : UInt8
-      value.oc2_m
-    end
-
-    # Output compare 2 mode
-    def self.oc2_m=(value : UInt8) : UInt8
-      self.set(oc2_m: value)
-      value
-    end
-
-    # Output compare 2 clear              enable
+    # OC2CE
     def oc2_ce : Bool
       @value.bits_set?(0x8000_u32)
     end
 
-    # Output compare 2 clear              enable
+    # OC2CE
     def self.oc2_ce : Bool
       value.oc2_ce
     end
 
-    # Output compare 2 clear              enable
+    # OC2CE
     def self.oc2_ce=(value : Bool) : Bool
       self.set(oc2_ce: value)
       value
     end
 
-    enum OC1M_3 : UInt8
-      # Normal output compare mode (modes 0-7)
-      NORMAL = 0x0_u64
-
-      # Extended output compare mode (modes 7-15)
-      EXTENDED = 0x1_u64
-
-      def self.reset_value : OC1M_3
-        CCMR1_Output.reset_value.oc1_m_3
-      end
+    # OC2M
+    def oc2_m : UInt8
+      UInt8.new!((@value >> 12) & 0x7_u32)
     end
 
-    # Output compare 1 mode bit              3
-    def oc1_m_3 : OC1M_3
-      OC1M_3.new!((@value >> 16) & 0x1_u32)
+    # OC2M
+    def self.oc2_m : UInt8
+      value.oc2_m
     end
 
-    # Output compare 1 mode bit              3
-    def self.oc1_m_3 : OC1M_3
-      value.oc1_m_3
-    end
-
-    # Output compare 1 mode bit              3
-    def self.oc1_m_3=(value : OC1M_3) : OC1M_3
-      self.set(oc1_m_3: value)
+    # OC2M
+    def self.oc2_m=(value : UInt8) : UInt8
+      self.set(oc2_m: value)
       value
     end
 
-    # Output compare 2 mode bit              3
-    def oc2_m_3 : Bool
-      @value.bits_set?(0x1000000_u32)
+    # OC2PE
+    def oc2_pe : Bool
+      @value.bits_set?(0x800_u32)
     end
 
-    # Output compare 2 mode bit              3
-    def self.oc2_m_3 : Bool
-      value.oc2_m_3
+    # OC2PE
+    def self.oc2_pe : Bool
+      value.oc2_pe
     end
 
-    # Output compare 2 mode bit              3
-    def self.oc2_m_3=(value : Bool) : Bool
-      self.set(oc2_m_3: value)
+    # OC2PE
+    def self.oc2_pe=(value : Bool) : Bool
+      self.set(oc2_pe: value)
+      value
+    end
+
+    # OC2FE
+    def oc2_fe : Bool
+      @value.bits_set?(0x400_u32)
+    end
+
+    # OC2FE
+    def self.oc2_fe : Bool
+      value.oc2_fe
+    end
+
+    # OC2FE
+    def self.oc2_fe=(value : Bool) : Bool
+      self.set(oc2_fe: value)
+      value
+    end
+
+    # CC2S
+    def cc2_s : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
+    end
+
+    # CC2S
+    def self.cc2_s : UInt8
+      value.cc2_s
+    end
+
+    # CC2S
+    def self.cc2_s=(value : UInt8) : UInt8
+      self.set(cc2_s: value)
+      value
+    end
+
+    # OC1CE
+    def oc1_ce : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # OC1CE
+    def self.oc1_ce : Bool
+      value.oc1_ce
+    end
+
+    # OC1CE
+    def self.oc1_ce=(value : Bool) : Bool
+      self.set(oc1_ce: value)
+      value
+    end
+
+    # OC1M
+    def oc1_m : UInt8
+      UInt8.new!((@value >> 4) & 0x7_u32)
+    end
+
+    # OC1M
+    def self.oc1_m : UInt8
+      value.oc1_m
+    end
+
+    # OC1M
+    def self.oc1_m=(value : UInt8) : UInt8
+      self.set(oc1_m: value)
+      value
+    end
+
+    # OC1PE
+    def oc1_pe : Bool
+      @value.bits_set?(0x8_u32)
+    end
+
+    # OC1PE
+    def self.oc1_pe : Bool
+      value.oc1_pe
+    end
+
+    # OC1PE
+    def self.oc1_pe=(value : Bool) : Bool
+      self.set(oc1_pe: value)
+      value
+    end
+
+    # OC1FE
+    def oc1_fe : Bool
+      @value.bits_set?(0x4_u32)
+    end
+
+    # OC1FE
+    def self.oc1_fe : Bool
+      value.oc1_fe
+    end
+
+    # OC1FE
+    def self.oc1_fe=(value : Bool) : Bool
+      self.set(oc1_fe: value)
+      value
+    end
+
+    # CC1S
+    def cc1_s : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
+    end
+
+    # CC1S
+    def self.cc1_s : UInt8
+      value.cc1_s
+    end
+
+    # CC1S
+    def self.cc1_s=(value : UInt8) : UInt8
+      self.set(cc1_s: value)
       value
     end
 
     def copy_with(
       *,
 
-      cc1_s : CC1S? = nil,
-
-      oc1_fe : Bool? = nil,
-
-      oc1_pe : OC1PE? = nil,
-
-      oc1_m : OC1M? = nil,
-
-      oc1_ce : Bool? = nil,
-
-      cc2_s : CC2S? = nil,
-
-      oc2_fe : Bool? = nil,
-
-      oc2_pe : OC2PE? = nil,
+      oc2_ce : Bool? = nil,
 
       oc2_m : UInt8? = nil,
 
-      oc2_ce : Bool? = nil,
+      oc2_pe : Bool? = nil,
 
-      oc1_m_3 : OC1M_3? = nil,
+      oc2_fe : Bool? = nil,
 
-      oc2_m_3 : Bool? = nil
+      cc2_s : UInt8? = nil,
+
+      oc1_ce : Bool? = nil,
+
+      oc1_m : UInt8? = nil,
+
+      oc1_pe : Bool? = nil,
+
+      oc1_fe : Bool? = nil,
+
+      cc1_s : UInt8? = nil
     ) : self
       value = @value
 
-      unless cc1_s.nil?
-        value = (value & 0xfffffffc_u32) |
-                UInt32.new!(cc1_s.to_int).&(0x3_u32) << 0
-      end
-
-      unless oc1_fe.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(oc1_fe.to_int).&(0x1_u32) << 2
-      end
-
-      unless oc1_pe.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(oc1_pe.to_int).&(0x1_u32) << 3
-      end
-
-      unless oc1_m.nil?
-        value = (value & 0xffffff8f_u32) |
-                UInt32.new!(oc1_m.to_int).&(0x7_u32) << 4
-      end
-
-      unless oc1_ce.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(oc1_ce.to_int).&(0x1_u32) << 7
-      end
-
-      unless cc2_s.nil?
-        value = (value & 0xfffffcff_u32) |
-                UInt32.new!(cc2_s.to_int).&(0x3_u32) << 8
-      end
-
-      unless oc2_fe.nil?
-        value = (value & 0xfffffbff_u32) |
-                UInt32.new!(oc2_fe.to_int).&(0x1_u32) << 10
-      end
-
-      unless oc2_pe.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(oc2_pe.to_int).&(0x1_u32) << 11
+      unless oc2_ce.nil?
+        value = (value & 0xffff7fff_u32) |
+                UInt32.new!(oc2_ce.to_int).&(0x1_u32) << 15
       end
 
       unless oc2_m.nil?
@@ -2324,19 +1629,44 @@ module TIM2
                 UInt32.new!(oc2_m.to_int).&(0x7_u32) << 12
       end
 
-      unless oc2_ce.nil?
-        value = (value & 0xffff7fff_u32) |
-                UInt32.new!(oc2_ce.to_int).&(0x1_u32) << 15
+      unless oc2_pe.nil?
+        value = (value & 0xfffff7ff_u32) |
+                UInt32.new!(oc2_pe.to_int).&(0x1_u32) << 11
       end
 
-      unless oc1_m_3.nil?
-        value = (value & 0xfffeffff_u32) |
-                UInt32.new!(oc1_m_3.to_int).&(0x1_u32) << 16
+      unless oc2_fe.nil?
+        value = (value & 0xfffffbff_u32) |
+                UInt32.new!(oc2_fe.to_int).&(0x1_u32) << 10
       end
 
-      unless oc2_m_3.nil?
-        value = (value & 0xfeffffff_u32) |
-                UInt32.new!(oc2_m_3.to_int).&(0x1_u32) << 24
+      unless cc2_s.nil?
+        value = (value & 0xfffffcff_u32) |
+                UInt32.new!(cc2_s.to_int).&(0x3_u32) << 8
+      end
+
+      unless oc1_ce.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(oc1_ce.to_int).&(0x1_u32) << 7
+      end
+
+      unless oc1_m.nil?
+        value = (value & 0xffffff8f_u32) |
+                UInt32.new!(oc1_m.to_int).&(0x7_u32) << 4
+      end
+
+      unless oc1_pe.nil?
+        value = (value & 0xfffffff7_u32) |
+                UInt32.new!(oc1_pe.to_int).&(0x1_u32) << 3
+      end
+
+      unless oc1_fe.nil?
+        value = (value & 0xfffffffb_u32) |
+                UInt32.new!(oc1_fe.to_int).&(0x1_u32) << 2
+      end
+
+      unless cc1_s.nil?
+        value = (value & 0xfffffffc_u32) |
+                UInt32.new!(cc1_s.to_int).&(0x3_u32) << 0
       end
 
       self.class.new(value)
@@ -2344,32 +1674,28 @@ module TIM2
 
     def self.set(
       *,
-      cc1_s : CC1S? = nil,
-      oc1_fe : Bool? = nil,
-      oc1_pe : OC1PE? = nil,
-      oc1_m : OC1M? = nil,
-      oc1_ce : Bool? = nil,
-      cc2_s : CC2S? = nil,
-      oc2_fe : Bool? = nil,
-      oc2_pe : OC2PE? = nil,
-      oc2_m : UInt8? = nil,
       oc2_ce : Bool? = nil,
-      oc1_m_3 : OC1M_3? = nil,
-      oc2_m_3 : Bool? = nil
+      oc2_m : UInt8? = nil,
+      oc2_pe : Bool? = nil,
+      oc2_fe : Bool? = nil,
+      cc2_s : UInt8? = nil,
+      oc1_ce : Bool? = nil,
+      oc1_m : UInt8? = nil,
+      oc1_pe : Bool? = nil,
+      oc1_fe : Bool? = nil,
+      cc1_s : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cc1_s: cc1_s,
-        oc1_fe: oc1_fe,
-        oc1_pe: oc1_pe,
-        oc1_m: oc1_m,
-        oc1_ce: oc1_ce,
-        cc2_s: cc2_s,
-        oc2_fe: oc2_fe,
-        oc2_pe: oc2_pe,
-        oc2_m: oc2_m,
         oc2_ce: oc2_ce,
-        oc1_m_3: oc1_m_3,
-        oc2_m_3: oc2_m_3,
+        oc2_m: oc2_m,
+        oc2_pe: oc2_pe,
+        oc2_fe: oc2_fe,
+        cc2_s: cc2_s,
+        oc1_ce: oc1_ce,
+        oc1_m: oc1_m,
+        oc1_pe: oc1_pe,
+        oc1_fe: oc1_fe,
+        cc1_s: cc1_s,
       )
     end
   end # struct
@@ -2426,165 +1752,81 @@ module TIM2
     end
 
     # Input capture 2 prescaler
-    def ic2_psc : UInt8
+    def ic2_pcs : UInt8
       UInt8.new!((@value >> 10) & 0x3_u32)
     end
 
     # Input capture 2 prescaler
-    def self.ic2_psc : UInt8
-      value.ic2_psc
+    def self.ic2_pcs : UInt8
+      value.ic2_pcs
     end
 
     # Input capture 2 prescaler
-    def self.ic2_psc=(value : UInt8) : UInt8
-      self.set(ic2_psc: value)
+    def self.ic2_pcs=(value : UInt8) : UInt8
+      self.set(ic2_pcs: value)
       value
     end
 
-    enum CC2S : UInt8
-      # CC2 channel is configured as input, IC2 is mapped on TI2
-      TI2 = 0x1_u64
-
-      # CC2 channel is configured as input, IC2 is mapped on TI1
-      TI1 = 0x2_u64
-
-      # CC2 channel is configured as input, IC2 is mapped on TRC
-      TRC = 0x3_u64
-
-      def self.reset_value : CC2S
-        CCMR1_Input.reset_value.cc2_s
-      end
+    # Capture/Compare 2              selection
+    def cc2_s : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
     end
 
-    # Capture/compare 2              selection
-    def cc2_s : CC2S
-      CC2S.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # Capture/compare 2              selection
-    def self.cc2_s : CC2S
+    # Capture/Compare 2              selection
+    def self.cc2_s : UInt8
       value.cc2_s
     end
 
-    # Capture/compare 2              selection
-    def self.cc2_s=(value : CC2S) : CC2S
+    # Capture/Compare 2              selection
+    def self.cc2_s=(value : UInt8) : UInt8
       self.set(cc2_s: value)
       value
     end
 
-    enum IC1F : UInt8
-      # No filter, sampling is done at fDTS
-      NOFILTER = 0x0_u64
-
-      # fSAMPLING=fCK_INT, N=2
-      FCK_INT_N2 = 0x1_u64
-
-      # fSAMPLING=fCK_INT, N=4
-      FCK_INT_N4 = 0x2_u64
-
-      # fSAMPLING=fCK_INT, N=8
-      FCK_INT_N8 = 0x3_u64
-
-      # fSAMPLING=fDTS/2, N=6
-      FDTS_DIV2_N6 = 0x4_u64
-
-      # fSAMPLING=fDTS/2, N=8
-      FDTS_DIV2_N8 = 0x5_u64
-
-      # fSAMPLING=fDTS/4, N=6
-      FDTS_DIV4_N6 = 0x6_u64
-
-      # fSAMPLING=fDTS/4, N=8
-      FDTS_DIV4_N8 = 0x7_u64
-
-      # fSAMPLING=fDTS/8, N=6
-      FDTS_DIV8_N6 = 0x8_u64
-
-      # fSAMPLING=fDTS/8, N=8
-      FDTS_DIV8_N8 = 0x9_u64
-
-      # fSAMPLING=fDTS/16, N=5
-      FDTS_DIV16_N5 = 0xa_u64
-
-      # fSAMPLING=fDTS/16, N=6
-      FDTS_DIV16_N6 = 0xb_u64
-
-      # fSAMPLING=fDTS/16, N=8
-      FDTS_DIV16_N8 = 0xc_u64
-
-      # fSAMPLING=fDTS/32, N=5
-      FDTS_DIV32_N5 = 0xd_u64
-
-      # fSAMPLING=fDTS/32, N=6
-      FDTS_DIV32_N6 = 0xe_u64
-
-      # fSAMPLING=fDTS/32, N=8
-      FDTS_DIV32_N8 = 0xf_u64
-
-      def self.reset_value : IC1F
-        CCMR1_Input.reset_value.ic1_f
-      end
+    # Input capture 1 filter
+    def ic1_f : UInt8
+      UInt8.new!((@value >> 4) & 0xf_u32)
     end
 
     # Input capture 1 filter
-    def ic1_f : IC1F
-      IC1F.new!((@value >> 4) & 0xf_u32)
-    end
-
-    # Input capture 1 filter
-    def self.ic1_f : IC1F
+    def self.ic1_f : UInt8
       value.ic1_f
     end
 
     # Input capture 1 filter
-    def self.ic1_f=(value : IC1F) : IC1F
+    def self.ic1_f=(value : UInt8) : UInt8
       self.set(ic1_f: value)
       value
     end
 
     # Input capture 1 prescaler
-    def ic1_psc : UInt8
+    def icpcs : UInt8
       UInt8.new!((@value >> 2) & 0x3_u32)
     end
 
     # Input capture 1 prescaler
-    def self.ic1_psc : UInt8
-      value.ic1_psc
+    def self.icpcs : UInt8
+      value.icpcs
     end
 
     # Input capture 1 prescaler
-    def self.ic1_psc=(value : UInt8) : UInt8
-      self.set(ic1_psc: value)
+    def self.icpcs=(value : UInt8) : UInt8
+      self.set(icpcs: value)
       value
     end
 
-    enum CC1S : UInt8
-      # CC1 channel is configured as input, IC1 is mapped on TI1
-      TI1 = 0x1_u64
-
-      # CC1 channel is configured as input, IC1 is mapped on TI2
-      TI2 = 0x2_u64
-
-      # CC1 channel is configured as input, IC1 is mapped on TRC
-      TRC = 0x3_u64
-
-      def self.reset_value : CC1S
-        CCMR1_Input.reset_value.cc1_s
-      end
+    # Capture/Compare 1              selection
+    def cc1_s : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
     end
 
     # Capture/Compare 1              selection
-    def cc1_s : CC1S
-      CC1S.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Capture/Compare 1              selection
-    def self.cc1_s : CC1S
+    def self.cc1_s : UInt8
       value.cc1_s
     end
 
     # Capture/Compare 1              selection
-    def self.cc1_s=(value : CC1S) : CC1S
+    def self.cc1_s=(value : UInt8) : UInt8
       self.set(cc1_s: value)
       value
     end
@@ -2594,15 +1836,15 @@ module TIM2
 
       ic2_f : UInt8? = nil,
 
-      ic2_psc : UInt8? = nil,
+      ic2_pcs : UInt8? = nil,
 
-      cc2_s : CC2S? = nil,
+      cc2_s : UInt8? = nil,
 
-      ic1_f : IC1F? = nil,
+      ic1_f : UInt8? = nil,
 
-      ic1_psc : UInt8? = nil,
+      icpcs : UInt8? = nil,
 
-      cc1_s : CC1S? = nil
+      cc1_s : UInt8? = nil
     ) : self
       value = @value
 
@@ -2611,9 +1853,9 @@ module TIM2
                 UInt32.new!(ic2_f.to_int).&(0xf_u32) << 12
       end
 
-      unless ic2_psc.nil?
+      unless ic2_pcs.nil?
         value = (value & 0xfffff3ff_u32) |
-                UInt32.new!(ic2_psc.to_int).&(0x3_u32) << 10
+                UInt32.new!(ic2_pcs.to_int).&(0x3_u32) << 10
       end
 
       unless cc2_s.nil?
@@ -2626,9 +1868,9 @@ module TIM2
                 UInt32.new!(ic1_f.to_int).&(0xf_u32) << 4
       end
 
-      unless ic1_psc.nil?
+      unless icpcs.nil?
         value = (value & 0xfffffff3_u32) |
-                UInt32.new!(ic1_psc.to_int).&(0x3_u32) << 2
+                UInt32.new!(icpcs.to_int).&(0x3_u32) << 2
       end
 
       unless cc1_s.nil?
@@ -2642,18 +1884,18 @@ module TIM2
     def self.set(
       *,
       ic2_f : UInt8? = nil,
-      ic2_psc : UInt8? = nil,
-      cc2_s : CC2S? = nil,
-      ic1_f : IC1F? = nil,
-      ic1_psc : UInt8? = nil,
-      cc1_s : CC1S? = nil
+      ic2_pcs : UInt8? = nil,
+      cc2_s : UInt8? = nil,
+      ic1_f : UInt8? = nil,
+      icpcs : UInt8? = nil,
+      cc1_s : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ic2_f: ic2_f,
-        ic2_psc: ic2_psc,
+        ic2_pcs: ic2_pcs,
         cc2_s: cc2_s,
         ic1_f: ic1_f,
-        ic1_psc: ic1_psc,
+        icpcs: icpcs,
         cc1_s: cc1_s,
       )
     end
@@ -2694,349 +1936,194 @@ module TIM2
       value
     end
 
-    enum CC3S : UInt8
-      # CC3 channel is configured as output
-      OUTPUT = 0x0_u64
-
-      def self.reset_value : CC3S
-        CCMR2_Output.reset_value.cc3_s
-      end
+    # O24CE
+    def o24_ce : Bool
+      @value.bits_set?(0x8000_u32)
     end
 
-    # Capture/Compare 3              selection
-    def cc3_s : CC3S
-      CC3S.new!((@value >> 0) & 0x3_u32)
+    # O24CE
+    def self.o24_ce : Bool
+      value.o24_ce
     end
 
-    # Capture/Compare 3              selection
-    def self.cc3_s : CC3S
-      value.cc3_s
-    end
-
-    # Capture/Compare 3              selection
-    def self.cc3_s=(value : CC3S) : CC3S
-      self.set(cc3_s: value)
+    # O24CE
+    def self.o24_ce=(value : Bool) : Bool
+      self.set(o24_ce: value)
       value
     end
 
-    # Output compare 3 fast              enable
-    def oc3_fe : Bool
-      @value.bits_set?(0x4_u32)
-    end
-
-    # Output compare 3 fast              enable
-    def self.oc3_fe : Bool
-      value.oc3_fe
-    end
-
-    # Output compare 3 fast              enable
-    def self.oc3_fe=(value : Bool) : Bool
-      self.set(oc3_fe: value)
-      value
-    end
-
-    enum OC3PE : UInt8
-      # Preload register on CCR3 disabled. New values written to CCR3 are taken into account immediately
-      DISABLED = 0x0_u64
-
-      # Preload register on CCR3 enabled. Preload value is loaded into active register on each update event
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OC3PE
-        CCMR2_Output.reset_value.oc3_pe
-      end
-    end
-
-    # Output compare 3 preload              enable
-    def oc3_pe : OC3PE
-      OC3PE.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # Output compare 3 preload              enable
-    def self.oc3_pe : OC3PE
-      value.oc3_pe
-    end
-
-    # Output compare 3 preload              enable
-    def self.oc3_pe=(value : OC3PE) : OC3PE
-      self.set(oc3_pe: value)
-      value
-    end
-
-    enum OC3M : UInt8
-      # The comparison between the output compare register TIMx_CCRy and the counter TIMx_CNT has no effect on the outputs / OpmMode1: Retriggerable OPM mode 1 - In up-counting mode, the channel is active until a trigger event is detected (on TRGI signal). In down-counting mode, the channel is inactive
-      FROZEN = 0x0_u64
-
-      # Set channel to active level on match. OCyREF signal is forced high when the counter matches the capture/compare register / OpmMode2: Inversely to OpmMode1
-      ACTIVEONMATCH = 0x1_u64
-
-      # Set channel to inactive level on match. OCyREF signal is forced low when the counter matches the capture/compare register / Reserved
-      INACTIVEONMATCH = 0x2_u64
-
-      # OCyREF toggles when TIMx_CNT=TIMx_CCRy / Reserved
-      TOGGLE = 0x3_u64
-
-      # OCyREF is forced low / CombinedPwmMode1: OCyREF has the same behavior as in PWM mode 1. OCyREFC is the logical OR between OC1REF and OC2REF
-      FORCEINACTIVE = 0x4_u64
-
-      # OCyREF is forced high / CombinedPwmMode2: OCyREF has the same behavior as in PWM mode 2. OCyREFC is the logical AND between OC1REF and OC2REF
-      FORCEACTIVE = 0x5_u64
-
-      # In upcounting, channel is active as long as TIMx_CNT<TIMx_CCRy else inactive. In downcounting, channel is inactive as long as TIMx_CNT>TIMx_CCRy else active / AsymmetricPwmMode1: OCyREF has the same behavior as in PWM mode 1. OCyREFC outputs OC1REF when the counter is counting up, OC2REF when it is counting down
-      PWMMODE1 = 0x6_u64
-
-      # Inversely to PwmMode1 / AsymmetricPwmMode2: Inversely to AsymmetricPwmMode1
-      PWMMODE2 = 0x7_u64
-
-      def self.reset_value : OC3M
-        CCMR2_Output.reset_value.oc3_m
-      end
-    end
-
-    # Output compare 3 mode
-    def oc3_m : OC3M
-      OC3M.new!((@value >> 4) & 0x7_u32)
-    end
-
-    # Output compare 3 mode
-    def self.oc3_m : OC3M
-      value.oc3_m
-    end
-
-    # Output compare 3 mode
-    def self.oc3_m=(value : OC3M) : OC3M
-      self.set(oc3_m: value)
-      value
-    end
-
-    # Output compare 3 clear              enable
-    def oc3_ce : Bool
-      @value.bits_set?(0x80_u32)
-    end
-
-    # Output compare 3 clear              enable
-    def self.oc3_ce : Bool
-      value.oc3_ce
-    end
-
-    # Output compare 3 clear              enable
-    def self.oc3_ce=(value : Bool) : Bool
-      self.set(oc3_ce: value)
-      value
-    end
-
-    enum CC4S : UInt8
-      # CC4 channel is configured as output
-      OUTPUT = 0x0_u64
-
-      def self.reset_value : CC4S
-        CCMR2_Output.reset_value.cc4_s
-      end
-    end
-
-    # Capture/Compare 4              selection
-    def cc4_s : CC4S
-      CC4S.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # Capture/Compare 4              selection
-    def self.cc4_s : CC4S
-      value.cc4_s
-    end
-
-    # Capture/Compare 4              selection
-    def self.cc4_s=(value : CC4S) : CC4S
-      self.set(cc4_s: value)
-      value
-    end
-
-    # Output compare 4 fast              enable
-    def oc4_fe : Bool
-      @value.bits_set?(0x400_u32)
-    end
-
-    # Output compare 4 fast              enable
-    def self.oc4_fe : Bool
-      value.oc4_fe
-    end
-
-    # Output compare 4 fast              enable
-    def self.oc4_fe=(value : Bool) : Bool
-      self.set(oc4_fe: value)
-      value
-    end
-
-    enum OC4PE : UInt8
-      # Preload register on CCR4 disabled. New values written to CCR4 are taken into account immediately
-      DISABLED = 0x0_u64
-
-      # Preload register on CCR4 enabled. Preload value is loaded into active register on each update event
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OC4PE
-        CCMR2_Output.reset_value.oc4_pe
-      end
-    end
-
-    # Output compare 4 preload              enable
-    def oc4_pe : OC4PE
-      OC4PE.new!((@value >> 11) & 0x1_u32)
-    end
-
-    # Output compare 4 preload              enable
-    def self.oc4_pe : OC4PE
-      value.oc4_pe
-    end
-
-    # Output compare 4 preload              enable
-    def self.oc4_pe=(value : OC4PE) : OC4PE
-      self.set(oc4_pe: value)
-      value
-    end
-
-    # Output compare 4 mode
+    # OC4M
     def oc4_m : UInt8
       UInt8.new!((@value >> 12) & 0x7_u32)
     end
 
-    # Output compare 4 mode
+    # OC4M
     def self.oc4_m : UInt8
       value.oc4_m
     end
 
-    # Output compare 4 mode
+    # OC4M
     def self.oc4_m=(value : UInt8) : UInt8
       self.set(oc4_m: value)
       value
     end
 
-    # Output compare 4 clear              enable
-    def oc4_ce : Bool
-      @value.bits_set?(0x8000_u32)
+    # OC4PE
+    def oc4_pe : Bool
+      @value.bits_set?(0x800_u32)
     end
 
-    # Output compare 4 clear              enable
-    def self.oc4_ce : Bool
-      value.oc4_ce
+    # OC4PE
+    def self.oc4_pe : Bool
+      value.oc4_pe
     end
 
-    # Output compare 4 clear              enable
-    def self.oc4_ce=(value : Bool) : Bool
-      self.set(oc4_ce: value)
+    # OC4PE
+    def self.oc4_pe=(value : Bool) : Bool
+      self.set(oc4_pe: value)
       value
     end
 
-    enum OC3M_3 : UInt8
-      # Normal output compare mode (modes 0-7)
-      NORMAL = 0x0_u64
-
-      # Extended output compare mode (modes 7-15)
-      EXTENDED = 0x1_u64
-
-      def self.reset_value : OC3M_3
-        CCMR2_Output.reset_value.oc3_m_3
-      end
+    # OC4FE
+    def oc4_fe : Bool
+      @value.bits_set?(0x400_u32)
     end
 
-    # Output compare 3 mode bit3
-    def oc3_m_3 : OC3M_3
-      OC3M_3.new!((@value >> 16) & 0x1_u32)
+    # OC4FE
+    def self.oc4_fe : Bool
+      value.oc4_fe
     end
 
-    # Output compare 3 mode bit3
-    def self.oc3_m_3 : OC3M_3
-      value.oc3_m_3
-    end
-
-    # Output compare 3 mode bit3
-    def self.oc3_m_3=(value : OC3M_3) : OC3M_3
-      self.set(oc3_m_3: value)
+    # OC4FE
+    def self.oc4_fe=(value : Bool) : Bool
+      self.set(oc4_fe: value)
       value
     end
 
-    # Output compare 4 mode bit3
-    def oc4_m_3 : Bool
-      @value.bits_set?(0x1000000_u32)
+    # CC4S
+    def cc4_s : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
     end
 
-    # Output compare 4 mode bit3
-    def self.oc4_m_3 : Bool
-      value.oc4_m_3
+    # CC4S
+    def self.cc4_s : UInt8
+      value.cc4_s
     end
 
-    # Output compare 4 mode bit3
-    def self.oc4_m_3=(value : Bool) : Bool
-      self.set(oc4_m_3: value)
+    # CC4S
+    def self.cc4_s=(value : UInt8) : UInt8
+      self.set(cc4_s: value)
+      value
+    end
+
+    # OC3CE
+    def oc3_ce : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # OC3CE
+    def self.oc3_ce : Bool
+      value.oc3_ce
+    end
+
+    # OC3CE
+    def self.oc3_ce=(value : Bool) : Bool
+      self.set(oc3_ce: value)
+      value
+    end
+
+    # OC3M
+    def oc3_m : UInt8
+      UInt8.new!((@value >> 4) & 0x7_u32)
+    end
+
+    # OC3M
+    def self.oc3_m : UInt8
+      value.oc3_m
+    end
+
+    # OC3M
+    def self.oc3_m=(value : UInt8) : UInt8
+      self.set(oc3_m: value)
+      value
+    end
+
+    # OC3PE
+    def oc3_pe : Bool
+      @value.bits_set?(0x8_u32)
+    end
+
+    # OC3PE
+    def self.oc3_pe : Bool
+      value.oc3_pe
+    end
+
+    # OC3PE
+    def self.oc3_pe=(value : Bool) : Bool
+      self.set(oc3_pe: value)
+      value
+    end
+
+    # OC3FE
+    def oc3_fe : Bool
+      @value.bits_set?(0x4_u32)
+    end
+
+    # OC3FE
+    def self.oc3_fe : Bool
+      value.oc3_fe
+    end
+
+    # OC3FE
+    def self.oc3_fe=(value : Bool) : Bool
+      self.set(oc3_fe: value)
+      value
+    end
+
+    # CC3S
+    def cc3_s : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
+    end
+
+    # CC3S
+    def self.cc3_s : UInt8
+      value.cc3_s
+    end
+
+    # CC3S
+    def self.cc3_s=(value : UInt8) : UInt8
+      self.set(cc3_s: value)
       value
     end
 
     def copy_with(
       *,
 
-      cc3_s : CC3S? = nil,
-
-      oc3_fe : Bool? = nil,
-
-      oc3_pe : OC3PE? = nil,
-
-      oc3_m : OC3M? = nil,
-
-      oc3_ce : Bool? = nil,
-
-      cc4_s : CC4S? = nil,
-
-      oc4_fe : Bool? = nil,
-
-      oc4_pe : OC4PE? = nil,
+      o24_ce : Bool? = nil,
 
       oc4_m : UInt8? = nil,
 
-      oc4_ce : Bool? = nil,
+      oc4_pe : Bool? = nil,
 
-      oc3_m_3 : OC3M_3? = nil,
+      oc4_fe : Bool? = nil,
 
-      oc4_m_3 : Bool? = nil
+      cc4_s : UInt8? = nil,
+
+      oc3_ce : Bool? = nil,
+
+      oc3_m : UInt8? = nil,
+
+      oc3_pe : Bool? = nil,
+
+      oc3_fe : Bool? = nil,
+
+      cc3_s : UInt8? = nil
     ) : self
       value = @value
 
-      unless cc3_s.nil?
-        value = (value & 0xfffffffc_u32) |
-                UInt32.new!(cc3_s.to_int).&(0x3_u32) << 0
-      end
-
-      unless oc3_fe.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(oc3_fe.to_int).&(0x1_u32) << 2
-      end
-
-      unless oc3_pe.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(oc3_pe.to_int).&(0x1_u32) << 3
-      end
-
-      unless oc3_m.nil?
-        value = (value & 0xffffff8f_u32) |
-                UInt32.new!(oc3_m.to_int).&(0x7_u32) << 4
-      end
-
-      unless oc3_ce.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(oc3_ce.to_int).&(0x1_u32) << 7
-      end
-
-      unless cc4_s.nil?
-        value = (value & 0xfffffcff_u32) |
-                UInt32.new!(cc4_s.to_int).&(0x3_u32) << 8
-      end
-
-      unless oc4_fe.nil?
-        value = (value & 0xfffffbff_u32) |
-                UInt32.new!(oc4_fe.to_int).&(0x1_u32) << 10
-      end
-
-      unless oc4_pe.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(oc4_pe.to_int).&(0x1_u32) << 11
+      unless o24_ce.nil?
+        value = (value & 0xffff7fff_u32) |
+                UInt32.new!(o24_ce.to_int).&(0x1_u32) << 15
       end
 
       unless oc4_m.nil?
@@ -3044,19 +2131,44 @@ module TIM2
                 UInt32.new!(oc4_m.to_int).&(0x7_u32) << 12
       end
 
-      unless oc4_ce.nil?
-        value = (value & 0xffff7fff_u32) |
-                UInt32.new!(oc4_ce.to_int).&(0x1_u32) << 15
+      unless oc4_pe.nil?
+        value = (value & 0xfffff7ff_u32) |
+                UInt32.new!(oc4_pe.to_int).&(0x1_u32) << 11
       end
 
-      unless oc3_m_3.nil?
-        value = (value & 0xfffeffff_u32) |
-                UInt32.new!(oc3_m_3.to_int).&(0x1_u32) << 16
+      unless oc4_fe.nil?
+        value = (value & 0xfffffbff_u32) |
+                UInt32.new!(oc4_fe.to_int).&(0x1_u32) << 10
       end
 
-      unless oc4_m_3.nil?
-        value = (value & 0xfeffffff_u32) |
-                UInt32.new!(oc4_m_3.to_int).&(0x1_u32) << 24
+      unless cc4_s.nil?
+        value = (value & 0xfffffcff_u32) |
+                UInt32.new!(cc4_s.to_int).&(0x3_u32) << 8
+      end
+
+      unless oc3_ce.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(oc3_ce.to_int).&(0x1_u32) << 7
+      end
+
+      unless oc3_m.nil?
+        value = (value & 0xffffff8f_u32) |
+                UInt32.new!(oc3_m.to_int).&(0x7_u32) << 4
+      end
+
+      unless oc3_pe.nil?
+        value = (value & 0xfffffff7_u32) |
+                UInt32.new!(oc3_pe.to_int).&(0x1_u32) << 3
+      end
+
+      unless oc3_fe.nil?
+        value = (value & 0xfffffffb_u32) |
+                UInt32.new!(oc3_fe.to_int).&(0x1_u32) << 2
+      end
+
+      unless cc3_s.nil?
+        value = (value & 0xfffffffc_u32) |
+                UInt32.new!(cc3_s.to_int).&(0x3_u32) << 0
       end
 
       self.class.new(value)
@@ -3064,32 +2176,28 @@ module TIM2
 
     def self.set(
       *,
-      cc3_s : CC3S? = nil,
-      oc3_fe : Bool? = nil,
-      oc3_pe : OC3PE? = nil,
-      oc3_m : OC3M? = nil,
-      oc3_ce : Bool? = nil,
-      cc4_s : CC4S? = nil,
-      oc4_fe : Bool? = nil,
-      oc4_pe : OC4PE? = nil,
+      o24_ce : Bool? = nil,
       oc4_m : UInt8? = nil,
-      oc4_ce : Bool? = nil,
-      oc3_m_3 : OC3M_3? = nil,
-      oc4_m_3 : Bool? = nil
+      oc4_pe : Bool? = nil,
+      oc4_fe : Bool? = nil,
+      cc4_s : UInt8? = nil,
+      oc3_ce : Bool? = nil,
+      oc3_m : UInt8? = nil,
+      oc3_pe : Bool? = nil,
+      oc3_fe : Bool? = nil,
+      cc3_s : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cc3_s: cc3_s,
-        oc3_fe: oc3_fe,
-        oc3_pe: oc3_pe,
-        oc3_m: oc3_m,
-        oc3_ce: oc3_ce,
-        cc4_s: cc4_s,
-        oc4_fe: oc4_fe,
-        oc4_pe: oc4_pe,
+        o24_ce: o24_ce,
         oc4_m: oc4_m,
-        oc4_ce: oc4_ce,
-        oc3_m_3: oc3_m_3,
-        oc4_m_3: oc4_m_3,
+        oc4_pe: oc4_pe,
+        oc4_fe: oc4_fe,
+        cc4_s: cc4_s,
+        oc3_ce: oc3_ce,
+        oc3_m: oc3_m,
+        oc3_pe: oc3_pe,
+        oc3_fe: oc3_fe,
+        cc3_s: cc3_s,
       )
     end
   end # struct
@@ -3161,33 +2269,18 @@ module TIM2
       value
     end
 
-    enum CC4S : UInt8
-      # CC4 channel is configured as input, IC4 is mapped on TI4
-      TI4 = 0x1_u64
-
-      # CC4 channel is configured as input, IC4 is mapped on TI3
-      TI3 = 0x2_u64
-
-      # CC4 channel is configured as input, IC4 is mapped on TRC
-      TRC = 0x3_u64
-
-      def self.reset_value : CC4S
-        CCMR2_Input.reset_value.cc4_s
-      end
+    # Capture/Compare 4              selection
+    def cc4_s : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
     end
 
     # Capture/Compare 4              selection
-    def cc4_s : CC4S
-      CC4S.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # Capture/Compare 4              selection
-    def self.cc4_s : CC4S
+    def self.cc4_s : UInt8
       value.cc4_s
     end
 
     # Capture/Compare 4              selection
-    def self.cc4_s=(value : CC4S) : CC4S
+    def self.cc4_s=(value : UInt8) : UInt8
       self.set(cc4_s: value)
       value
     end
@@ -3224,33 +2317,18 @@ module TIM2
       value
     end
 
-    enum CC3S : UInt8
-      # CC3 channel is configured as input, IC3 is mapped on TI3
-      TI3 = 0x1_u64
-
-      # CC3 channel is configured as input, IC3 is mapped on TI4
-      TI4 = 0x2_u64
-
-      # CC3 channel is configured as input, IC3 is mapped on TRC
-      TRC = 0x3_u64
-
-      def self.reset_value : CC3S
-        CCMR2_Input.reset_value.cc3_s
-      end
+    # Capture/compare 3              selection
+    def cc3_s : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
     end
 
-    # Capture/Compare 3              selection
-    def cc3_s : CC3S
-      CC3S.new!((@value >> 0) & 0x3_u32)
-    end
-
-    # Capture/Compare 3              selection
-    def self.cc3_s : CC3S
+    # Capture/compare 3              selection
+    def self.cc3_s : UInt8
       value.cc3_s
     end
 
-    # Capture/Compare 3              selection
-    def self.cc3_s=(value : CC3S) : CC3S
+    # Capture/compare 3              selection
+    def self.cc3_s=(value : UInt8) : UInt8
       self.set(cc3_s: value)
       value
     end
@@ -3262,13 +2340,13 @@ module TIM2
 
       ic4_psc : UInt8? = nil,
 
-      cc4_s : CC4S? = nil,
+      cc4_s : UInt8? = nil,
 
       ic3_f : UInt8? = nil,
 
       ic3_psc : UInt8? = nil,
 
-      cc3_s : CC3S? = nil
+      cc3_s : UInt8? = nil
     ) : self
       value = @value
 
@@ -3309,10 +2387,10 @@ module TIM2
       *,
       ic4_f : UInt8? = nil,
       ic4_psc : UInt8? = nil,
-      cc4_s : CC4S? = nil,
+      cc4_s : UInt8? = nil,
       ic3_f : UInt8? = nil,
       ic3_psc : UInt8? = nil,
-      cc3_s : CC3S? = nil
+      cc3_s : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ic4_f: ic4_f,
@@ -3360,147 +2438,35 @@ module TIM2
       value
     end
 
-    # Capture/Compare 1 output              enable
-    def cc1_e : Bool
-      @value.bits_set?(0x1_u32)
+    # Capture/Compare 4 output              Polarity
+    def cc4_np : Bool
+      @value.bits_set?(0x8000_u32)
     end
 
-    # Capture/Compare 1 output              enable
-    def self.cc1_e : Bool
-      value.cc1_e
+    # Capture/Compare 4 output              Polarity
+    def self.cc4_np : Bool
+      value.cc4_np
     end
 
-    # Capture/Compare 1 output              enable
-    def self.cc1_e=(value : Bool) : Bool
-      self.set(cc1_e: value)
-      value
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def cc1_p : Bool
-      @value.bits_set?(0x2_u32)
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def self.cc1_p : Bool
-      value.cc1_p
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def self.cc1_p=(value : Bool) : Bool
-      self.set(cc1_p: value)
-      value
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def cc1_np : Bool
-      @value.bits_set?(0x8_u32)
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def self.cc1_np : Bool
-      value.cc1_np
-    end
-
-    # Capture/Compare 1 output              Polarity
-    def self.cc1_np=(value : Bool) : Bool
-      self.set(cc1_np: value)
-      value
-    end
-
-    # Capture/Compare 2 output              enable
-    def cc2_e : Bool
-      @value.bits_set?(0x10_u32)
-    end
-
-    # Capture/Compare 2 output              enable
-    def self.cc2_e : Bool
-      value.cc2_e
-    end
-
-    # Capture/Compare 2 output              enable
-    def self.cc2_e=(value : Bool) : Bool
-      self.set(cc2_e: value)
-      value
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def cc2_p : Bool
-      @value.bits_set?(0x20_u32)
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def self.cc2_p : Bool
-      value.cc2_p
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def self.cc2_p=(value : Bool) : Bool
-      self.set(cc2_p: value)
-      value
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def cc2_np : Bool
-      @value.bits_set?(0x80_u32)
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def self.cc2_np : Bool
-      value.cc2_np
-    end
-
-    # Capture/Compare 2 output              Polarity
-    def self.cc2_np=(value : Bool) : Bool
-      self.set(cc2_np: value)
-      value
-    end
-
-    # Capture/Compare 3 output              enable
-    def cc3_e : Bool
-      @value.bits_set?(0x100_u32)
-    end
-
-    # Capture/Compare 3 output              enable
-    def self.cc3_e : Bool
-      value.cc3_e
-    end
-
-    # Capture/Compare 3 output              enable
-    def self.cc3_e=(value : Bool) : Bool
-      self.set(cc3_e: value)
+    # Capture/Compare 4 output              Polarity
+    def self.cc4_np=(value : Bool) : Bool
+      self.set(cc4_np: value)
       value
     end
 
     # Capture/Compare 3 output              Polarity
-    def cc3_p : Bool
-      @value.bits_set?(0x200_u32)
+    def cc4_p : Bool
+      @value.bits_set?(0x2000_u32)
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc3_p : Bool
-      value.cc3_p
+    def self.cc4_p : Bool
+      value.cc4_p
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc3_p=(value : Bool) : Bool
-      self.set(cc3_p: value)
-      value
-    end
-
-    # Capture/Compare 3 output              Polarity
-    def cc3_np : Bool
-      @value.bits_set?(0x800_u32)
-    end
-
-    # Capture/Compare 3 output              Polarity
-    def self.cc3_np : Bool
-      value.cc3_np
-    end
-
-    # Capture/Compare 3 output              Polarity
-    def self.cc3_np=(value : Bool) : Bool
-      self.set(cc3_np: value)
+    def self.cc4_p=(value : Bool) : Bool
+      self.set(cc4_p: value)
       value
     end
 
@@ -3521,114 +2487,181 @@ module TIM2
     end
 
     # Capture/Compare 3 output              Polarity
-    def cc4_p : Bool
-      @value.bits_set?(0x2000_u32)
+    def cc3_np : Bool
+      @value.bits_set?(0x800_u32)
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc4_p : Bool
-      value.cc4_p
+    def self.cc3_np : Bool
+      value.cc3_np
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc4_p=(value : Bool) : Bool
-      self.set(cc4_p: value)
+    def self.cc3_np=(value : Bool) : Bool
+      self.set(cc3_np: value)
       value
     end
 
     # Capture/Compare 3 output              Polarity
-    def cc4_np : Bool
-      @value.bits_set?(0x8000_u32)
+    def cc3_p : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc4_np : Bool
-      value.cc4_np
+    def self.cc3_p : Bool
+      value.cc3_p
     end
 
     # Capture/Compare 3 output              Polarity
-    def self.cc4_np=(value : Bool) : Bool
-      self.set(cc4_np: value)
+    def self.cc3_p=(value : Bool) : Bool
+      self.set(cc3_p: value)
+      value
+    end
+
+    # Capture/Compare 3 output              enable
+    def cc3_e : Bool
+      @value.bits_set?(0x100_u32)
+    end
+
+    # Capture/Compare 3 output              enable
+    def self.cc3_e : Bool
+      value.cc3_e
+    end
+
+    # Capture/Compare 3 output              enable
+    def self.cc3_e=(value : Bool) : Bool
+      self.set(cc3_e: value)
+      value
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def cc2_np : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def self.cc2_np : Bool
+      value.cc2_np
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def self.cc2_np=(value : Bool) : Bool
+      self.set(cc2_np: value)
+      value
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def cc2_p : Bool
+      @value.bits_set?(0x20_u32)
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def self.cc2_p : Bool
+      value.cc2_p
+    end
+
+    # Capture/Compare 2 output              Polarity
+    def self.cc2_p=(value : Bool) : Bool
+      self.set(cc2_p: value)
+      value
+    end
+
+    # Capture/Compare 2 output              enable
+    def cc2_e : Bool
+      @value.bits_set?(0x10_u32)
+    end
+
+    # Capture/Compare 2 output              enable
+    def self.cc2_e : Bool
+      value.cc2_e
+    end
+
+    # Capture/Compare 2 output              enable
+    def self.cc2_e=(value : Bool) : Bool
+      self.set(cc2_e: value)
+      value
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def cc1_np : Bool
+      @value.bits_set?(0x8_u32)
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def self.cc1_np : Bool
+      value.cc1_np
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def self.cc1_np=(value : Bool) : Bool
+      self.set(cc1_np: value)
+      value
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def cc1_p : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def self.cc1_p : Bool
+      value.cc1_p
+    end
+
+    # Capture/Compare 1 output              Polarity
+    def self.cc1_p=(value : Bool) : Bool
+      self.set(cc1_p: value)
+      value
+    end
+
+    # Capture/Compare 1 output              enable
+    def cc1_e : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Capture/Compare 1 output              enable
+    def self.cc1_e : Bool
+      value.cc1_e
+    end
+
+    # Capture/Compare 1 output              enable
+    def self.cc1_e=(value : Bool) : Bool
+      self.set(cc1_e: value)
       value
     end
 
     def copy_with(
       *,
 
-      cc1_e : Bool? = nil,
-
-      cc1_p : Bool? = nil,
-
-      cc1_np : Bool? = nil,
-
-      cc2_e : Bool? = nil,
-
-      cc2_p : Bool? = nil,
-
-      cc2_np : Bool? = nil,
-
-      cc3_e : Bool? = nil,
-
-      cc3_p : Bool? = nil,
-
-      cc3_np : Bool? = nil,
-
-      cc4_e : Bool? = nil,
+      cc4_np : Bool? = nil,
 
       cc4_p : Bool? = nil,
 
-      cc4_np : Bool? = nil
+      cc4_e : Bool? = nil,
+
+      cc3_np : Bool? = nil,
+
+      cc3_p : Bool? = nil,
+
+      cc3_e : Bool? = nil,
+
+      cc2_np : Bool? = nil,
+
+      cc2_p : Bool? = nil,
+
+      cc2_e : Bool? = nil,
+
+      cc1_np : Bool? = nil,
+
+      cc1_p : Bool? = nil,
+
+      cc1_e : Bool? = nil
     ) : self
       value = @value
 
-      unless cc1_e.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(cc1_e.to_int).&(0x1_u32) << 0
-      end
-
-      unless cc1_p.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(cc1_p.to_int).&(0x1_u32) << 1
-      end
-
-      unless cc1_np.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(cc1_np.to_int).&(0x1_u32) << 3
-      end
-
-      unless cc2_e.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(cc2_e.to_int).&(0x1_u32) << 4
-      end
-
-      unless cc2_p.nil?
-        value = (value & 0xffffffdf_u32) |
-                UInt32.new!(cc2_p.to_int).&(0x1_u32) << 5
-      end
-
-      unless cc2_np.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(cc2_np.to_int).&(0x1_u32) << 7
-      end
-
-      unless cc3_e.nil?
-        value = (value & 0xfffffeff_u32) |
-                UInt32.new!(cc3_e.to_int).&(0x1_u32) << 8
-      end
-
-      unless cc3_p.nil?
-        value = (value & 0xfffffdff_u32) |
-                UInt32.new!(cc3_p.to_int).&(0x1_u32) << 9
-      end
-
-      unless cc3_np.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(cc3_np.to_int).&(0x1_u32) << 11
-      end
-
-      unless cc4_e.nil?
-        value = (value & 0xffffefff_u32) |
-                UInt32.new!(cc4_e.to_int).&(0x1_u32) << 12
+      unless cc4_np.nil?
+        value = (value & 0xffff7fff_u32) |
+                UInt32.new!(cc4_np.to_int).&(0x1_u32) << 15
       end
 
       unless cc4_p.nil?
@@ -3636,9 +2669,54 @@ module TIM2
                 UInt32.new!(cc4_p.to_int).&(0x1_u32) << 13
       end
 
-      unless cc4_np.nil?
-        value = (value & 0xffff7fff_u32) |
-                UInt32.new!(cc4_np.to_int).&(0x1_u32) << 15
+      unless cc4_e.nil?
+        value = (value & 0xffffefff_u32) |
+                UInt32.new!(cc4_e.to_int).&(0x1_u32) << 12
+      end
+
+      unless cc3_np.nil?
+        value = (value & 0xfffff7ff_u32) |
+                UInt32.new!(cc3_np.to_int).&(0x1_u32) << 11
+      end
+
+      unless cc3_p.nil?
+        value = (value & 0xfffffdff_u32) |
+                UInt32.new!(cc3_p.to_int).&(0x1_u32) << 9
+      end
+
+      unless cc3_e.nil?
+        value = (value & 0xfffffeff_u32) |
+                UInt32.new!(cc3_e.to_int).&(0x1_u32) << 8
+      end
+
+      unless cc2_np.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(cc2_np.to_int).&(0x1_u32) << 7
+      end
+
+      unless cc2_p.nil?
+        value = (value & 0xffffffdf_u32) |
+                UInt32.new!(cc2_p.to_int).&(0x1_u32) << 5
+      end
+
+      unless cc2_e.nil?
+        value = (value & 0xffffffef_u32) |
+                UInt32.new!(cc2_e.to_int).&(0x1_u32) << 4
+      end
+
+      unless cc1_np.nil?
+        value = (value & 0xfffffff7_u32) |
+                UInt32.new!(cc1_np.to_int).&(0x1_u32) << 3
+      end
+
+      unless cc1_p.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(cc1_p.to_int).&(0x1_u32) << 1
+      end
+
+      unless cc1_e.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(cc1_e.to_int).&(0x1_u32) << 0
       end
 
       self.class.new(value)
@@ -3646,32 +2724,32 @@ module TIM2
 
     def self.set(
       *,
-      cc1_e : Bool? = nil,
-      cc1_p : Bool? = nil,
-      cc1_np : Bool? = nil,
-      cc2_e : Bool? = nil,
-      cc2_p : Bool? = nil,
-      cc2_np : Bool? = nil,
-      cc3_e : Bool? = nil,
-      cc3_p : Bool? = nil,
-      cc3_np : Bool? = nil,
-      cc4_e : Bool? = nil,
+      cc4_np : Bool? = nil,
       cc4_p : Bool? = nil,
-      cc4_np : Bool? = nil
+      cc4_e : Bool? = nil,
+      cc3_np : Bool? = nil,
+      cc3_p : Bool? = nil,
+      cc3_e : Bool? = nil,
+      cc2_np : Bool? = nil,
+      cc2_p : Bool? = nil,
+      cc2_e : Bool? = nil,
+      cc1_np : Bool? = nil,
+      cc1_p : Bool? = nil,
+      cc1_e : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cc1_e: cc1_e,
-        cc1_p: cc1_p,
-        cc1_np: cc1_np,
-        cc2_e: cc2_e,
-        cc2_p: cc2_p,
-        cc2_np: cc2_np,
-        cc3_e: cc3_e,
-        cc3_p: cc3_p,
-        cc3_np: cc3_np,
-        cc4_e: cc4_e,
-        cc4_p: cc4_p,
         cc4_np: cc4_np,
+        cc4_p: cc4_p,
+        cc4_e: cc4_e,
+        cc3_np: cc3_np,
+        cc3_p: cc3_p,
+        cc3_e: cc3_e,
+        cc2_np: cc2_np,
+        cc2_p: cc2_p,
+        cc2_e: cc2_e,
+        cc1_np: cc1_np,
+        cc1_p: cc1_p,
+        cc1_e: cc1_e,
       )
     end
   end # struct
@@ -3711,32 +2789,55 @@ module TIM2
       value
     end
 
-    # Low counter value
-    def cnt : UInt32
-      UInt32.new!((@value >> 0) & 0x0_u32)
+    # High counter value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
+    end
+
+    # High counter value
+    def self.h : UInt16
+      value.h
+    end
+
+    # High counter value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
     end
 
     # Low counter value
-    def self.cnt : UInt32
-      value.cnt
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
     end
 
     # Low counter value
-    def self.cnt=(value : UInt32) : UInt32
-      self.set(cnt: value)
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low counter value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
       value
     end
 
     def copy_with(
       *,
 
-      cnt : UInt32? = nil
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
     ) : self
       value = @value
 
-      unless cnt.nil?
-        value = (value & 0xffffffff_u32) |
-                UInt32.new!(cnt.to_int).&(0x0_u32) << 0
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
       end
 
       self.class.new(value)
@@ -3744,10 +2845,12 @@ module TIM2
 
     def self.set(
       *,
-      cnt : UInt32? = nil
+      h : UInt16? = nil,
+      l : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cnt: cnt,
+        h: h,
+        l: l,
       )
     end
   end # struct
@@ -3863,32 +2966,55 @@ module TIM2
       value
     end
 
-    # Low Auto-reload value
-    def arr : UInt32
-      UInt32.new!((@value >> 0) & 0x0_u32)
+    # High Auto-reload value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
+    end
+
+    # High Auto-reload value
+    def self.h : UInt16
+      value.h
+    end
+
+    # High Auto-reload value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
     end
 
     # Low Auto-reload value
-    def self.arr : UInt32
-      value.arr
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
     end
 
     # Low Auto-reload value
-    def self.arr=(value : UInt32) : UInt32
-      self.set(arr: value)
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low Auto-reload value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
       value
     end
 
     def copy_with(
       *,
 
-      arr : UInt32? = nil
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
     ) : self
       value = @value
 
-      unless arr.nil?
-        value = (value & 0xffffffff_u32) |
-                UInt32.new!(arr.to_int).&(0x0_u32) << 0
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
       end
 
       self.class.new(value)
@@ -3896,16 +3022,24 @@ module TIM2
 
     def self.set(
       *,
-      arr : UInt32? = nil
+      h : UInt16? = nil,
+      l : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        arr: arr,
+        h: h,
+        l: l,
       )
     end
   end # struct
 
-  # capture/compare register
-  abstract struct CCR
+  # capture/compare register 1
+  struct CCR1
+    ADDRESS = BASE_ADDRESS + 0x34_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
     @value : UInt32
 
     def initialize(@value : UInt32)
@@ -3933,32 +3067,55 @@ module TIM2
       value
     end
 
-    # Capture/Compare value
-    def ccr : UInt32
-      UInt32.new!((@value >> 0) & 0x0_u32)
+    # High Capture/Compare 1              value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
     end
 
-    # Capture/Compare value
-    def self.ccr : UInt32
-      value.ccr
+    # High Capture/Compare 1              value
+    def self.h : UInt16
+      value.h
     end
 
-    # Capture/Compare value
-    def self.ccr=(value : UInt32) : UInt32
-      self.set(ccr: value)
+    # High Capture/Compare 1              value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
+    end
+
+    # Low Capture/Compare 1              value
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
+    end
+
+    # Low Capture/Compare 1              value
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low Capture/Compare 1              value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
       value
     end
 
     def copy_with(
       *,
 
-      ccr : UInt32? = nil
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
     ) : self
       value = @value
 
-      unless ccr.nil?
-        value = (value & 0xffffffff_u32) |
-                UInt32.new!(ccr.to_int).&(0x0_u32) << 0
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
       end
 
       self.class.new(value)
@@ -3966,49 +3123,318 @@ module TIM2
 
     def self.set(
       *,
-      ccr : UInt32? = nil
+      h : UInt16? = nil,
+      l : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        ccr: ccr,
+        h: h,
+        l: l,
       )
     end
   end # struct
 
-  # dim.instance_name(register.name, dim_index)
-  struct CCR0 < CCR
-    ADDRESS = BASE_ADDRESS + 0x34_u64
-
-    protected def self.address : UInt64
-      ADDRESS
-    end
-  end
-
-  # dim.instance_name(register.name, dim_index)
-  struct CCR1 < CCR
+  # capture/compare register 2
+  struct CCR2
     ADDRESS = BASE_ADDRESS + 0x38_u64
 
     protected def self.address : UInt64
       ADDRESS
     end
-  end
 
-  # dim.instance_name(register.name, dim_index)
-  struct CCR2 < CCR
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # High Capture/Compare 2              value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
+    end
+
+    # High Capture/Compare 2              value
+    def self.h : UInt16
+      value.h
+    end
+
+    # High Capture/Compare 2              value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
+    end
+
+    # Low Capture/Compare 2              value
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
+    end
+
+    # Low Capture/Compare 2              value
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low Capture/Compare 2              value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
+    ) : self
+      value = @value
+
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      h : UInt16? = nil,
+      l : UInt16? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        h: h,
+        l: l,
+      )
+    end
+  end # struct
+
+  # capture/compare register 3
+  struct CCR3
     ADDRESS = BASE_ADDRESS + 0x3c_u64
 
     protected def self.address : UInt64
       ADDRESS
     end
-  end
 
-  # dim.instance_name(register.name, dim_index)
-  struct CCR3 < CCR
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # High Capture/Compare value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
+    end
+
+    # High Capture/Compare value
+    def self.h : UInt16
+      value.h
+    end
+
+    # High Capture/Compare value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
+    end
+
+    # Low Capture/Compare value
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
+    end
+
+    # Low Capture/Compare value
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low Capture/Compare value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
+    ) : self
+      value = @value
+
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      h : UInt16? = nil,
+      l : UInt16? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        h: h,
+        l: l,
+      )
+    end
+  end # struct
+
+  # capture/compare register 4
+  struct CCR4
     ADDRESS = BASE_ADDRESS + 0x40_u64
 
     protected def self.address : UInt64
       ADDRESS
     end
-  end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # High Capture/Compare value
+    def h : UInt16
+      UInt16.new!((@value >> 16) & 0xffff_u32)
+    end
+
+    # High Capture/Compare value
+    def self.h : UInt16
+      value.h
+    end
+
+    # High Capture/Compare value
+    def self.h=(value : UInt16) : UInt16
+      self.set(h: value)
+      value
+    end
+
+    # Low Capture/Compare value
+    def l : UInt16
+      UInt16.new!((@value >> 0) & 0xffff_u32)
+    end
+
+    # Low Capture/Compare value
+    def self.l : UInt16
+      value.l
+    end
+
+    # Low Capture/Compare value
+    def self.l=(value : UInt16) : UInt16
+      self.set(l: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      h : UInt16? = nil,
+
+      l : UInt16? = nil
+    ) : self
+      value = @value
+
+      unless h.nil?
+        value = (value & 0xffff_u32) |
+                UInt32.new!(h.to_int).&(0xffff_u32) << 16
+      end
+
+      unless l.nil?
+        value = (value & 0xffff0000_u32) |
+                UInt32.new!(l.to_int).&(0xffff_u32) << 0
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      h : UInt16? = nil,
+      l : UInt16? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        h: h,
+        l: l,
+      )
+    end
+  end # struct
 
   # DMA control register
   struct DCR
@@ -4183,6 +3609,82 @@ module TIM2
     ) : Nil
       self.value = self.value.copy_with(
         dmab: dmab,
+      )
+    end
+  end # struct
+
+  # TIM5 option register
+  struct OR
+    ADDRESS = BASE_ADDRESS + 0x50_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Timer Input 4 remap
+    def itr1_rmp : UInt8
+      UInt8.new!((@value >> 10) & 0x3_u32)
+    end
+
+    # Timer Input 4 remap
+    def self.itr1_rmp : UInt8
+      value.itr1_rmp
+    end
+
+    # Timer Input 4 remap
+    def self.itr1_rmp=(value : UInt8) : UInt8
+      self.set(itr1_rmp: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      itr1_rmp : UInt8? = nil
+    ) : self
+      value = @value
+
+      unless itr1_rmp.nil?
+        value = (value & 0xfffff3ff_u32) |
+                UInt32.new!(itr1_rmp.to_int).&(0x3_u32) << 10
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      itr1_rmp : UInt8? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        itr1_rmp: itr1_rmp,
       )
     end
   end # struct

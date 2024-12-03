@@ -1,5 +1,5 @@
 # Digital-to-analog converter
-module DAC1
+module DAC
   VERSION      = nil
   BASE_ADDRESS = 0x40007400_u64
 
@@ -86,79 +86,34 @@ module DAC1
       value
     end
 
-    enum WAVE2 : UInt8
-      # Wave generation disabled
-      DISABLED = 0x0_u64
-
-      # Noise wave generation enabled
-      NOISE = 0x1_u64
-
-      # Triangle wave generation enabled
-      TRIANGLE = 0x2_u64
-
-      def self.reset_value : WAVE2
-        CR.reset_value.wave2
-      end
+    # DAC channel2 noise/triangle wave              generation enable
+    def wave2 : UInt8
+      UInt8.new!((@value >> 22) & 0x3_u32)
     end
 
     # DAC channel2 noise/triangle wave              generation enable
-    def wave2 : WAVE2
-      WAVE2.new!((@value >> 22) & 0x3_u32)
-    end
-
-    # DAC channel2 noise/triangle wave              generation enable
-    def self.wave2 : WAVE2
+    def self.wave2 : UInt8
       value.wave2
     end
 
     # DAC channel2 noise/triangle wave              generation enable
-    def self.wave2=(value : WAVE2) : WAVE2
+    def self.wave2=(value : UInt8) : UInt8
       self.set(wave2: value)
       value
     end
 
-    enum TSEL2 : UInt8
-      # Timer 6 TRGO event
-      TIM6_TRGO = 0x0_u64
-
-      # Timer 8 TRGO event
-      TIM8_TRGO = 0x1_u64
-
-      # Timer 7 TRGO event
-      TIM7_TRGO = 0x2_u64
-
-      # Timer 5 TRGO event
-      TIM5_TRGO = 0x3_u64
-
-      # Timer 2 TRGO event
-      TIM2_TRGO = 0x4_u64
-
-      # Timer 4 TRGO event
-      TIM4_TRGO = 0x5_u64
-
-      # EXTI line9
-      EXTI9 = 0x6_u64
-
-      # Software trigger
-      SOFTWARE = 0x7_u64
-
-      def self.reset_value : TSEL2
-        CR.reset_value.tsel2
-      end
+    # DAC channel2 trigger              selection
+    def tsel2 : UInt8
+      UInt8.new!((@value >> 19) & 0x7_u32)
     end
 
     # DAC channel2 trigger              selection
-    def tsel2 : TSEL2
-      TSEL2.new!((@value >> 19) & 0x7_u32)
-    end
-
-    # DAC channel2 trigger              selection
-    def self.tsel2 : TSEL2
+    def self.tsel2 : UInt8
       value.tsel2
     end
 
     # DAC channel2 trigger              selection
-    def self.tsel2=(value : TSEL2) : TSEL2
+    def self.tsel2=(value : UInt8) : UInt8
       self.set(tsel2: value)
       value
     end
@@ -211,58 +166,34 @@ module DAC1
       value
     end
 
-    enum DMAUDRIE1 : UInt8
-      # DAC channel X DMA Underrun Interrupt disabled
-      DISABLED = 0x0_u64
-
-      # DAC channel X DMA Underrun Interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : DMAUDRIE1
-        CR.reset_value.dmaudrie1
-      end
+    # DAC channel1 DMA Underrun Interrupt              enable
+    def dmaudrie1 : Bool
+      @value.bits_set?(0x2000_u32)
     end
 
     # DAC channel1 DMA Underrun Interrupt              enable
-    def dmaudrie1 : DMAUDRIE1
-      DMAUDRIE1.new!((@value >> 13) & 0x1_u32)
-    end
-
-    # DAC channel1 DMA Underrun Interrupt              enable
-    def self.dmaudrie1 : DMAUDRIE1
+    def self.dmaudrie1 : Bool
       value.dmaudrie1
     end
 
     # DAC channel1 DMA Underrun Interrupt              enable
-    def self.dmaudrie1=(value : DMAUDRIE1) : DMAUDRIE1
+    def self.dmaudrie1=(value : Bool) : Bool
       self.set(dmaudrie1: value)
       value
     end
 
-    enum DMAEN1 : UInt8
-      # DAC channel X DMA mode disabled
-      DISABLED = 0x0_u64
-
-      # DAC channel X DMA mode enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : DMAEN1
-        CR.reset_value.dmaen1
-      end
+    # DAC channel1 DMA enable
+    def dmaen1 : Bool
+      @value.bits_set?(0x1000_u32)
     end
 
     # DAC channel1 DMA enable
-    def dmaen1 : DMAEN1
-      DMAEN1.new!((@value >> 12) & 0x1_u32)
-    end
-
-    # DAC channel1 DMA enable
-    def self.dmaen1 : DMAEN1
+    def self.dmaen1 : Bool
       value.dmaen1
     end
 
     # DAC channel1 DMA enable
-    def self.dmaen1=(value : DMAEN1) : DMAEN1
+    def self.dmaen1=(value : Bool) : Bool
       self.set(dmaen1: value)
       value
     end
@@ -283,160 +214,82 @@ module DAC1
       value
     end
 
-    enum WAVE1 : UInt8
-      # Wave generation disabled
-      DISABLED = 0x0_u64
-
-      # Noise wave generation enabled
-      NOISE = 0x1_u64
-
-      # Triangle wave generation enabled
-      TRIANGLE = 0x2_u64
-
-      def self.reset_value : WAVE1
-        CR.reset_value.wave1
-      end
+    # DAC channel1 noise/triangle wave              generation enable
+    def wave1 : UInt8
+      UInt8.new!((@value >> 6) & 0x3_u32)
     end
 
     # DAC channel1 noise/triangle wave              generation enable
-    def wave1 : WAVE1
-      WAVE1.new!((@value >> 6) & 0x3_u32)
-    end
-
-    # DAC channel1 noise/triangle wave              generation enable
-    def self.wave1 : WAVE1
+    def self.wave1 : UInt8
       value.wave1
     end
 
     # DAC channel1 noise/triangle wave              generation enable
-    def self.wave1=(value : WAVE1) : WAVE1
+    def self.wave1=(value : UInt8) : UInt8
       self.set(wave1: value)
       value
     end
 
-    enum TSEL1 : UInt8
-      # Timer 6 TRGO event
-      TIM6_TRGO = 0x0_u64
-
-      # Timer 3 TRGO event
-      TIM3_TRGO = 0x1_u64
-
-      # Timer 7 TRGO event
-      TIM7_TRGO = 0x2_u64
-
-      # Timer 15 TRGO event
-      TIM15_TRGO = 0x3_u64
-
-      # Timer 2 TRGO event
-      TIM2_TRGO = 0x4_u64
-
-      # EXTI line9
-      EXTI9 = 0x6_u64
-
-      # Software trigger
-      SOFTWARE = 0x7_u64
-
-      def self.reset_value : TSEL1
-        CR.reset_value.tsel1
-      end
+    # DAC channel1 trigger              selection
+    def tsel1 : UInt8
+      UInt8.new!((@value >> 3) & 0x7_u32)
     end
 
     # DAC channel1 trigger              selection
-    def tsel1 : TSEL1
-      TSEL1.new!((@value >> 3) & 0x7_u32)
-    end
-
-    # DAC channel1 trigger              selection
-    def self.tsel1 : TSEL1
+    def self.tsel1 : UInt8
       value.tsel1
     end
 
     # DAC channel1 trigger              selection
-    def self.tsel1=(value : TSEL1) : TSEL1
+    def self.tsel1=(value : UInt8) : UInt8
       self.set(tsel1: value)
       value
     end
 
-    enum TEN1 : UInt8
-      # DAC channel X trigger disabled
-      DISABLED = 0x0_u64
-
-      # DAC channel X trigger enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : TEN1
-        CR.reset_value.ten1
-      end
+    # DAC channel1 trigger              enable
+    def ten1 : Bool
+      @value.bits_set?(0x4_u32)
     end
 
     # DAC channel1 trigger              enable
-    def ten1 : TEN1
-      TEN1.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # DAC channel1 trigger              enable
-    def self.ten1 : TEN1
+    def self.ten1 : Bool
       value.ten1
     end
 
     # DAC channel1 trigger              enable
-    def self.ten1=(value : TEN1) : TEN1
+    def self.ten1=(value : Bool) : Bool
       self.set(ten1: value)
       value
     end
 
-    enum BOFF1 : UInt8
-      # DAC channel X output buffer enabled
-      ENABLED = 0x0_u64
-
-      # DAC channel X output buffer disabled
-      DISABLED = 0x1_u64
-
-      def self.reset_value : BOFF1
-        CR.reset_value.boff1
-      end
+    # DAC channel1 output buffer              disable
+    def boff1 : Bool
+      @value.bits_set?(0x2_u32)
     end
 
     # DAC channel1 output buffer              disable
-    def boff1 : BOFF1
-      BOFF1.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # DAC channel1 output buffer              disable
-    def self.boff1 : BOFF1
+    def self.boff1 : Bool
       value.boff1
     end
 
     # DAC channel1 output buffer              disable
-    def self.boff1=(value : BOFF1) : BOFF1
+    def self.boff1=(value : Bool) : Bool
       self.set(boff1: value)
       value
     end
 
-    enum EN1 : UInt8
-      # DAC channel X disabled
-      DISABLED = 0x0_u64
-
-      # DAC channel X enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : EN1
-        CR.reset_value.en1
-      end
+    # DAC channel1 enable
+    def en1 : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # DAC channel1 enable
-    def en1 : EN1
-      EN1.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # DAC channel1 enable
-    def self.en1 : EN1
+    def self.en1 : Bool
       value.en1
     end
 
     # DAC channel1 enable
-    def self.en1=(value : EN1) : EN1
+    def self.en1=(value : Bool) : Bool
       self.set(en1: value)
       value
     end
@@ -450,9 +303,9 @@ module DAC1
 
       mamp2 : UInt8? = nil,
 
-      wave2 : WAVE2? = nil,
+      wave2 : UInt8? = nil,
 
-      tsel2 : TSEL2? = nil,
+      tsel2 : UInt8? = nil,
 
       ten2 : Bool? = nil,
 
@@ -460,21 +313,21 @@ module DAC1
 
       en2 : Bool? = nil,
 
-      dmaudrie1 : DMAUDRIE1? = nil,
+      dmaudrie1 : Bool? = nil,
 
-      dmaen1 : DMAEN1? = nil,
+      dmaen1 : Bool? = nil,
 
       mamp1 : UInt8? = nil,
 
-      wave1 : WAVE1? = nil,
+      wave1 : UInt8? = nil,
 
-      tsel1 : TSEL1? = nil,
+      tsel1 : UInt8? = nil,
 
-      ten1 : TEN1? = nil,
+      ten1 : Bool? = nil,
 
-      boff1 : BOFF1? = nil,
+      boff1 : Bool? = nil,
 
-      en1 : EN1? = nil
+      en1 : Bool? = nil
     ) : self
       value = @value
 
@@ -566,19 +419,19 @@ module DAC1
       dmaudrie2 : Bool? = nil,
       dmaen2 : Bool? = nil,
       mamp2 : UInt8? = nil,
-      wave2 : WAVE2? = nil,
-      tsel2 : TSEL2? = nil,
+      wave2 : UInt8? = nil,
+      tsel2 : UInt8? = nil,
       ten2 : Bool? = nil,
       boff2 : Bool? = nil,
       en2 : Bool? = nil,
-      dmaudrie1 : DMAUDRIE1? = nil,
-      dmaen1 : DMAEN1? = nil,
+      dmaudrie1 : Bool? = nil,
+      dmaen1 : Bool? = nil,
       mamp1 : UInt8? = nil,
-      wave1 : WAVE1? = nil,
-      tsel1 : TSEL1? = nil,
-      ten1 : TEN1? = nil,
-      boff1 : BOFF1? = nil,
-      en1 : EN1? = nil
+      wave1 : UInt8? = nil,
+      tsel1 : UInt8? = nil,
+      ten1 : Bool? = nil,
+      boff1 : Bool? = nil,
+      en1 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         dmaudrie2: dmaudrie2,
@@ -642,20 +495,8 @@ module DAC1
       value
     end
 
-    enum SWTRIG1 : UInt8
-      # DAC channel X software trigger disabled
-      DISABLED = 0x0_u64
-
-      # DAC channel X software trigger enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : SWTRIG1
-        SWTRIGR.reset_value.swtrig1
-      end
-    end
-
     # DAC channel1 software              trigger
-    def self.swtrig1=(value : SWTRIG1) : SWTRIG1
+    def self.swtrig1=(value : Bool) : Bool
       self.set(swtrig1: value)
       value
     end
@@ -665,7 +506,7 @@ module DAC1
 
       swtrig2 : Bool? = nil,
 
-      swtrig1 : SWTRIG1? = nil
+      swtrig1 : Bool? = nil
     ) : self
       value = @value
 
@@ -685,7 +526,7 @@ module DAC1
     def self.set(
       *,
       swtrig2 : Bool? = nil,
-      swtrig1 : SWTRIG1? = nil
+      swtrig1 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         swtrig2: swtrig2,
@@ -730,31 +571,31 @@ module DAC1
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def dacc1_dhr : UInt16
+    def c1_dhr : UInt16
       UInt16.new!((@value >> 0) & 0xfff_u32)
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def self.dacc1_dhr : UInt16
-      value.dacc1_dhr
+    def self.c1_dhr : UInt16
+      value.c1_dhr
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def self.dacc1_dhr=(value : UInt16) : UInt16
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt16) : UInt16
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xfffff000_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xfff_u32) << 0
+                UInt32.new!(c1_dhr.to_int).&(0xfff_u32) << 0
       end
 
       self.class.new(value)
@@ -762,10 +603,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc1_dhr: dacc1_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -806,31 +647,31 @@ module DAC1
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def dacc1_dhr : UInt16
+    def c1_dhr : UInt16
       UInt16.new!((@value >> 4) & 0xfff_u32)
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def self.dacc1_dhr : UInt16
-      value.dacc1_dhr
+    def self.c1_dhr : UInt16
+      value.c1_dhr
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def self.dacc1_dhr=(value : UInt16) : UInt16
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt16) : UInt16
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xffff000f_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xfff_u32) << 4
+                UInt32.new!(c1_dhr.to_int).&(0xfff_u32) << 4
       end
 
       self.class.new(value)
@@ -838,10 +679,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc1_dhr: dacc1_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -882,31 +723,31 @@ module DAC1
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def dacc1_dhr : UInt8
+    def c1_dhr : UInt8
       UInt8.new!((@value >> 0) & 0xff_u32)
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def self.dacc1_dhr : UInt8
-      value.dacc1_dhr
+    def self.c1_dhr : UInt8
+      value.c1_dhr
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def self.dacc1_dhr=(value : UInt8) : UInt8
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt8) : UInt8
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc1_dhr : UInt8? = nil
+      c1_dhr : UInt8? = nil
     ) : self
       value = @value
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xffffff00_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xff_u32) << 0
+                UInt32.new!(c1_dhr.to_int).&(0xff_u32) << 0
       end
 
       self.class.new(value)
@@ -914,10 +755,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc1_dhr : UInt8? = nil
+      c1_dhr : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc1_dhr: dacc1_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -958,31 +799,31 @@ module DAC1
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def dacc2_dhr : UInt16
+    def c2_dhr : UInt16
       UInt16.new!((@value >> 0) & 0xfff_u32)
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def self.dacc2_dhr : UInt16
-      value.dacc2_dhr
+    def self.c2_dhr : UInt16
+      value.c2_dhr
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def self.dacc2_dhr=(value : UInt16) : UInt16
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt16) : UInt16
+      self.set(c2_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xfffff000_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xfff_u32) << 0
+                UInt32.new!(c2_dhr.to_int).&(0xfff_u32) << 0
       end
 
       self.class.new(value)
@@ -990,10 +831,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
+        c2_dhr: c2_dhr,
       )
     end
   end # struct
@@ -1034,31 +875,31 @@ module DAC1
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def dacc2_dhr : UInt16
+    def c2_dhr : UInt16
       UInt16.new!((@value >> 4) & 0xfff_u32)
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def self.dacc2_dhr : UInt16
-      value.dacc2_dhr
+    def self.c2_dhr : UInt16
+      value.c2_dhr
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def self.dacc2_dhr=(value : UInt16) : UInt16
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt16) : UInt16
+      self.set(c2_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xffff000f_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xfff_u32) << 4
+                UInt32.new!(c2_dhr.to_int).&(0xfff_u32) << 4
       end
 
       self.class.new(value)
@@ -1066,10 +907,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
+        c2_dhr: c2_dhr,
       )
     end
   end # struct
@@ -1110,31 +951,31 @@ module DAC1
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def dacc2_dhr : UInt8
+    def c2_dhr : UInt8
       UInt8.new!((@value >> 0) & 0xff_u32)
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def self.dacc2_dhr : UInt8
-      value.dacc2_dhr
+    def self.c2_dhr : UInt8
+      value.c2_dhr
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def self.dacc2_dhr=(value : UInt8) : UInt8
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt8) : UInt8
+      self.set(c2_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt8? = nil
+      c2_dhr : UInt8? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xffffff00_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xff_u32) << 0
+                UInt32.new!(c2_dhr.to_int).&(0xff_u32) << 0
       end
 
       self.class.new(value)
@@ -1142,10 +983,10 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt8? = nil
+      c2_dhr : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
+        c2_dhr: c2_dhr,
       )
     end
   end # struct
@@ -1186,54 +1027,54 @@ module DAC1
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def dacc2_dhr : UInt16
+    def c2_dhr : UInt16
       UInt16.new!((@value >> 16) & 0xfff_u32)
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def self.dacc2_dhr : UInt16
-      value.dacc2_dhr
+    def self.c2_dhr : UInt16
+      value.c2_dhr
     end
 
     # DAC channel2 12-bit right-aligned              data
-    def self.dacc2_dhr=(value : UInt16) : UInt16
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt16) : UInt16
+      self.set(c2_dhr: value)
       value
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def dacc1_dhr : UInt16
+    def c1_dhr : UInt16
       UInt16.new!((@value >> 0) & 0xfff_u32)
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def self.dacc1_dhr : UInt16
-      value.dacc1_dhr
+    def self.c1_dhr : UInt16
+      value.c1_dhr
     end
 
     # DAC channel1 12-bit right-aligned              data
-    def self.dacc1_dhr=(value : UInt16) : UInt16
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt16) : UInt16
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt16? = nil,
+      c2_dhr : UInt16? = nil,
 
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xf000ffff_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xfff_u32) << 16
+                UInt32.new!(c2_dhr.to_int).&(0xfff_u32) << 16
       end
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xfffff000_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xfff_u32) << 0
+                UInt32.new!(c1_dhr.to_int).&(0xfff_u32) << 0
       end
 
       self.class.new(value)
@@ -1241,12 +1082,12 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt16? = nil,
-      dacc1_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil,
+      c1_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
-        dacc1_dhr: dacc1_dhr,
+        c2_dhr: c2_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -1287,54 +1128,54 @@ module DAC1
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def dacc2_dhr : UInt16
+    def c2_dhr : UInt16
       UInt16.new!((@value >> 20) & 0xfff_u32)
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def self.dacc2_dhr : UInt16
-      value.dacc2_dhr
+    def self.c2_dhr : UInt16
+      value.c2_dhr
     end
 
     # DAC channel2 12-bit left-aligned              data
-    def self.dacc2_dhr=(value : UInt16) : UInt16
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt16) : UInt16
+      self.set(c2_dhr: value)
       value
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def dacc1_dhr : UInt16
+    def c1_dhr : UInt16
       UInt16.new!((@value >> 4) & 0xfff_u32)
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def self.dacc1_dhr : UInt16
-      value.dacc1_dhr
+    def self.c1_dhr : UInt16
+      value.c1_dhr
     end
 
     # DAC channel1 12-bit left-aligned              data
-    def self.dacc1_dhr=(value : UInt16) : UInt16
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt16) : UInt16
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt16? = nil,
+      c2_dhr : UInt16? = nil,
 
-      dacc1_dhr : UInt16? = nil
+      c1_dhr : UInt16? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xfffff_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xfff_u32) << 20
+                UInt32.new!(c2_dhr.to_int).&(0xfff_u32) << 20
       end
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xffff000f_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xfff_u32) << 4
+                UInt32.new!(c1_dhr.to_int).&(0xfff_u32) << 4
       end
 
       self.class.new(value)
@@ -1342,12 +1183,12 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt16? = nil,
-      dacc1_dhr : UInt16? = nil
+      c2_dhr : UInt16? = nil,
+      c1_dhr : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
-        dacc1_dhr: dacc1_dhr,
+        c2_dhr: c2_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -1388,54 +1229,54 @@ module DAC1
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def dacc2_dhr : UInt8
+    def c2_dhr : UInt8
       UInt8.new!((@value >> 8) & 0xff_u32)
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def self.dacc2_dhr : UInt8
-      value.dacc2_dhr
+    def self.c2_dhr : UInt8
+      value.c2_dhr
     end
 
     # DAC channel2 8-bit right-aligned              data
-    def self.dacc2_dhr=(value : UInt8) : UInt8
-      self.set(dacc2_dhr: value)
+    def self.c2_dhr=(value : UInt8) : UInt8
+      self.set(c2_dhr: value)
       value
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def dacc1_dhr : UInt8
+    def c1_dhr : UInt8
       UInt8.new!((@value >> 0) & 0xff_u32)
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def self.dacc1_dhr : UInt8
-      value.dacc1_dhr
+    def self.c1_dhr : UInt8
+      value.c1_dhr
     end
 
     # DAC channel1 8-bit right-aligned              data
-    def self.dacc1_dhr=(value : UInt8) : UInt8
-      self.set(dacc1_dhr: value)
+    def self.c1_dhr=(value : UInt8) : UInt8
+      self.set(c1_dhr: value)
       value
     end
 
     def copy_with(
       *,
 
-      dacc2_dhr : UInt8? = nil,
+      c2_dhr : UInt8? = nil,
 
-      dacc1_dhr : UInt8? = nil
+      c1_dhr : UInt8? = nil
     ) : self
       value = @value
 
-      unless dacc2_dhr.nil?
+      unless c2_dhr.nil?
         value = (value & 0xffff00ff_u32) |
-                UInt32.new!(dacc2_dhr.to_int).&(0xff_u32) << 8
+                UInt32.new!(c2_dhr.to_int).&(0xff_u32) << 8
       end
 
-      unless dacc1_dhr.nil?
+      unless c1_dhr.nil?
         value = (value & 0xffffff00_u32) |
-                UInt32.new!(dacc1_dhr.to_int).&(0xff_u32) << 0
+                UInt32.new!(c1_dhr.to_int).&(0xff_u32) << 0
       end
 
       self.class.new(value)
@@ -1443,12 +1284,12 @@ module DAC1
 
     def self.set(
       *,
-      dacc2_dhr : UInt8? = nil,
-      dacc1_dhr : UInt8? = nil
+      c2_dhr : UInt8? = nil,
+      c1_dhr : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        dacc2_dhr: dacc2_dhr,
-        dacc1_dhr: dacc1_dhr,
+        c2_dhr: c2_dhr,
+        c1_dhr: c1_dhr,
       )
     end
   end # struct
@@ -1489,13 +1330,13 @@ module DAC1
     end
 
     # DAC channel1 data output
-    def dacc1_dor : UInt16
+    def c1_dor : UInt16
       UInt16.new!((@value >> 0) & 0xfff_u32)
     end
 
     # DAC channel1 data output
-    def self.dacc1_dor : UInt16
-      value.dacc1_dor
+    def self.c1_dor : UInt16
+      value.c1_dor
     end
   end # struct
 
@@ -1535,13 +1376,13 @@ module DAC1
     end
 
     # DAC channel2 data output
-    def dacc2_dor : UInt16
+    def c2_dor : UInt16
       UInt16.new!((@value >> 0) & 0xfff_u32)
     end
 
     # DAC channel2 data output
-    def self.dacc2_dor : UInt16
-      value.dacc2_dor
+    def self.c2_dor : UInt16
+      value.c2_dor
     end
   end # struct
 
@@ -1596,30 +1437,18 @@ module DAC1
       value
     end
 
-    enum DMAUDR1 : UInt8
-      # No DMA underrun error condition occurred for DAC channel X
-      NOUNDERRUN = 0x0_u64
-
-      # DMA underrun error condition occurred for DAC channel X
-      UNDERRUN = 0x1_u64
-
-      def self.reset_value : DMAUDR1
-        SR.reset_value.dmaudr1
-      end
+    # DAC channel1 DMA underrun              flag
+    def dmaudr1 : Bool
+      @value.bits_set?(0x2000_u32)
     end
 
     # DAC channel1 DMA underrun              flag
-    def dmaudr1 : DMAUDR1
-      DMAUDR1.new!((@value >> 13) & 0x1_u32)
-    end
-
-    # DAC channel1 DMA underrun              flag
-    def self.dmaudr1 : DMAUDR1
+    def self.dmaudr1 : Bool
       value.dmaudr1
     end
 
     # DAC channel1 DMA underrun              flag
-    def self.dmaudr1=(value : DMAUDR1) : DMAUDR1
+    def self.dmaudr1=(value : Bool) : Bool
       self.set(dmaudr1: value)
       value
     end
@@ -1629,7 +1458,7 @@ module DAC1
 
       dmaudr2 : Bool? = nil,
 
-      dmaudr1 : DMAUDR1? = nil
+      dmaudr1 : Bool? = nil
     ) : self
       value = @value
 
@@ -1649,7 +1478,7 @@ module DAC1
     def self.set(
       *,
       dmaudr2 : Bool? = nil,
-      dmaudr1 : DMAUDR1? = nil
+      dmaudr1 : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         dmaudr2: dmaudr2,

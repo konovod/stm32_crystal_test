@@ -38,192 +38,104 @@ module TIM6
       value
     end
 
-    enum CEN : UInt8
-      # Counter disabled
-      DISABLED = 0x0_u64
-
-      # Counter enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : CEN
-        CR1.reset_value.cen
-      end
-    end
-
-    # Counter enable
-    def cen : CEN
-      CEN.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Counter enable
-    def self.cen : CEN
-      value.cen
-    end
-
-    # Counter enable
-    def self.cen=(value : CEN) : CEN
-      self.set(cen: value)
-      value
-    end
-
-    enum UDIS : UInt8
-      # Update event enabled
-      ENABLED = 0x0_u64
-
-      # Update event disabled
-      DISABLED = 0x1_u64
-
-      def self.reset_value : UDIS
-        CR1.reset_value.udis
-      end
-    end
-
-    # Update disable
-    def udis : UDIS
-      UDIS.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Update disable
-    def self.udis : UDIS
-      value.udis
-    end
-
-    # Update disable
-    def self.udis=(value : UDIS) : UDIS
-      self.set(udis: value)
-      value
-    end
-
-    enum URS : UInt8
-      # Any of counter overflow/underflow, setting UG, or update through slave mode, generates an update interrupt or DMA request
-      ANYEVENT = 0x0_u64
-
-      # Only counter overflow/underflow generates an update interrupt or DMA request
-      COUNTERONLY = 0x1_u64
-
-      def self.reset_value : URS
-        CR1.reset_value.urs
-      end
-    end
-
-    # Update request source
-    def urs : URS
-      URS.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # Update request source
-    def self.urs : URS
-      value.urs
-    end
-
-    # Update request source
-    def self.urs=(value : URS) : URS
-      self.set(urs: value)
-      value
-    end
-
-    enum OPM : UInt8
-      # Counter is not stopped at update event
-      DISABLED = 0x0_u64
-
-      # Counter stops counting at the next update event (clearing the CEN bit)
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OPM
-        CR1.reset_value.opm
-      end
-    end
-
-    # One-pulse mode
-    def opm : OPM
-      OPM.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # One-pulse mode
-    def self.opm : OPM
-      value.opm
-    end
-
-    # One-pulse mode
-    def self.opm=(value : OPM) : OPM
-      self.set(opm: value)
-      value
-    end
-
-    enum ARPE : UInt8
-      # TIMx_APRR register is not buffered
-      DISABLED = 0x0_u64
-
-      # TIMx_APRR register is buffered
-      ENABLED = 0x1_u64
-
-      def self.reset_value : ARPE
-        CR1.reset_value.arpe
-      end
+    # Auto-reload preload enable
+    def arpe : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # Auto-reload preload enable
-    def arpe : ARPE
-      ARPE.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Auto-reload preload enable
-    def self.arpe : ARPE
+    def self.arpe : Bool
       value.arpe
     end
 
     # Auto-reload preload enable
-    def self.arpe=(value : ARPE) : ARPE
+    def self.arpe=(value : Bool) : Bool
       self.set(arpe: value)
       value
     end
 
-    # UIF status bit remapping
-    def uifremap : Bool
-      @value.bits_set?(0x800_u32)
+    # One-pulse mode
+    def opm : Bool
+      @value.bits_set?(0x8_u32)
     end
 
-    # UIF status bit remapping
-    def self.uifremap : Bool
-      value.uifremap
+    # One-pulse mode
+    def self.opm : Bool
+      value.opm
     end
 
-    # UIF status bit remapping
-    def self.uifremap=(value : Bool) : Bool
-      self.set(uifremap: value)
+    # One-pulse mode
+    def self.opm=(value : Bool) : Bool
+      self.set(opm: value)
+      value
+    end
+
+    # Update request source
+    def urs : Bool
+      @value.bits_set?(0x4_u32)
+    end
+
+    # Update request source
+    def self.urs : Bool
+      value.urs
+    end
+
+    # Update request source
+    def self.urs=(value : Bool) : Bool
+      self.set(urs: value)
+      value
+    end
+
+    # Update disable
+    def udis : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Update disable
+    def self.udis : Bool
+      value.udis
+    end
+
+    # Update disable
+    def self.udis=(value : Bool) : Bool
+      self.set(udis: value)
+      value
+    end
+
+    # Counter enable
+    def cen : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Counter enable
+    def self.cen : Bool
+      value.cen
+    end
+
+    # Counter enable
+    def self.cen=(value : Bool) : Bool
+      self.set(cen: value)
       value
     end
 
     def copy_with(
       *,
 
-      cen : CEN? = nil,
+      arpe : Bool? = nil,
 
-      udis : UDIS? = nil,
+      opm : Bool? = nil,
 
-      urs : URS? = nil,
+      urs : Bool? = nil,
 
-      opm : OPM? = nil,
+      udis : Bool? = nil,
 
-      arpe : ARPE? = nil,
-
-      uifremap : Bool? = nil
+      cen : Bool? = nil
     ) : self
       value = @value
 
-      unless cen.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(cen.to_int).&(0x1_u32) << 0
-      end
-
-      unless udis.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(udis.to_int).&(0x1_u32) << 1
-      end
-
-      unless urs.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(urs.to_int).&(0x1_u32) << 2
+      unless arpe.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(arpe.to_int).&(0x1_u32) << 7
       end
 
       unless opm.nil?
@@ -231,14 +143,19 @@ module TIM6
                 UInt32.new!(opm.to_int).&(0x1_u32) << 3
       end
 
-      unless arpe.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(arpe.to_int).&(0x1_u32) << 7
+      unless urs.nil?
+        value = (value & 0xfffffffb_u32) |
+                UInt32.new!(urs.to_int).&(0x1_u32) << 2
       end
 
-      unless uifremap.nil?
-        value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(uifremap.to_int).&(0x1_u32) << 11
+      unless udis.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(udis.to_int).&(0x1_u32) << 1
+      end
+
+      unless cen.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(cen.to_int).&(0x1_u32) << 0
       end
 
       self.class.new(value)
@@ -246,20 +163,18 @@ module TIM6
 
     def self.set(
       *,
-      cen : CEN? = nil,
-      udis : UDIS? = nil,
-      urs : URS? = nil,
-      opm : OPM? = nil,
-      arpe : ARPE? = nil,
-      uifremap : Bool? = nil
+      arpe : Bool? = nil,
+      opm : Bool? = nil,
+      urs : Bool? = nil,
+      udis : Bool? = nil,
+      cen : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        cen: cen,
-        udis: udis,
-        urs: urs,
-        opm: opm,
         arpe: arpe,
-        uifremap: uifremap,
+        opm: opm,
+        urs: urs,
+        udis: udis,
+        cen: cen,
       )
     end
   end # struct
@@ -299,33 +214,18 @@ module TIM6
       value
     end
 
-    enum MMS : UInt8
-      # Use UG bit from TIMx_EGR register
-      RESET = 0x0_u64
-
-      # Use CNT bit from TIMx_CEN register
-      ENABLE = 0x1_u64
-
-      # Use the update event
-      UPDATE = 0x2_u64
-
-      def self.reset_value : MMS
-        CR2.reset_value.mms
-      end
+    # Master mode selection
+    def mms : UInt8
+      UInt8.new!((@value >> 4) & 0x7_u32)
     end
 
     # Master mode selection
-    def mms : MMS
-      MMS.new!((@value >> 4) & 0x7_u32)
-    end
-
-    # Master mode selection
-    def self.mms : MMS
+    def self.mms : UInt8
       value.mms
     end
 
     # Master mode selection
-    def self.mms=(value : MMS) : MMS
+    def self.mms=(value : UInt8) : UInt8
       self.set(mms: value)
       value
     end
@@ -333,7 +233,7 @@ module TIM6
     def copy_with(
       *,
 
-      mms : MMS? = nil
+      mms : UInt8? = nil
     ) : self
       value = @value
 
@@ -347,7 +247,7 @@ module TIM6
 
     def self.set(
       *,
-      mms : MMS? = nil
+      mms : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         mms: mms,
@@ -390,58 +290,34 @@ module TIM6
       value
     end
 
-    enum UDE : UInt8
-      # Update DMA request disabled
-      DISABLED = 0x0_u64
-
-      # Update DMA request enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : UDE
-        DIER.reset_value.ude
-      end
+    # Update DMA request enable
+    def ude : Bool
+      @value.bits_set?(0x100_u32)
     end
 
     # Update DMA request enable
-    def ude : UDE
-      UDE.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # Update DMA request enable
-    def self.ude : UDE
+    def self.ude : Bool
       value.ude
     end
 
     # Update DMA request enable
-    def self.ude=(value : UDE) : UDE
+    def self.ude=(value : Bool) : Bool
       self.set(ude: value)
       value
     end
 
-    enum UIE : UInt8
-      # Update interrupt disabled
-      DISABLED = 0x0_u64
-
-      # Update interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : UIE
-        DIER.reset_value.uie
-      end
+    # Update interrupt enable
+    def uie : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Update interrupt enable
-    def uie : UIE
-      UIE.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Update interrupt enable
-    def self.uie : UIE
+    def self.uie : Bool
       value.uie
     end
 
     # Update interrupt enable
-    def self.uie=(value : UIE) : UIE
+    def self.uie=(value : Bool) : Bool
       self.set(uie: value)
       value
     end
@@ -449,9 +325,9 @@ module TIM6
     def copy_with(
       *,
 
-      ude : UDE? = nil,
+      ude : Bool? = nil,
 
-      uie : UIE? = nil
+      uie : Bool? = nil
     ) : self
       value = @value
 
@@ -470,8 +346,8 @@ module TIM6
 
     def self.set(
       *,
-      ude : UDE? = nil,
-      uie : UIE? = nil
+      ude : Bool? = nil,
+      uie : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ude: ude,
@@ -515,30 +391,18 @@ module TIM6
       value
     end
 
-    enum UIF : UInt8
-      # No update occurred
-      CLEAR = 0x0_u64
-
-      # Update interrupt pending.
-      UPDATEPENDING = 0x1_u64
-
-      def self.reset_value : UIF
-        SR.reset_value.uif
-      end
+    # Update interrupt flag
+    def uif : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Update interrupt flag
-    def uif : UIF
-      UIF.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Update interrupt flag
-    def self.uif : UIF
+    def self.uif : Bool
       value.uif
     end
 
     # Update interrupt flag
-    def self.uif=(value : UIF) : UIF
+    def self.uif=(value : Bool) : Bool
       self.set(uif: value)
       value
     end
@@ -546,7 +410,7 @@ module TIM6
     def copy_with(
       *,
 
-      uif : UIF? = nil
+      uif : Bool? = nil
     ) : self
       value = @value
 
@@ -560,7 +424,7 @@ module TIM6
 
     def self.set(
       *,
-      uif : UIF? = nil
+      uif : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         uif: uif,
@@ -603,17 +467,8 @@ module TIM6
       value
     end
 
-    enum UG : UInt8
-      # Re-initializes the timer counter and generates an update of the registers.
-      UPDATE = 0x1_u64
-
-      def self.reset_value : UG
-        EGR.reset_value.ug
-      end
-    end
-
     # Update generation
-    def self.ug=(value : UG) : UG
+    def self.ug=(value : Bool) : Bool
       self.set(ug: value)
       value
     end
@@ -621,7 +476,7 @@ module TIM6
     def copy_with(
       *,
 
-      ug : UG? = nil
+      ug : Bool? = nil
     ) : self
       value = @value
 
@@ -635,7 +490,7 @@ module TIM6
 
     def self.set(
       *,
-      ug : UG? = nil
+      ug : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ug: ug,
@@ -692,16 +547,6 @@ module TIM6
     def self.cnt=(value : UInt16) : UInt16
       self.set(cnt: value)
       value
-    end
-
-    # UIF Copy
-    def uifcpy : Bool
-      @value.bits_set?(0x80000000_u32)
-    end
-
-    # UIF Copy
-    def self.uifcpy : Bool
-      value.uifcpy
     end
 
     def copy_with(

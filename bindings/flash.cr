@@ -1,7 +1,7 @@
-# Flash
+# FLASH
 module FLASH
   VERSION      = nil
-  BASE_ADDRESS = 0x40022000_u64
+  BASE_ADDRESS = 0x40023c00_u64
 
   # Flash access control register
   struct ACR
@@ -21,7 +21,7 @@ module FLASH
     end
 
     def self.reset_value : self
-      new(0x30_u64)
+      new(0x0_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -38,123 +38,106 @@ module FLASH
       value
     end
 
-    enum LATENCY : UInt8
-      # 0 wait states, if 0 < HCLK <= 24 MHz
-      WS0 = 0x0_u64
-
-      # 1 wait state, if 24 < HCLK <= 48 MHz
-      WS1 = 0x1_u64
-
-      # 2 wait states, if 48 < HCLK <= 72 MHz
-      WS2 = 0x2_u64
-
-      def self.reset_value : LATENCY
-        ACR.reset_value.latency
-      end
+    # Latency
+    def latency : UInt8
+      UInt8.new!((@value >> 0) & 0x7_u32)
     end
 
-    # LATENCY
-    def latency : LATENCY
-      LATENCY.new!((@value >> 0) & 0x7_u32)
-    end
-
-    # LATENCY
-    def self.latency : LATENCY
+    # Latency
+    def self.latency : UInt8
       value.latency
     end
 
-    # LATENCY
-    def self.latency=(value : LATENCY) : LATENCY
+    # Latency
+    def self.latency=(value : UInt8) : UInt8
       self.set(latency: value)
       value
     end
 
-    enum PRFTBE : UInt8
-      # Prefetch is disabled
-      DISABLED = 0x0_u64
-
-      # Prefetch is enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : PRFTBE
-        ACR.reset_value.prftbe
-      end
+    # Prefetch enable
+    def prften : Bool
+      @value.bits_set?(0x100_u32)
     end
 
-    # PRFTBE
-    def prftbe : PRFTBE
-      PRFTBE.new!((@value >> 4) & 0x1_u32)
+    # Prefetch enable
+    def self.prften : Bool
+      value.prften
     end
 
-    # PRFTBE
-    def self.prftbe : PRFTBE
-      value.prftbe
-    end
-
-    # PRFTBE
-    def self.prftbe=(value : PRFTBE) : PRFTBE
-      self.set(prftbe: value)
+    # Prefetch enable
+    def self.prften=(value : Bool) : Bool
+      self.set(prften: value)
       value
     end
 
-    enum PRFTBS : UInt8
-      # Prefetch buffer is disabled
-      DISABLED = 0x0_u64
-
-      # Prefetch buffer is enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : PRFTBS
-        ACR.reset_value.prftbs
-      end
+    # Instruction cache enable
+    def icen : Bool
+      @value.bits_set?(0x200_u32)
     end
 
-    # PRFTBS
-    def prftbs : PRFTBS
-      PRFTBS.new!((@value >> 5) & 0x1_u32)
+    # Instruction cache enable
+    def self.icen : Bool
+      value.icen
     end
 
-    # PRFTBS
-    def self.prftbs : PRFTBS
-      value.prftbs
+    # Instruction cache enable
+    def self.icen=(value : Bool) : Bool
+      self.set(icen: value)
+      value
     end
 
-    enum HLFCYA : UInt8
-      # Half cycle is disabled
-      DISABLED = 0x0_u64
-
-      # Half cycle is enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : HLFCYA
-        ACR.reset_value.hlfcya
-      end
+    # Data cache enable
+    def dcen : Bool
+      @value.bits_set?(0x400_u32)
     end
 
-    # Flash half cycle access enable
-    def hlfcya : HLFCYA
-      HLFCYA.new!((@value >> 3) & 0x1_u32)
+    # Data cache enable
+    def self.dcen : Bool
+      value.dcen
     end
 
-    # Flash half cycle access enable
-    def self.hlfcya : HLFCYA
-      value.hlfcya
+    # Data cache enable
+    def self.dcen=(value : Bool) : Bool
+      self.set(dcen: value)
+      value
     end
 
-    # Flash half cycle access enable
-    def self.hlfcya=(value : HLFCYA) : HLFCYA
-      self.set(hlfcya: value)
+    # Instruction cache reset
+    def self.icrst=(value : Bool) : Bool
+      self.set(icrst: value)
+      value
+    end
+
+    # Data cache reset
+    def dcrst : Bool
+      @value.bits_set?(0x1000_u32)
+    end
+
+    # Data cache reset
+    def self.dcrst : Bool
+      value.dcrst
+    end
+
+    # Data cache reset
+    def self.dcrst=(value : Bool) : Bool
+      self.set(dcrst: value)
       value
     end
 
     def copy_with(
       *,
 
-      latency : LATENCY? = nil,
+      latency : UInt8? = nil,
 
-      prftbe : PRFTBE? = nil,
+      prften : Bool? = nil,
 
-      hlfcya : HLFCYA? = nil
+      icen : Bool? = nil,
+
+      dcen : Bool? = nil,
+
+      icrst : Bool? = nil,
+
+      dcrst : Bool? = nil
     ) : self
       value = @value
 
@@ -163,14 +146,29 @@ module FLASH
                 UInt32.new!(latency.to_int).&(0x7_u32) << 0
       end
 
-      unless prftbe.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(prftbe.to_int).&(0x1_u32) << 4
+      unless prften.nil?
+        value = (value & 0xfffffeff_u32) |
+                UInt32.new!(prften.to_int).&(0x1_u32) << 8
       end
 
-      unless hlfcya.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(hlfcya.to_int).&(0x1_u32) << 3
+      unless icen.nil?
+        value = (value & 0xfffffdff_u32) |
+                UInt32.new!(icen.to_int).&(0x1_u32) << 9
+      end
+
+      unless dcen.nil?
+        value = (value & 0xfffffbff_u32) |
+                UInt32.new!(dcen.to_int).&(0x1_u32) << 10
+      end
+
+      unless icrst.nil?
+        value = (value & 0xfffff7ff_u32) |
+                UInt32.new!(icrst.to_int).&(0x1_u32) << 11
+      end
+
+      unless dcrst.nil?
+        value = (value & 0xffffefff_u32) |
+                UInt32.new!(dcrst.to_int).&(0x1_u32) << 12
       end
 
       self.class.new(value)
@@ -178,14 +176,20 @@ module FLASH
 
     def self.set(
       *,
-      latency : LATENCY? = nil,
-      prftbe : PRFTBE? = nil,
-      hlfcya : HLFCYA? = nil
+      latency : UInt8? = nil,
+      prften : Bool? = nil,
+      icen : Bool? = nil,
+      dcen : Bool? = nil,
+      icrst : Bool? = nil,
+      dcrst : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         latency: latency,
-        prftbe: prftbe,
-        hlfcya: hlfcya,
+        prften: prften,
+        icen: icen,
+        dcen: dcen,
+        icrst: icrst,
+        dcrst: dcrst,
       )
     end
   end # struct
@@ -225,22 +229,22 @@ module FLASH
       value
     end
 
-    # Flash Key
-    def self.fkeyr=(value : UInt32) : UInt32
-      self.set(fkeyr: value)
+    # FPEC key
+    def self.key=(value : UInt32) : UInt32
+      self.set(key: value)
       value
     end
 
     def copy_with(
       *,
 
-      fkeyr : UInt32? = nil
+      key : UInt32? = nil
     ) : self
       value = @value
 
-      unless fkeyr.nil?
+      unless key.nil?
         value = (value & 0xffffffff_u32) |
-                UInt32.new!(fkeyr.to_int).&(0x0_u32) << 0
+                UInt32.new!(key.to_int).&(0x0_u32) << 0
       end
 
       self.class.new(value)
@@ -248,10 +252,10 @@ module FLASH
 
     def self.set(
       *,
-      fkeyr : UInt32? = nil
+      key : UInt32? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        fkeyr: fkeyr,
+        key: key,
       )
     end
   end # struct
@@ -292,21 +296,21 @@ module FLASH
     end
 
     # Option byte key
-    def self.optkeyr=(value : UInt32) : UInt32
-      self.set(optkeyr: value)
+    def self.optkey=(value : UInt32) : UInt32
+      self.set(optkey: value)
       value
     end
 
     def copy_with(
       *,
 
-      optkeyr : UInt32? = nil
+      optkey : UInt32? = nil
     ) : self
       value = @value
 
-      unless optkeyr.nil?
+      unless optkey.nil?
         value = (value & 0xffffffff_u32) |
-                UInt32.new!(optkeyr.to_int).&(0x0_u32) << 0
+                UInt32.new!(optkey.to_int).&(0x0_u32) << 0
       end
 
       self.class.new(value)
@@ -314,15 +318,15 @@ module FLASH
 
     def self.set(
       *,
-      optkeyr : UInt32? = nil
+      optkey : UInt32? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        optkeyr: optkeyr,
+        optkey: optkey,
       )
     end
   end # struct
 
-  # Flash status register
+  # Status register
   struct SR
     ADDRESS = BASE_ADDRESS + 0xc_u64
 
@@ -357,136 +361,157 @@ module FLASH
       value
     end
 
-    enum EOP : UInt8
-      # No EOP event occurred
-      NOEVENT = 0x0_u64
-
-      # An EOP event occurred
-      EVENT = 0x1_u64
-
-      def self.reset_value : EOP
-        SR.reset_value.eop
-      end
+    # End of operation
+    def eop : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # End of operation
-    def eop : EOP
-      EOP.new!((@value >> 5) & 0x1_u32)
-    end
-
-    # End of operation
-    def self.eop : EOP
+    def self.eop : Bool
       value.eop
     end
 
     # End of operation
-    def self.eop=(value : EOP) : EOP
+    def self.eop=(value : Bool) : Bool
       self.set(eop: value)
       value
     end
 
-    enum WRPRTERR : UInt8
-      # No write protection error occurred
-      NOERROR = 0x0_u64
-
-      # A write protection error occurred
-      ERROR = 0x1_u64
-
-      def self.reset_value : WRPRTERR
-        SR.reset_value.wrprterr
-      end
+    # Operation error
+    def operr : Bool
+      @value.bits_set?(0x2_u32)
     end
 
-    # Write protection error
-    def wrprterr : WRPRTERR
-      WRPRTERR.new!((@value >> 4) & 0x1_u32)
+    # Operation error
+    def self.operr : Bool
+      value.operr
     end
 
-    # Write protection error
-    def self.wrprterr : WRPRTERR
-      value.wrprterr
-    end
-
-    # Write protection error
-    def self.wrprterr=(value : WRPRTERR) : WRPRTERR
-      self.set(wrprterr: value)
+    # Operation error
+    def self.operr=(value : Bool) : Bool
+      self.set(operr: value)
       value
     end
 
-    enum PGERR : UInt8
-      # No programming error occurred
-      NOERROR = 0x0_u64
-
-      # A programming error occurred
-      ERROR = 0x1_u64
-
-      def self.reset_value : PGERR
-        SR.reset_value.pgerr
-      end
+    # Write protection error
+    def wrperr : Bool
+      @value.bits_set?(0x10_u32)
     end
 
-    # Programming error
-    def pgerr : PGERR
-      PGERR.new!((@value >> 2) & 0x1_u32)
+    # Write protection error
+    def self.wrperr : Bool
+      value.wrperr
     end
 
-    # Programming error
-    def self.pgerr : PGERR
-      value.pgerr
-    end
-
-    # Programming error
-    def self.pgerr=(value : PGERR) : PGERR
-      self.set(pgerr: value)
+    # Write protection error
+    def self.wrperr=(value : Bool) : Bool
+      self.set(wrperr: value)
       value
     end
 
-    enum BSY : UInt8
-      # No write/erase operation is in progress
-      INACTIVE = 0x0_u64
+    # Programming alignment              error
+    def pgaerr : Bool
+      @value.bits_set?(0x20_u32)
+    end
 
-      # No write/erase operation is in progress
-      ACTIVE = 0x1_u64
+    # Programming alignment              error
+    def self.pgaerr : Bool
+      value.pgaerr
+    end
 
-      def self.reset_value : BSY
-        SR.reset_value.bsy
-      end
+    # Programming alignment              error
+    def self.pgaerr=(value : Bool) : Bool
+      self.set(pgaerr: value)
+      value
+    end
+
+    # Programming parallelism              error
+    def pgperr : Bool
+      @value.bits_set?(0x40_u32)
+    end
+
+    # Programming parallelism              error
+    def self.pgperr : Bool
+      value.pgperr
+    end
+
+    # Programming parallelism              error
+    def self.pgperr=(value : Bool) : Bool
+      self.set(pgperr: value)
+      value
+    end
+
+    # Programming sequence error
+    def pgserr : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # Programming sequence error
+    def self.pgserr : Bool
+      value.pgserr
+    end
+
+    # Programming sequence error
+    def self.pgserr=(value : Bool) : Bool
+      self.set(pgserr: value)
+      value
     end
 
     # Busy
-    def bsy : BSY
-      BSY.new!((@value >> 0) & 0x1_u32)
+    def bsy : Bool
+      @value.bits_set?(0x10000_u32)
     end
 
     # Busy
-    def self.bsy : BSY
+    def self.bsy : Bool
       value.bsy
     end
 
     def copy_with(
       *,
 
-      eop : EOP? = nil,
+      eop : Bool? = nil,
 
-      wrprterr : WRPRTERR? = nil,
+      operr : Bool? = nil,
 
-      pgerr : PGERR? = nil
+      wrperr : Bool? = nil,
+
+      pgaerr : Bool? = nil,
+
+      pgperr : Bool? = nil,
+
+      pgserr : Bool? = nil
     ) : self
       value = @value
 
       unless eop.nil?
-        value = (value & 0xffffffdf_u32) |
-                UInt32.new!(eop.to_int).&(0x1_u32) << 5
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(eop.to_int).&(0x1_u32) << 0
       end
 
-      unless wrprterr.nil?
+      unless operr.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(operr.to_int).&(0x1_u32) << 1
+      end
+
+      unless wrperr.nil?
         value = (value & 0xffffffef_u32) |
-                UInt32.new!(wrprterr.to_int).&(0x1_u32) << 4
+                UInt32.new!(wrperr.to_int).&(0x1_u32) << 4
       end
 
-      unless pgerr.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(pgerr.to_int).&(0x1_u32) << 2
+      unless pgaerr.nil?
+        value = (value & 0xffffffdf_u32) |
+                UInt32.new!(pgaerr.to_int).&(0x1_u32) << 5
+      end
+
+      unless pgperr.nil?
+        value = (value & 0xffffffbf_u32) |
+                UInt32.new!(pgperr.to_int).&(0x1_u32) << 6
+      end
+
+      unless pgserr.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(pgserr.to_int).&(0x1_u32) << 7
       end
 
       self.class.new(value)
@@ -494,19 +519,25 @@ module FLASH
 
     def self.set(
       *,
-      eop : EOP? = nil,
-      wrprterr : WRPRTERR? = nil,
-      pgerr : PGERR? = nil
+      eop : Bool? = nil,
+      operr : Bool? = nil,
+      wrperr : Bool? = nil,
+      pgaerr : Bool? = nil,
+      pgperr : Bool? = nil,
+      pgserr : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         eop: eop,
-        wrprterr: wrprterr,
-        pgerr: pgerr,
+        operr: operr,
+        wrperr: wrperr,
+        pgaerr: pgaerr,
+        pgperr: pgperr,
+        pgserr: pgserr,
       )
     end
   end # struct
 
-  # Flash control register
+  # Control register
   struct CR
     ADDRESS = BASE_ADDRESS + 0x10_u64
 
@@ -524,7 +555,7 @@ module FLASH
     end
 
     def self.reset_value : self
-      new(0x80_u64)
+      new(0x80000000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -541,361 +572,199 @@ module FLASH
       value
     end
 
-    enum OBL_LAUNCH : UInt8
-      # Force option byte loading inactive
-      INACTIVE = 0x0_u64
-
-      # Force option byte loading active
-      ACTIVE = 0x1_u64
-
-      def self.reset_value : OBL_LAUNCH
-        CR.reset_value.obl_launch
-      end
-    end
-
-    # Force option byte loading
-    def obl_launch : OBL_LAUNCH
-      OBL_LAUNCH.new!((@value >> 13) & 0x1_u32)
-    end
-
-    # Force option byte loading
-    def self.obl_launch : OBL_LAUNCH
-      value.obl_launch
-    end
-
-    # Force option byte loading
-    def self.obl_launch=(value : OBL_LAUNCH) : OBL_LAUNCH
-      self.set(obl_launch: value)
-      value
-    end
-
-    enum EOPIE : UInt8
-      # End of operation interrupt disabled
-      DISABLED = 0x0_u64
-
-      # End of operation interrupt enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : EOPIE
-        CR.reset_value.eopie
-      end
-    end
-
-    # End of operation interrupt              enable
-    def eopie : EOPIE
-      EOPIE.new!((@value >> 12) & 0x1_u32)
-    end
-
-    # End of operation interrupt              enable
-    def self.eopie : EOPIE
-      value.eopie
-    end
-
-    # End of operation interrupt              enable
-    def self.eopie=(value : EOPIE) : EOPIE
-      self.set(eopie: value)
-      value
-    end
-
-    enum ERRIE : UInt8
-      # Error interrupt generation disabled
-      DISABLED = 0x0_u64
-
-      # Error interrupt generation enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : ERRIE
-        CR.reset_value.errie
-      end
-    end
-
-    # Error interrupt enable
-    def errie : ERRIE
-      ERRIE.new!((@value >> 10) & 0x1_u32)
-    end
-
-    # Error interrupt enable
-    def self.errie : ERRIE
-      value.errie
-    end
-
-    # Error interrupt enable
-    def self.errie=(value : ERRIE) : ERRIE
-      self.set(errie: value)
-      value
-    end
-
-    enum OPTWRE : UInt8
-      # Option byte write enabled
-      DISABLED = 0x0_u64
-
-      # Option byte write disabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : OPTWRE
-        CR.reset_value.optwre
-      end
-    end
-
-    # Option bytes write enable
-    def optwre : OPTWRE
-      OPTWRE.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Option bytes write enable
-    def self.optwre : OPTWRE
-      value.optwre
-    end
-
-    # Option bytes write enable
-    def self.optwre=(value : OPTWRE) : OPTWRE
-      self.set(optwre: value)
-      value
-    end
-
-    enum LOCK : UInt8
-      # FLASH_CR register is unlocked
-      UNLOCKED = 0x0_u64
-
-      # FLASH_CR register is locked
-      LOCKED = 0x1_u64
-
-      def self.reset_value : LOCK
-        CR.reset_value.lock
-      end
-    end
-
-    # Lock
-    def lock : LOCK
-      LOCK.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Lock
-    def self.lock : LOCK
-      value.lock
-    end
-
-    # Lock
-    def self.lock=(value : LOCK) : LOCK
-      self.set(lock: value)
-      value
-    end
-
-    enum STRT : UInt8
-      # Trigger an erase operation
-      START = 0x1_u64
-
-      def self.reset_value : STRT
-        CR.reset_value.strt
-      end
-    end
-
-    # Start
-    def strt : STRT
-      STRT.new!((@value >> 6) & 0x1_u32)
-    end
-
-    # Start
-    def self.strt : STRT
-      value.strt
-    end
-
-    # Start
-    def self.strt=(value : STRT) : STRT
-      self.set(strt: value)
-      value
-    end
-
-    enum OPTER : UInt8
-      # Erase option byte activated
-      OPTIONBYTEERASE = 0x1_u64
-
-      def self.reset_value : OPTER
-        CR.reset_value.opter
-      end
-    end
-
-    # Option byte erase
-    def opter : OPTER
-      OPTER.new!((@value >> 5) & 0x1_u32)
-    end
-
-    # Option byte erase
-    def self.opter : OPTER
-      value.opter
-    end
-
-    # Option byte erase
-    def self.opter=(value : OPTER) : OPTER
-      self.set(opter: value)
-      value
-    end
-
-    enum OPTPG : UInt8
-      # Program option byte activated
-      OPTIONBYTEPROGRAMMING = 0x1_u64
-
-      def self.reset_value : OPTPG
-        CR.reset_value.optpg
-      end
-    end
-
-    # Option byte programming
-    def optpg : OPTPG
-      OPTPG.new!((@value >> 4) & 0x1_u32)
-    end
-
-    # Option byte programming
-    def self.optpg : OPTPG
-      value.optpg
-    end
-
-    # Option byte programming
-    def self.optpg=(value : OPTPG) : OPTPG
-      self.set(optpg: value)
-      value
-    end
-
-    enum MER : UInt8
-      # Erase activated for all user sectors
-      MASSERASE = 0x1_u64
-
-      def self.reset_value : MER
-        CR.reset_value.mer
-      end
-    end
-
-    # Mass erase
-    def mer : MER
-      MER.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # Mass erase
-    def self.mer : MER
-      value.mer
-    end
-
-    # Mass erase
-    def self.mer=(value : MER) : MER
-      self.set(mer: value)
-      value
-    end
-
-    enum PER : UInt8
-      # Erase activated for selected page
-      PAGEERASE = 0x1_u64
-
-      def self.reset_value : PER
-        CR.reset_value.per
-      end
-    end
-
-    # Page erase
-    def per : PER
-      PER.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Page erase
-    def self.per : PER
-      value.per
-    end
-
-    # Page erase
-    def self.per=(value : PER) : PER
-      self.set(per: value)
-      value
-    end
-
-    enum PG : UInt8
-      # Flash programming activated
-      PROGRAM = 0x1_u64
-
-      def self.reset_value : PG
-        CR.reset_value.pg
-      end
+    # Programming
+    def pg : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Programming
-    def pg : PG
-      PG.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Programming
-    def self.pg : PG
+    def self.pg : Bool
       value.pg
     end
 
     # Programming
-    def self.pg=(value : PG) : PG
+    def self.pg=(value : Bool) : Bool
       self.set(pg: value)
+      value
+    end
+
+    # Sector Erase
+    def ser : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Sector Erase
+    def self.ser : Bool
+      value.ser
+    end
+
+    # Sector Erase
+    def self.ser=(value : Bool) : Bool
+      self.set(ser: value)
+      value
+    end
+
+    # Mass Erase of sectors 0 to              11
+    def mer : Bool
+      @value.bits_set?(0x4_u32)
+    end
+
+    # Mass Erase of sectors 0 to              11
+    def self.mer : Bool
+      value.mer
+    end
+
+    # Mass Erase of sectors 0 to              11
+    def self.mer=(value : Bool) : Bool
+      self.set(mer: value)
+      value
+    end
+
+    # Sector number
+    def snb : UInt8
+      UInt8.new!((@value >> 3) & 0x1f_u32)
+    end
+
+    # Sector number
+    def self.snb : UInt8
+      value.snb
+    end
+
+    # Sector number
+    def self.snb=(value : UInt8) : UInt8
+      self.set(snb: value)
+      value
+    end
+
+    # Program size
+    def psize : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
+    end
+
+    # Program size
+    def self.psize : UInt8
+      value.psize
+    end
+
+    # Program size
+    def self.psize=(value : UInt8) : UInt8
+      self.set(psize: value)
+      value
+    end
+
+    # Mass Erase of sectors 12 to              23
+    def mer1 : Bool
+      @value.bits_set?(0x8000_u32)
+    end
+
+    # Mass Erase of sectors 12 to              23
+    def self.mer1 : Bool
+      value.mer1
+    end
+
+    # Mass Erase of sectors 12 to              23
+    def self.mer1=(value : Bool) : Bool
+      self.set(mer1: value)
+      value
+    end
+
+    # Start
+    def strt : Bool
+      @value.bits_set?(0x10000_u32)
+    end
+
+    # Start
+    def self.strt : Bool
+      value.strt
+    end
+
+    # Start
+    def self.strt=(value : Bool) : Bool
+      self.set(strt: value)
+      value
+    end
+
+    # End of operation interrupt              enable
+    def eopie : Bool
+      @value.bits_set?(0x1000000_u32)
+    end
+
+    # End of operation interrupt              enable
+    def self.eopie : Bool
+      value.eopie
+    end
+
+    # End of operation interrupt              enable
+    def self.eopie=(value : Bool) : Bool
+      self.set(eopie: value)
+      value
+    end
+
+    # Error interrupt enable
+    def errie : Bool
+      @value.bits_set?(0x2000000_u32)
+    end
+
+    # Error interrupt enable
+    def self.errie : Bool
+      value.errie
+    end
+
+    # Error interrupt enable
+    def self.errie=(value : Bool) : Bool
+      self.set(errie: value)
+      value
+    end
+
+    # Lock
+    def lock : Bool
+      @value.bits_set?(0x80000000_u32)
+    end
+
+    # Lock
+    def self.lock : Bool
+      value.lock
+    end
+
+    # Lock
+    def self.lock=(value : Bool) : Bool
+      self.set(lock: value)
       value
     end
 
     def copy_with(
       *,
 
-      obl_launch : OBL_LAUNCH? = nil,
+      pg : Bool? = nil,
 
-      eopie : EOPIE? = nil,
+      ser : Bool? = nil,
 
-      errie : ERRIE? = nil,
+      mer : Bool? = nil,
 
-      optwre : OPTWRE? = nil,
+      snb : UInt8? = nil,
 
-      lock : LOCK? = nil,
+      psize : UInt8? = nil,
 
-      strt : STRT? = nil,
+      mer1 : Bool? = nil,
 
-      opter : OPTER? = nil,
+      strt : Bool? = nil,
 
-      optpg : OPTPG? = nil,
+      eopie : Bool? = nil,
 
-      mer : MER? = nil,
+      errie : Bool? = nil,
 
-      per : PER? = nil,
-
-      pg : PG? = nil
+      lock : Bool? = nil
     ) : self
       value = @value
 
-      unless obl_launch.nil?
-        value = (value & 0xffffdfff_u32) |
-                UInt32.new!(obl_launch.to_int).&(0x1_u32) << 13
+      unless pg.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(pg.to_int).&(0x1_u32) << 0
       end
 
-      unless eopie.nil?
-        value = (value & 0xffffefff_u32) |
-                UInt32.new!(eopie.to_int).&(0x1_u32) << 12
-      end
-
-      unless errie.nil?
-        value = (value & 0xfffffbff_u32) |
-                UInt32.new!(errie.to_int).&(0x1_u32) << 10
-      end
-
-      unless optwre.nil?
-        value = (value & 0xfffffdff_u32) |
-                UInt32.new!(optwre.to_int).&(0x1_u32) << 9
-      end
-
-      unless lock.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(lock.to_int).&(0x1_u32) << 7
-      end
-
-      unless strt.nil?
-        value = (value & 0xffffffbf_u32) |
-                UInt32.new!(strt.to_int).&(0x1_u32) << 6
-      end
-
-      unless opter.nil?
-        value = (value & 0xffffffdf_u32) |
-                UInt32.new!(opter.to_int).&(0x1_u32) << 5
-      end
-
-      unless optpg.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(optpg.to_int).&(0x1_u32) << 4
+      unless ser.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(ser.to_int).&(0x1_u32) << 1
       end
 
       unless mer.nil?
@@ -903,14 +772,39 @@ module FLASH
                 UInt32.new!(mer.to_int).&(0x1_u32) << 2
       end
 
-      unless per.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(per.to_int).&(0x1_u32) << 1
+      unless snb.nil?
+        value = (value & 0xffffff07_u32) |
+                UInt32.new!(snb.to_int).&(0x1f_u32) << 3
       end
 
-      unless pg.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(pg.to_int).&(0x1_u32) << 0
+      unless psize.nil?
+        value = (value & 0xfffffcff_u32) |
+                UInt32.new!(psize.to_int).&(0x3_u32) << 8
+      end
+
+      unless mer1.nil?
+        value = (value & 0xffff7fff_u32) |
+                UInt32.new!(mer1.to_int).&(0x1_u32) << 15
+      end
+
+      unless strt.nil?
+        value = (value & 0xfffeffff_u32) |
+                UInt32.new!(strt.to_int).&(0x1_u32) << 16
+      end
+
+      unless eopie.nil?
+        value = (value & 0xfeffffff_u32) |
+                UInt32.new!(eopie.to_int).&(0x1_u32) << 24
+      end
+
+      unless errie.nil?
+        value = (value & 0xfdffffff_u32) |
+                UInt32.new!(errie.to_int).&(0x1_u32) << 25
+      end
+
+      unless lock.nil?
+        value = (value & 0x7fffffff_u32) |
+                UInt32.new!(lock.to_int).&(0x1_u32) << 31
       end
 
       self.class.new(value)
@@ -918,36 +812,34 @@ module FLASH
 
     def self.set(
       *,
-      obl_launch : OBL_LAUNCH? = nil,
-      eopie : EOPIE? = nil,
-      errie : ERRIE? = nil,
-      optwre : OPTWRE? = nil,
-      lock : LOCK? = nil,
-      strt : STRT? = nil,
-      opter : OPTER? = nil,
-      optpg : OPTPG? = nil,
-      mer : MER? = nil,
-      per : PER? = nil,
-      pg : PG? = nil
+      pg : Bool? = nil,
+      ser : Bool? = nil,
+      mer : Bool? = nil,
+      snb : UInt8? = nil,
+      psize : UInt8? = nil,
+      mer1 : Bool? = nil,
+      strt : Bool? = nil,
+      eopie : Bool? = nil,
+      errie : Bool? = nil,
+      lock : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        obl_launch: obl_launch,
+        pg: pg,
+        ser: ser,
+        mer: mer,
+        snb: snb,
+        psize: psize,
+        mer1: mer1,
+        strt: strt,
         eopie: eopie,
         errie: errie,
-        optwre: optwre,
         lock: lock,
-        strt: strt,
-        opter: opter,
-        optpg: optpg,
-        mer: mer,
-        per: per,
-        pg: pg,
       )
     end
   end # struct
 
-  # Flash address register
-  struct AR
+  # Flash option control register
+  struct OPTCR
     ADDRESS = BASE_ADDRESS + 0x14_u64
 
     protected def self.address : UInt64
@@ -964,7 +856,7 @@ module FLASH
     end
 
     def self.reset_value : self
-      new(0x0_u64)
+      new(0xfffaaed_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -981,22 +873,193 @@ module FLASH
       value
     end
 
-    # Flash address
-    def self.far=(value : UInt32) : UInt32
-      self.set(far: value)
+    # Option lock
+    def optlock : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Option lock
+    def self.optlock : Bool
+      value.optlock
+    end
+
+    # Option lock
+    def self.optlock=(value : Bool) : Bool
+      self.set(optlock: value)
+      value
+    end
+
+    # Option start
+    def optstrt : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Option start
+    def self.optstrt : Bool
+      value.optstrt
+    end
+
+    # Option start
+    def self.optstrt=(value : Bool) : Bool
+      self.set(optstrt: value)
+      value
+    end
+
+    # BOR reset Level
+    def bor_lev : UInt8
+      UInt8.new!((@value >> 2) & 0x3_u32)
+    end
+
+    # BOR reset Level
+    def self.bor_lev : UInt8
+      value.bor_lev
+    end
+
+    # BOR reset Level
+    def self.bor_lev=(value : UInt8) : UInt8
+      self.set(bor_lev: value)
+      value
+    end
+
+    # WDG_SW User option bytes
+    def wdg_sw : Bool
+      @value.bits_set?(0x20_u32)
+    end
+
+    # WDG_SW User option bytes
+    def self.wdg_sw : Bool
+      value.wdg_sw
+    end
+
+    # WDG_SW User option bytes
+    def self.wdg_sw=(value : Bool) : Bool
+      self.set(wdg_sw: value)
+      value
+    end
+
+    # nRST_STOP User option              bytes
+    def n_rst_stop : Bool
+      @value.bits_set?(0x40_u32)
+    end
+
+    # nRST_STOP User option              bytes
+    def self.n_rst_stop : Bool
+      value.n_rst_stop
+    end
+
+    # nRST_STOP User option              bytes
+    def self.n_rst_stop=(value : Bool) : Bool
+      self.set(n_rst_stop: value)
+      value
+    end
+
+    # nRST_STDBY User option              bytes
+    def n_rst_stdby : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # nRST_STDBY User option              bytes
+    def self.n_rst_stdby : Bool
+      value.n_rst_stdby
+    end
+
+    # nRST_STDBY User option              bytes
+    def self.n_rst_stdby=(value : Bool) : Bool
+      self.set(n_rst_stdby: value)
+      value
+    end
+
+    # Read protect
+    def rdp : UInt8
+      UInt8.new!((@value >> 8) & 0xff_u32)
+    end
+
+    # Read protect
+    def self.rdp : UInt8
+      value.rdp
+    end
+
+    # Read protect
+    def self.rdp=(value : UInt8) : UInt8
+      self.set(rdp: value)
+      value
+    end
+
+    # Not write protect
+    def n_wrp : UInt16
+      UInt16.new!((@value >> 16) & 0xfff_u32)
+    end
+
+    # Not write protect
+    def self.n_wrp : UInt16
+      value.n_wrp
+    end
+
+    # Not write protect
+    def self.n_wrp=(value : UInt16) : UInt16
+      self.set(n_wrp: value)
       value
     end
 
     def copy_with(
       *,
 
-      far : UInt32? = nil
+      optlock : Bool? = nil,
+
+      optstrt : Bool? = nil,
+
+      bor_lev : UInt8? = nil,
+
+      wdg_sw : Bool? = nil,
+
+      n_rst_stop : Bool? = nil,
+
+      n_rst_stdby : Bool? = nil,
+
+      rdp : UInt8? = nil,
+
+      n_wrp : UInt16? = nil
     ) : self
       value = @value
 
-      unless far.nil?
-        value = (value & 0xffffffff_u32) |
-                UInt32.new!(far.to_int).&(0x0_u32) << 0
+      unless optlock.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(optlock.to_int).&(0x1_u32) << 0
+      end
+
+      unless optstrt.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(optstrt.to_int).&(0x1_u32) << 1
+      end
+
+      unless bor_lev.nil?
+        value = (value & 0xfffffff3_u32) |
+                UInt32.new!(bor_lev.to_int).&(0x3_u32) << 2
+      end
+
+      unless wdg_sw.nil?
+        value = (value & 0xffffffdf_u32) |
+                UInt32.new!(wdg_sw.to_int).&(0x1_u32) << 5
+      end
+
+      unless n_rst_stop.nil?
+        value = (value & 0xffffffbf_u32) |
+                UInt32.new!(n_rst_stop.to_int).&(0x1_u32) << 6
+      end
+
+      unless n_rst_stdby.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(n_rst_stdby.to_int).&(0x1_u32) << 7
+      end
+
+      unless rdp.nil?
+        value = (value & 0xffff00ff_u32) |
+                UInt32.new!(rdp.to_int).&(0xff_u32) << 8
+      end
+
+      unless n_wrp.nil?
+        value = (value & 0xf000ffff_u32) |
+                UInt32.new!(n_wrp.to_int).&(0xfff_u32) << 16
       end
 
       self.class.new(value)
@@ -1004,17 +1067,31 @@ module FLASH
 
     def self.set(
       *,
-      far : UInt32? = nil
+      optlock : Bool? = nil,
+      optstrt : Bool? = nil,
+      bor_lev : UInt8? = nil,
+      wdg_sw : Bool? = nil,
+      n_rst_stop : Bool? = nil,
+      n_rst_stdby : Bool? = nil,
+      rdp : UInt8? = nil,
+      n_wrp : UInt16? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        far: far,
+        optlock: optlock,
+        optstrt: optstrt,
+        bor_lev: bor_lev,
+        wdg_sw: wdg_sw,
+        n_rst_stop: n_rst_stop,
+        n_rst_stdby: n_rst_stdby,
+        rdp: rdp,
+        n_wrp: n_wrp,
       )
     end
   end # struct
 
-  # Option byte register
-  struct OBR
-    ADDRESS = BASE_ADDRESS + 0x1c_u64
+  # Flash option control register          1
+  struct OPTCR1
+    ADDRESS = BASE_ADDRESS + 0x18_u64
 
     protected def self.address : UInt64
       ADDRESS
@@ -1030,7 +1107,7 @@ module FLASH
     end
 
     def self.reset_value : self
-      new(0xffffff0f_u64)
+      new(0xfff0000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -1047,246 +1124,44 @@ module FLASH
       value
     end
 
-    enum OPTERR : UInt8
-      # The loaded option byte and its complement do not match
-      OPTIONBYTEERROR = 0x1_u64
-
-      def self.reset_value : OPTERR
-        OBR.reset_value.opterr
-      end
+    # Not write protect
+    def n_wrp : UInt16
+      UInt16.new!((@value >> 16) & 0xfff_u32)
     end
 
-    # Option byte error
-    def opterr : OPTERR
-      OPTERR.new!((@value >> 0) & 0x1_u32)
+    # Not write protect
+    def self.n_wrp : UInt16
+      value.n_wrp
     end
 
-    # Option byte error
-    def self.opterr : OPTERR
-      value.opterr
-    end
-
-    enum WDG_SW : UInt8
-      # Hardware watchdog
-      HARDWARE = 0x0_u64
-
-      # Software watchdog
-      SOFTWARE = 0x1_u64
-
-      def self.reset_value : WDG_SW
-        OBR.reset_value.wdg_sw
-      end
-    end
-
-    # WDG_SW
-    def wdg_sw : WDG_SW
-      WDG_SW.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # WDG_SW
-    def self.wdg_sw : WDG_SW
-      value.wdg_sw
-    end
-
-    enum NnRST_STOP : UInt8
-      # Reset generated when entering Stop mode
-      RESET = 0x0_u64
-
-      # No reset generated
-      NORESET = 0x1_u64
-
-      def self.reset_value : NnRST_STOP
-        OBR.reset_value.n_rst_stop
-      end
-    end
-
-    # nRST_STOP
-    def n_rst_stop : NnRST_STOP
-      NnRST_STOP.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # nRST_STOP
-    def self.n_rst_stop : NnRST_STOP
-      value.n_rst_stop
-    end
-
-    enum NnRST_STDBY : UInt8
-      # Reset generated when entering Standby mode
-      RESET = 0x0_u64
-
-      # No reset generated
-      NORESET = 0x1_u64
-
-      def self.reset_value : NnRST_STDBY
-        OBR.reset_value.n_rst_stdby
-      end
-    end
-
-    # nRST_STDBY
-    def n_rst_stdby : NnRST_STDBY
-      NnRST_STDBY.new!((@value >> 10) & 0x1_u32)
-    end
-
-    # nRST_STDBY
-    def self.n_rst_stdby : NnRST_STDBY
-      value.n_rst_stdby
-    end
-
-    enum NnBOOT1 : UInt8
-      # Together with BOOT0, select the device boot mode
-      DISABLED = 0x0_u64
-
-      # Together with BOOT0, select the device boot mode
-      ENABLED = 0x1_u64
-
-      def self.reset_value : NnBOOT1
-        OBR.reset_value.n_boot1
-      end
-    end
-
-    # BOOT1
-    def n_boot1 : NnBOOT1
-      NnBOOT1.new!((@value >> 12) & 0x1_u32)
-    end
-
-    # BOOT1
-    def self.n_boot1 : NnBOOT1
-      value.n_boot1
-    end
-
-    enum VDDA_MONITOR : UInt8
-      # VDDA power supply supervisor disabled
-      DISABLED = 0x0_u64
-
-      # VDDA power supply supervisor enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : VDDA_MONITOR
-        OBR.reset_value.vdda_monitor
-      end
-    end
-
-    # VDDA_MONITOR
-    def vdda_monitor : VDDA_MONITOR
-      VDDA_MONITOR.new!((@value >> 13) & 0x1_u32)
-    end
-
-    # VDDA_MONITOR
-    def self.vdda_monitor : VDDA_MONITOR
-      value.vdda_monitor
-    end
-
-    enum SRAM_PARITY_CHECK : UInt8
-      # RAM parity check disabled
-      DISABLED = 0x0_u64
-
-      # RAM parity check enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : SRAM_PARITY_CHECK
-        OBR.reset_value.sram_parity_check
-      end
-    end
-
-    # SRAM_PARITY_CHECK
-    def sram_parity_check : SRAM_PARITY_CHECK
-      SRAM_PARITY_CHECK.new!((@value >> 14) & 0x1_u32)
-    end
-
-    # SRAM_PARITY_CHECK
-    def self.sram_parity_check : SRAM_PARITY_CHECK
-      value.sram_parity_check
-    end
-
-    # Data0
-    def data0 : UInt8
-      UInt8.new!((@value >> 16) & 0xff_u32)
-    end
-
-    # Data0
-    def self.data0 : UInt8
-      value.data0
-    end
-
-    # Data1
-    def data1 : UInt8
-      UInt8.new!((@value >> 24) & 0xff_u32)
-    end
-
-    # Data1
-    def self.data1 : UInt8
-      value.data1
-    end
-
-    enum RDPRT : UInt8
-      # Level 0
-      LEVEL0 = 0x0_u64
-
-      # Level 1
-      LEVEL1 = 0x1_u64
-
-      # Level 2
-      LEVEL2 = 0x3_u64
-
-      def self.reset_value : RDPRT
-        OBR.reset_value.rdprt
-      end
-    end
-
-    # Read protection Level status
-    def rdprt : RDPRT
-      RDPRT.new!((@value >> 1) & 0x3_u32)
-    end
-
-    # Read protection Level status
-    def self.rdprt : RDPRT
-      value.rdprt
-    end
-  end # struct
-
-  # Write protection register
-  struct WRPR
-    ADDRESS = BASE_ADDRESS + 0x20_u64
-
-    protected def self.address : UInt64
-      ADDRESS
-    end
-
-    @value : UInt32
-
-    def initialize(@value : UInt32)
-    end
-
-    def to_int : UInt32
-      @value
-    end
-
-    def self.reset_value : self
-      new(0xffffffff_u64)
-    end
-
-    def self.pointer : Pointer(UInt32)
-      Pointer(UInt32).new(self.address)
-    end
-
-    def self.value : self
-      value = self.pointer.load(volatile: true)
-      new(value)
-    end
-
-    def self.value=(value : self) : self
-      self.pointer.store(value.to_int, volatile: true)
+    # Not write protect
+    def self.n_wrp=(value : UInt16) : UInt16
+      self.set(n_wrp: value)
       value
     end
 
-    # Write protect
-    def wrp : UInt32
-      UInt32.new!((@value >> 0) & 0x0_u32)
+    def copy_with(
+      *,
+
+      n_wrp : UInt16? = nil
+    ) : self
+      value = @value
+
+      unless n_wrp.nil?
+        value = (value & 0xf000ffff_u32) |
+                UInt32.new!(n_wrp.to_int).&(0xfff_u32) << 16
+      end
+
+      self.class.new(value)
     end
 
-    # Write protect
-    def self.wrp : UInt32
-      value.wrp
+    def self.set(
+      *,
+      n_wrp : UInt16? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        n_wrp: n_wrp,
+      )
     end
   end # struct
 

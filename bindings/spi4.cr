@@ -1,4 +1,4 @@
 module SPI4
   VERSION      = nil
-  BASE_ADDRESS = 0x40013c00_u64
+  BASE_ADDRESS = 0x40013400_u64
 end

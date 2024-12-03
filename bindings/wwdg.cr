@@ -38,67 +38,55 @@ module WWDG
       value
     end
 
-    # 7-bit counter
-    def t : UInt8
-      UInt8.new!((@value >> 0) & 0x7f_u32)
-    end
-
-    # 7-bit counter
-    def self.t : UInt8
-      value.t
-    end
-
-    # 7-bit counter
-    def self.t=(value : UInt8) : UInt8
-      self.set(t: value)
-      value
-    end
-
-    enum WDGA : UInt8
-      # Watchdog disabled
-      DISABLED = 0x0_u64
-
-      # Watchdog enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : WDGA
-        CR.reset_value.wdga
-      end
+    # Activation bit
+    def wdga : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # Activation bit
-    def wdga : WDGA
-      WDGA.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Activation bit
-    def self.wdga : WDGA
+    def self.wdga : Bool
       value.wdga
     end
 
     # Activation bit
-    def self.wdga=(value : WDGA) : WDGA
+    def self.wdga=(value : Bool) : Bool
       self.set(wdga: value)
+      value
+    end
+
+    # 7-bit counter (MSB to LSB)
+    def t : UInt8
+      UInt8.new!((@value >> 0) & 0x7f_u32)
+    end
+
+    # 7-bit counter (MSB to LSB)
+    def self.t : UInt8
+      value.t
+    end
+
+    # 7-bit counter (MSB to LSB)
+    def self.t=(value : UInt8) : UInt8
+      self.set(t: value)
       value
     end
 
     def copy_with(
       *,
 
-      t : UInt8? = nil,
+      wdga : Bool? = nil,
 
-      wdga : WDGA? = nil
+      t : UInt8? = nil
     ) : self
       value = @value
-
-      unless t.nil?
-        value = (value & 0xffffff80_u32) |
-                UInt32.new!(t.to_int).&(0x7f_u32) << 0
-      end
 
       unless wdga.nil?
         value = (value & 0xffffff7f_u32) |
                 UInt32.new!(wdga.to_int).&(0x1_u32) << 7
+      end
+
+      unless t.nil?
+        value = (value & 0xffffff80_u32) |
+                UInt32.new!(t.to_int).&(0x7f_u32) << 0
       end
 
       self.class.new(value)
@@ -106,12 +94,12 @@ module WWDG
 
     def self.set(
       *,
-      t : UInt8? = nil,
-      wdga : WDGA? = nil
+      wdga : Bool? = nil,
+      t : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        t: t,
         wdga: wdga,
+        t: t,
       )
     end
   end # struct
@@ -151,28 +139,51 @@ module WWDG
       value
     end
 
-    enum EWI : UInt8
-      # interrupt occurs whenever the counter reaches the value 0x40
-      ENABLE = 0x1_u64
-
-      def self.reset_value : EWI
-        CFR.reset_value.ewi
-      end
+    # Early wakeup interrupt
+    def ewi : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Early wakeup interrupt
-    def ewi : EWI
-      EWI.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Early wakeup interrupt
-    def self.ewi : EWI
+    def self.ewi : Bool
       value.ewi
     end
 
     # Early wakeup interrupt
-    def self.ewi=(value : EWI) : EWI
+    def self.ewi=(value : Bool) : Bool
       self.set(ewi: value)
+      value
+    end
+
+    # Timer base
+    def wdgtb1 : Bool
+      @value.bits_set?(0x100_u32)
+    end
+
+    # Timer base
+    def self.wdgtb1 : Bool
+      value.wdgtb1
+    end
+
+    # Timer base
+    def self.wdgtb1=(value : Bool) : Bool
+      self.set(wdgtb1: value)
+      value
+    end
+
+    # Timer base
+    def wdgtb0 : Bool
+      @value.bits_set?(0x80_u32)
+    end
+
+    # Timer base
+    def self.wdgtb0 : Bool
+      value.wdgtb0
+    end
+
+    # Timer base
+    def self.wdgtb0=(value : Bool) : Bool
+      self.set(wdgtb0: value)
       value
     end
 
@@ -192,48 +203,16 @@ module WWDG
       value
     end
 
-    enum WDGTB : UInt8
-      # Counter clock (PCLK1 div 4096) div 1
-      DIV1 = 0x0_u64
-
-      # Counter clock (PCLK1 div 4096) div 2
-      DIV2 = 0x1_u64
-
-      # Counter clock (PCLK1 div 4096) div 4
-      DIV4 = 0x2_u64
-
-      # Counter clock (PCLK1 div 4096) div 8
-      DIV8 = 0x3_u64
-
-      def self.reset_value : WDGTB
-        CFR.reset_value.wdgtb
-      end
-    end
-
-    # Timer base
-    def wdgtb : WDGTB
-      WDGTB.new!((@value >> 7) & 0x3_u32)
-    end
-
-    # Timer base
-    def self.wdgtb : WDGTB
-      value.wdgtb
-    end
-
-    # Timer base
-    def self.wdgtb=(value : WDGTB) : WDGTB
-      self.set(wdgtb: value)
-      value
-    end
-
     def copy_with(
       *,
 
-      ewi : EWI? = nil,
+      ewi : Bool? = nil,
 
-      w : UInt8? = nil,
+      wdgtb1 : Bool? = nil,
 
-      wdgtb : WDGTB? = nil
+      wdgtb0 : Bool? = nil,
+
+      w : UInt8? = nil
     ) : self
       value = @value
 
@@ -242,14 +221,19 @@ module WWDG
                 UInt32.new!(ewi.to_int).&(0x1_u32) << 9
       end
 
+      unless wdgtb1.nil?
+        value = (value & 0xfffffeff_u32) |
+                UInt32.new!(wdgtb1.to_int).&(0x1_u32) << 8
+      end
+
+      unless wdgtb0.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(wdgtb0.to_int).&(0x1_u32) << 7
+      end
+
       unless w.nil?
         value = (value & 0xffffff80_u32) |
                 UInt32.new!(w.to_int).&(0x7f_u32) << 0
-      end
-
-      unless wdgtb.nil?
-        value = (value & 0xfffffe7f_u32) |
-                UInt32.new!(wdgtb.to_int).&(0x3_u32) << 7
       end
 
       self.class.new(value)
@@ -257,14 +241,16 @@ module WWDG
 
     def self.set(
       *,
-      ewi : EWI? = nil,
-      w : UInt8? = nil,
-      wdgtb : WDGTB? = nil
+      ewi : Bool? = nil,
+      wdgtb1 : Bool? = nil,
+      wdgtb0 : Bool? = nil,
+      w : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ewi: ewi,
+        wdgtb1: wdgtb1,
+        wdgtb0: wdgtb0,
         w: w,
-        wdgtb: wdgtb,
       )
     end
   end # struct
@@ -304,30 +290,18 @@ module WWDG
       value
     end
 
-    enum EWIF : UInt8
-      # The EWI Interrupt Service Routine has been triggered
-      PENDING = 0x1_u64
-
-      # The EWI Interrupt Service Routine has been serviced
-      FINISHED = 0x0_u64
-
-      def self.reset_value : EWIF
-        SR.reset_value.ewif
-      end
+    # Early wakeup interrupt              flag
+    def ewif : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Early wakeup interrupt              flag
-    def ewif : EWIF
-      EWIF.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Early wakeup interrupt              flag
-    def self.ewif : EWIF
+    def self.ewif : Bool
       value.ewif
     end
 
     # Early wakeup interrupt              flag
-    def self.ewif=(value : EWIF) : EWIF
+    def self.ewif=(value : Bool) : Bool
       self.set(ewif: value)
       value
     end
@@ -335,7 +309,7 @@ module WWDG
     def copy_with(
       *,
 
-      ewif : EWIF? = nil
+      ewif : Bool? = nil
     ) : self
       value = @value
 
@@ -349,7 +323,7 @@ module WWDG
 
     def self.set(
       *,
-      ewif : EWIF? = nil
+      ewif : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         ewif: ewif,

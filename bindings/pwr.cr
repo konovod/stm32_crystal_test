@@ -21,7 +21,7 @@ module PWR
     end
 
     def self.reset_value : self
-      new(0x0_u64)
+      new(0xc000_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -54,30 +54,18 @@ module PWR
       value
     end
 
-    enum PDDS : UInt8
-      # Enter Stop mode when the CPU enters deepsleep
-      STOP_MODE = 0x0_u64
-
-      # Enter Standby mode when the CPU enters deepsleep
-      STANDBY_MODE = 0x1_u64
-
-      def self.reset_value : PDDS
-        CR.reset_value.pdds
-      end
+    # Power down deepsleep
+    def pdds : Bool
+      @value.bits_set?(0x2_u32)
     end
 
     # Power down deepsleep
-    def pdds : PDDS
-      PDDS.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Power down deepsleep
-    def self.pdds : PDDS
+    def self.pdds : Bool
       value.pdds
     end
 
     # Power down deepsleep
-    def self.pdds=(value : PDDS) : PDDS
+    def self.pdds=(value : Bool) : Bool
       self.set(pdds: value)
       value
     end
@@ -162,12 +150,124 @@ module PWR
       value
     end
 
+    # Flash power down in Stop              mode
+    def fpds : Bool
+      @value.bits_set?(0x200_u32)
+    end
+
+    # Flash power down in Stop              mode
+    def self.fpds : Bool
+      value.fpds
+    end
+
+    # Flash power down in Stop              mode
+    def self.fpds=(value : Bool) : Bool
+      self.set(fpds: value)
+      value
+    end
+
+    # Low-Power Regulator Low Voltage in              deepsleep
+    def lplvds : Bool
+      @value.bits_set?(0x400_u32)
+    end
+
+    # Low-Power Regulator Low Voltage in              deepsleep
+    def self.lplvds : Bool
+      value.lplvds
+    end
+
+    # Low-Power Regulator Low Voltage in              deepsleep
+    def self.lplvds=(value : Bool) : Bool
+      self.set(lplvds: value)
+      value
+    end
+
+    # Main regulator low voltage in deepsleep              mode
+    def mrlvds : Bool
+      @value.bits_set?(0x800_u32)
+    end
+
+    # Main regulator low voltage in deepsleep              mode
+    def self.mrlvds : Bool
+      value.mrlvds
+    end
+
+    # Main regulator low voltage in deepsleep              mode
+    def self.mrlvds=(value : Bool) : Bool
+      self.set(mrlvds: value)
+      value
+    end
+
+    # Regulator voltage scaling output              selection
+    def vos : UInt8
+      UInt8.new!((@value >> 14) & 0x3_u32)
+    end
+
+    # Regulator voltage scaling output              selection
+    def self.vos : UInt8
+      value.vos
+    end
+
+    # Regulator voltage scaling output              selection
+    def self.vos=(value : UInt8) : UInt8
+      self.set(vos: value)
+      value
+    end
+
+    # Over-drive enable
+    def oden : Bool
+      @value.bits_set?(0x10000_u32)
+    end
+
+    # Over-drive enable
+    def self.oden : Bool
+      value.oden
+    end
+
+    # Over-drive enable
+    def self.oden=(value : Bool) : Bool
+      self.set(oden: value)
+      value
+    end
+
+    # Over-drive switching              enabled
+    def odswen : Bool
+      @value.bits_set?(0x20000_u32)
+    end
+
+    # Over-drive switching              enabled
+    def self.odswen : Bool
+      value.odswen
+    end
+
+    # Over-drive switching              enabled
+    def self.odswen=(value : Bool) : Bool
+      self.set(odswen: value)
+      value
+    end
+
+    # Under-drive enable in stop              mode
+    def uden : UInt8
+      UInt8.new!((@value >> 18) & 0x3_u32)
+    end
+
+    # Under-drive enable in stop              mode
+    def self.uden : UInt8
+      value.uden
+    end
+
+    # Under-drive enable in stop              mode
+    def self.uden=(value : UInt8) : UInt8
+      self.set(uden: value)
+      value
+    end
+
     def copy_with(
       *,
 
       lpds : Bool? = nil,
 
-      pdds : PDDS? = nil,
+      pdds : Bool? = nil,
 
       cwuf : Bool? = nil,
 
@@ -177,7 +277,21 @@ module PWR
 
       pls : UInt8? = nil,
 
-      dbp : Bool? = nil
+      dbp : Bool? = nil,
+
+      fpds : Bool? = nil,
+
+      lplvds : Bool? = nil,
+
+      mrlvds : Bool? = nil,
+
+      vos : UInt8? = nil,
+
+      oden : Bool? = nil,
+
+      odswen : Bool? = nil,
+
+      uden : UInt8? = nil
     ) : self
       value = @value
 
@@ -216,18 +330,60 @@ module PWR
                 UInt32.new!(dbp.to_int).&(0x1_u32) << 8
       end
 
+      unless fpds.nil?
+        value = (value & 0xfffffdff_u32) |
+                UInt32.new!(fpds.to_int).&(0x1_u32) << 9
+      end
+
+      unless lplvds.nil?
+        value = (value & 0xfffffbff_u32) |
+                UInt32.new!(lplvds.to_int).&(0x1_u32) << 10
+      end
+
+      unless mrlvds.nil?
+        value = (value & 0xfffff7ff_u32) |
+                UInt32.new!(mrlvds.to_int).&(0x1_u32) << 11
+      end
+
+      unless vos.nil?
+        value = (value & 0xffff3fff_u32) |
+                UInt32.new!(vos.to_int).&(0x3_u32) << 14
+      end
+
+      unless oden.nil?
+        value = (value & 0xfffeffff_u32) |
+                UInt32.new!(oden.to_int).&(0x1_u32) << 16
+      end
+
+      unless odswen.nil?
+        value = (value & 0xfffdffff_u32) |
+                UInt32.new!(odswen.to_int).&(0x1_u32) << 17
+      end
+
+      unless uden.nil?
+        value = (value & 0xfff3ffff_u32) |
+                UInt32.new!(uden.to_int).&(0x3_u32) << 18
+      end
+
       self.class.new(value)
     end
 
     def self.set(
       *,
       lpds : Bool? = nil,
-      pdds : PDDS? = nil,
+      pdds : Bool? = nil,
       cwuf : Bool? = nil,
       csbf : Bool? = nil,
       pvde : Bool? = nil,
       pls : UInt8? = nil,
-      dbp : Bool? = nil
+      dbp : Bool? = nil,
+      fpds : Bool? = nil,
+      lplvds : Bool? = nil,
+      mrlvds : Bool? = nil,
+      vos : UInt8? = nil,
+      oden : Bool? = nil,
+      odswen : Bool? = nil,
+      uden : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
         lpds: lpds,
@@ -237,6 +393,13 @@ module PWR
         pvde: pvde,
         pls: pls,
         dbp: dbp,
+        fpds: fpds,
+        lplvds: lplvds,
+        mrlvds: mrlvds,
+        vos: vos,
+        oden: oden,
+        odswen: odswen,
+        uden: uden,
       )
     end
   end # struct
@@ -306,88 +469,131 @@ module PWR
       value.pvdo
     end
 
-    # Enable WKUP1 pin
-    def ewup1 : Bool
-      @value.bits_set?(0x100_u32)
-    end
-
-    # Enable WKUP1 pin
-    def self.ewup1 : Bool
-      value.ewup1
-    end
-
-    # Enable WKUP1 pin
-    def self.ewup1=(value : Bool) : Bool
-      self.set(ewup1: value)
-      value
-    end
-
-    # Enable WKUP2 pin
-    def ewup2 : Bool
-      @value.bits_set?(0x200_u32)
-    end
-
-    # Enable WKUP2 pin
-    def self.ewup2 : Bool
-      value.ewup2
-    end
-
-    # Enable WKUP2 pin
-    def self.ewup2=(value : Bool) : Bool
-      self.set(ewup2: value)
-      value
-    end
-
-    # Internal voltage reference ready flag
-    def vrefintrdyf : Bool
+    # Backup regulator ready
+    def brr : Bool
       @value.bits_set?(0x8_u32)
     end
 
-    # Internal voltage reference ready flag
-    def self.vrefintrdyf : Bool
-      value.vrefintrdyf
+    # Backup regulator ready
+    def self.brr : Bool
+      value.brr
     end
 
-    # Enable WKUP3 pin
-    def ewup3 : Bool
-      @value.bits_set?(0x400_u32)
+    # Enable WKUP pin
+    def ewup : Bool
+      @value.bits_set?(0x100_u32)
     end
 
-    # Enable WKUP3 pin
-    def self.ewup3 : Bool
-      value.ewup3
+    # Enable WKUP pin
+    def self.ewup : Bool
+      value.ewup
     end
 
-    # Enable WKUP3 pin
-    def self.ewup3=(value : Bool) : Bool
-      self.set(ewup3: value)
+    # Enable WKUP pin
+    def self.ewup=(value : Bool) : Bool
+      self.set(ewup: value)
+      value
+    end
+
+    # Backup regulator enable
+    def bre : Bool
+      @value.bits_set?(0x200_u32)
+    end
+
+    # Backup regulator enable
+    def self.bre : Bool
+      value.bre
+    end
+
+    # Backup regulator enable
+    def self.bre=(value : Bool) : Bool
+      self.set(bre: value)
+      value
+    end
+
+    # Regulator voltage scaling output              selection ready bit
+    def vosrdy : Bool
+      @value.bits_set?(0x4000_u32)
+    end
+
+    # Regulator voltage scaling output              selection ready bit
+    def self.vosrdy : Bool
+      value.vosrdy
+    end
+
+    # Regulator voltage scaling output              selection ready bit
+    def self.vosrdy=(value : Bool) : Bool
+      self.set(vosrdy: value)
+      value
+    end
+
+    # Over-drive mode ready
+    def odrdy : Bool
+      @value.bits_set?(0x10000_u32)
+    end
+
+    # Over-drive mode ready
+    def self.odrdy : Bool
+      value.odrdy
+    end
+
+    # Over-drive mode switching              ready
+    def odswrdy : Bool
+      @value.bits_set?(0x20000_u32)
+    end
+
+    # Over-drive mode switching              ready
+    def self.odswrdy : Bool
+      value.odswrdy
+    end
+
+    # Under-drive ready flag
+    def udrdy : UInt8
+      UInt8.new!((@value >> 18) & 0x3_u32)
+    end
+
+    # Under-drive ready flag
+    def self.udrdy : UInt8
+      value.udrdy
+    end
+
+    # Under-drive ready flag
+    def self.udrdy=(value : UInt8) : UInt8
+      self.set(udrdy: value)
       value
     end
 
     def copy_with(
       *,
 
-      ewup1 : Bool? = nil,
+      ewup : Bool? = nil,
 
-      ewup2 : Bool? = nil,
+      bre : Bool? = nil,
 
-      ewup3 : Bool? = nil
+      vosrdy : Bool? = nil,
+
+      udrdy : UInt8? = nil
     ) : self
       value = @value
 
-      unless ewup1.nil?
+      unless ewup.nil?
         value = (value & 0xfffffeff_u32) |
-                UInt32.new!(ewup1.to_int).&(0x1_u32) << 8
+                UInt32.new!(ewup.to_int).&(0x1_u32) << 8
       end
 
-      unless ewup2.nil?
+      unless bre.nil?
         value = (value & 0xfffffdff_u32) |
-                UInt32.new!(ewup2.to_int).&(0x1_u32) << 9
+                UInt32.new!(bre.to_int).&(0x1_u32) << 9
       end
 
-      unless ewup3.nil?
-        value = (value & 0xfffffbff_u32) |
-                UInt32.new!(ewup3.to_int).&(0x1_u32) << 10
+      unless vosrdy.nil?
+        value = (value & 0xffffbfff_u32) |
+                UInt32.new!(vosrdy.to_int).&(0x1_u32) << 14
+      end
+
+      unless udrdy.nil?
+        value = (value & 0xfff3ffff_u32) |
+                UInt32.new!(udrdy.to_int).&(0x3_u32) << 18
       end
 
       self.class.new(value)
@@ -395,14 +601,16 @@ module PWR
 
     def self.set(
       *,
-      ewup1 : Bool? = nil,
-      ewup2 : Bool? = nil,
-      ewup3 : Bool? = nil
+      ewup : Bool? = nil,
+      bre : Bool? = nil,
+      vosrdy : Bool? = nil,
+      udrdy : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        ewup1: ewup1,
-        ewup2: ewup2,
-        ewup3: ewup3,
+        ewup: ewup,
+        bre: bre,
+        vosrdy: vosrdy,
+        udrdy: udrdy,
       )
     end
   end # struct

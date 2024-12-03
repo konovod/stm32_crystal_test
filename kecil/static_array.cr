@@ -15,4 +15,10 @@ struct StaticArray(T, N)
   def [](index : Int) : T
     (to_unsafe + index).load
   end
+  
+  def each(& : T ->) : Nil
+    {% for i in 0...N %}
+      yield self[{{i}}]
+    {% end %}
+  end   
 end

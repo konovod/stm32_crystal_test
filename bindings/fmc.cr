@@ -1,7 +1,7 @@
 # Flexible memory controller
 module FMC
   VERSION      = nil
-  BASE_ADDRESS = 0xa0000400_u64
+  BASE_ADDRESS = 0xa0000000_u64
 
   # SRAM/NOR-Flash chip-select control register          1
   struct BCR1
@@ -5129,22 +5129,6 @@ module FMC
       value
     end
 
-    # Bus turnaround phase              duration
-    def busturn : UInt8
-      UInt8.new!((@value >> 16) & 0xf_u32)
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn : UInt8
-      value.busturn
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn=(value : UInt8) : UInt8
-      self.set(busturn: value)
-      value
-    end
-
     # DATAST
     def datast : UInt8
       UInt8.new!((@value >> 8) & 0xff_u32)
@@ -5202,8 +5186,6 @@ module FMC
 
       clkdiv : UInt8? = nil,
 
-      busturn : UInt8? = nil,
-
       datast : UInt8? = nil,
 
       addhld : UInt8? = nil,
@@ -5225,11 +5207,6 @@ module FMC
       unless clkdiv.nil?
         value = (value & 0xff0fffff_u32) |
                 UInt32.new!(clkdiv.to_int).&(0xf_u32) << 20
-      end
-
-      unless busturn.nil?
-        value = (value & 0xfff0ffff_u32) |
-                UInt32.new!(busturn.to_int).&(0xf_u32) << 16
       end
 
       unless datast.nil?
@@ -5255,7 +5232,6 @@ module FMC
       accmod : UInt8? = nil,
       datlat : UInt8? = nil,
       clkdiv : UInt8? = nil,
-      busturn : UInt8? = nil,
       datast : UInt8? = nil,
       addhld : UInt8? = nil,
       addset : UInt8? = nil
@@ -5264,7 +5240,6 @@ module FMC
         accmod: accmod,
         datlat: datlat,
         clkdiv: clkdiv,
-        busturn: busturn,
         datast: datast,
         addhld: addhld,
         addset: addset,
@@ -5355,22 +5330,6 @@ module FMC
       value
     end
 
-    # Bus turnaround phase              duration
-    def busturn : UInt8
-      UInt8.new!((@value >> 16) & 0xf_u32)
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn : UInt8
-      value.busturn
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn=(value : UInt8) : UInt8
-      self.set(busturn: value)
-      value
-    end
-
     # DATAST
     def datast : UInt8
       UInt8.new!((@value >> 8) & 0xff_u32)
@@ -5428,8 +5387,6 @@ module FMC
 
       clkdiv : UInt8? = nil,
 
-      busturn : UInt8? = nil,
-
       datast : UInt8? = nil,
 
       addhld : UInt8? = nil,
@@ -5451,11 +5408,6 @@ module FMC
       unless clkdiv.nil?
         value = (value & 0xff0fffff_u32) |
                 UInt32.new!(clkdiv.to_int).&(0xf_u32) << 20
-      end
-
-      unless busturn.nil?
-        value = (value & 0xfff0ffff_u32) |
-                UInt32.new!(busturn.to_int).&(0xf_u32) << 16
       end
 
       unless datast.nil?
@@ -5481,7 +5433,6 @@ module FMC
       accmod : UInt8? = nil,
       datlat : UInt8? = nil,
       clkdiv : UInt8? = nil,
-      busturn : UInt8? = nil,
       datast : UInt8? = nil,
       addhld : UInt8? = nil,
       addset : UInt8? = nil
@@ -5490,7 +5441,6 @@ module FMC
         accmod: accmod,
         datlat: datlat,
         clkdiv: clkdiv,
-        busturn: busturn,
         datast: datast,
         addhld: addhld,
         addset: addset,
@@ -5500,7 +5450,7 @@ module FMC
 
   # SRAM/NOR-Flash write timing registers          3
   struct BWTR3
-    ADDRESS = BASE_ADDRESS + 0x114_u64
+    ADDRESS = BASE_ADDRESS + 0x104_u64
 
     protected def self.address : UInt64
       ADDRESS
@@ -5581,22 +5531,6 @@ module FMC
       value
     end
 
-    # Bus turnaround phase              duration
-    def busturn : UInt8
-      UInt8.new!((@value >> 16) & 0xf_u32)
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn : UInt8
-      value.busturn
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn=(value : UInt8) : UInt8
-      self.set(busturn: value)
-      value
-    end
-
     # DATAST
     def datast : UInt8
       UInt8.new!((@value >> 8) & 0xff_u32)
@@ -5654,8 +5588,6 @@ module FMC
 
       clkdiv : UInt8? = nil,
 
-      busturn : UInt8? = nil,
-
       datast : UInt8? = nil,
 
       addhld : UInt8? = nil,
@@ -5677,11 +5609,6 @@ module FMC
       unless clkdiv.nil?
         value = (value & 0xff0fffff_u32) |
                 UInt32.new!(clkdiv.to_int).&(0xf_u32) << 20
-      end
-
-      unless busturn.nil?
-        value = (value & 0xfff0ffff_u32) |
-                UInt32.new!(busturn.to_int).&(0xf_u32) << 16
       end
 
       unless datast.nil?
@@ -5707,7 +5634,6 @@ module FMC
       accmod : UInt8? = nil,
       datlat : UInt8? = nil,
       clkdiv : UInt8? = nil,
-      busturn : UInt8? = nil,
       datast : UInt8? = nil,
       addhld : UInt8? = nil,
       addset : UInt8? = nil
@@ -5716,7 +5642,6 @@ module FMC
         accmod: accmod,
         datlat: datlat,
         clkdiv: clkdiv,
-        busturn: busturn,
         datast: datast,
         addhld: addhld,
         addset: addset,
@@ -5726,7 +5651,7 @@ module FMC
 
   # SRAM/NOR-Flash write timing registers          4
   struct BWTR4
-    ADDRESS = BASE_ADDRESS + 0x11c_u64
+    ADDRESS = BASE_ADDRESS + 0x10c_u64
 
     protected def self.address : UInt64
       ADDRESS
@@ -5807,22 +5732,6 @@ module FMC
       value
     end
 
-    # Bus turnaround phase              duration
-    def busturn : UInt8
-      UInt8.new!((@value >> 16) & 0xf_u32)
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn : UInt8
-      value.busturn
-    end
-
-    # Bus turnaround phase              duration
-    def self.busturn=(value : UInt8) : UInt8
-      self.set(busturn: value)
-      value
-    end
-
     # DATAST
     def datast : UInt8
       UInt8.new!((@value >> 8) & 0xff_u32)
@@ -5880,8 +5789,6 @@ module FMC
 
       clkdiv : UInt8? = nil,
 
-      busturn : UInt8? = nil,
-
       datast : UInt8? = nil,
 
       addhld : UInt8? = nil,
@@ -5903,11 +5810,6 @@ module FMC
       unless clkdiv.nil?
         value = (value & 0xff0fffff_u32) |
                 UInt32.new!(clkdiv.to_int).&(0xf_u32) << 20
-      end
-
-      unless busturn.nil?
-        value = (value & 0xfff0ffff_u32) |
-                UInt32.new!(busturn.to_int).&(0xf_u32) << 16
       end
 
       unless datast.nil?
@@ -5933,7 +5835,6 @@ module FMC
       accmod : UInt8? = nil,
       datlat : UInt8? = nil,
       clkdiv : UInt8? = nil,
-      busturn : UInt8? = nil,
       datast : UInt8? = nil,
       addhld : UInt8? = nil,
       addset : UInt8? = nil
@@ -5942,11 +5843,1352 @@ module FMC
         accmod: accmod,
         datlat: datlat,
         clkdiv: clkdiv,
-        busturn: busturn,
         datast: datast,
         addhld: addhld,
         addset: addset,
       )
+    end
+  end # struct
+
+  # SDRAM Control Register 1
+  struct SDCR1
+    ADDRESS = BASE_ADDRESS + 0x140_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x2d0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Number of column address              bits
+    def nc : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
+    end
+
+    # Number of column address              bits
+    def self.nc : UInt8
+      value.nc
+    end
+
+    # Number of column address              bits
+    def self.nc=(value : UInt8) : UInt8
+      self.set(nc: value)
+      value
+    end
+
+    # Number of row address bits
+    def nr : UInt8
+      UInt8.new!((@value >> 2) & 0x3_u32)
+    end
+
+    # Number of row address bits
+    def self.nr : UInt8
+      value.nr
+    end
+
+    # Number of row address bits
+    def self.nr=(value : UInt8) : UInt8
+      self.set(nr: value)
+      value
+    end
+
+    # Memory data bus width
+    def mwid : UInt8
+      UInt8.new!((@value >> 4) & 0x3_u32)
+    end
+
+    # Memory data bus width
+    def self.mwid : UInt8
+      value.mwid
+    end
+
+    # Memory data bus width
+    def self.mwid=(value : UInt8) : UInt8
+      self.set(mwid: value)
+      value
+    end
+
+    # Number of internal banks
+    def nb : Bool
+      @value.bits_set?(0x40_u32)
+    end
+
+    # Number of internal banks
+    def self.nb : Bool
+      value.nb
+    end
+
+    # Number of internal banks
+    def self.nb=(value : Bool) : Bool
+      self.set(nb: value)
+      value
+    end
+
+    # CAS latency
+    def cas : UInt8
+      UInt8.new!((@value >> 7) & 0x3_u32)
+    end
+
+    # CAS latency
+    def self.cas : UInt8
+      value.cas
+    end
+
+    # CAS latency
+    def self.cas=(value : UInt8) : UInt8
+      self.set(cas: value)
+      value
+    end
+
+    # Write protection
+    def wp : Bool
+      @value.bits_set?(0x200_u32)
+    end
+
+    # Write protection
+    def self.wp : Bool
+      value.wp
+    end
+
+    # Write protection
+    def self.wp=(value : Bool) : Bool
+      self.set(wp: value)
+      value
+    end
+
+    # SDRAM clock configuration
+    def sdclk : UInt8
+      UInt8.new!((@value >> 10) & 0x3_u32)
+    end
+
+    # SDRAM clock configuration
+    def self.sdclk : UInt8
+      value.sdclk
+    end
+
+    # SDRAM clock configuration
+    def self.sdclk=(value : UInt8) : UInt8
+      self.set(sdclk: value)
+      value
+    end
+
+    # Burst read
+    def rburst : Bool
+      @value.bits_set?(0x1000_u32)
+    end
+
+    # Burst read
+    def self.rburst : Bool
+      value.rburst
+    end
+
+    # Burst read
+    def self.rburst=(value : Bool) : Bool
+      self.set(rburst: value)
+      value
+    end
+
+    # Read pipe
+    def rpipe : UInt8
+      UInt8.new!((@value >> 13) & 0x3_u32)
+    end
+
+    # Read pipe
+    def self.rpipe : UInt8
+      value.rpipe
+    end
+
+    # Read pipe
+    def self.rpipe=(value : UInt8) : UInt8
+      self.set(rpipe: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      nc : UInt8? = nil,
+
+      nr : UInt8? = nil,
+
+      mwid : UInt8? = nil,
+
+      nb : Bool? = nil,
+
+      cas : UInt8? = nil,
+
+      wp : Bool? = nil,
+
+      sdclk : UInt8? = nil,
+
+      rburst : Bool? = nil,
+
+      rpipe : UInt8? = nil
+    ) : self
+      value = @value
+
+      unless nc.nil?
+        value = (value & 0xfffffffc_u32) |
+                UInt32.new!(nc.to_int).&(0x3_u32) << 0
+      end
+
+      unless nr.nil?
+        value = (value & 0xfffffff3_u32) |
+                UInt32.new!(nr.to_int).&(0x3_u32) << 2
+      end
+
+      unless mwid.nil?
+        value = (value & 0xffffffcf_u32) |
+                UInt32.new!(mwid.to_int).&(0x3_u32) << 4
+      end
+
+      unless nb.nil?
+        value = (value & 0xffffffbf_u32) |
+                UInt32.new!(nb.to_int).&(0x1_u32) << 6
+      end
+
+      unless cas.nil?
+        value = (value & 0xfffffe7f_u32) |
+                UInt32.new!(cas.to_int).&(0x3_u32) << 7
+      end
+
+      unless wp.nil?
+        value = (value & 0xfffffdff_u32) |
+                UInt32.new!(wp.to_int).&(0x1_u32) << 9
+      end
+
+      unless sdclk.nil?
+        value = (value & 0xfffff3ff_u32) |
+                UInt32.new!(sdclk.to_int).&(0x3_u32) << 10
+      end
+
+      unless rburst.nil?
+        value = (value & 0xffffefff_u32) |
+                UInt32.new!(rburst.to_int).&(0x1_u32) << 12
+      end
+
+      unless rpipe.nil?
+        value = (value & 0xffff9fff_u32) |
+                UInt32.new!(rpipe.to_int).&(0x3_u32) << 13
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      nc : UInt8? = nil,
+      nr : UInt8? = nil,
+      mwid : UInt8? = nil,
+      nb : Bool? = nil,
+      cas : UInt8? = nil,
+      wp : Bool? = nil,
+      sdclk : UInt8? = nil,
+      rburst : Bool? = nil,
+      rpipe : UInt8? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        nc: nc,
+        nr: nr,
+        mwid: mwid,
+        nb: nb,
+        cas: cas,
+        wp: wp,
+        sdclk: sdclk,
+        rburst: rburst,
+        rpipe: rpipe,
+      )
+    end
+  end # struct
+
+  # SDRAM Control Register 2
+  struct SDCR2
+    ADDRESS = BASE_ADDRESS + 0x144_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x2d0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Number of column address              bits
+    def nc : UInt8
+      UInt8.new!((@value >> 0) & 0x3_u32)
+    end
+
+    # Number of column address              bits
+    def self.nc : UInt8
+      value.nc
+    end
+
+    # Number of column address              bits
+    def self.nc=(value : UInt8) : UInt8
+      self.set(nc: value)
+      value
+    end
+
+    # Number of row address bits
+    def nr : UInt8
+      UInt8.new!((@value >> 2) & 0x3_u32)
+    end
+
+    # Number of row address bits
+    def self.nr : UInt8
+      value.nr
+    end
+
+    # Number of row address bits
+    def self.nr=(value : UInt8) : UInt8
+      self.set(nr: value)
+      value
+    end
+
+    # Memory data bus width
+    def mwid : UInt8
+      UInt8.new!((@value >> 4) & 0x3_u32)
+    end
+
+    # Memory data bus width
+    def self.mwid : UInt8
+      value.mwid
+    end
+
+    # Memory data bus width
+    def self.mwid=(value : UInt8) : UInt8
+      self.set(mwid: value)
+      value
+    end
+
+    # Number of internal banks
+    def nb : Bool
+      @value.bits_set?(0x40_u32)
+    end
+
+    # Number of internal banks
+    def self.nb : Bool
+      value.nb
+    end
+
+    # Number of internal banks
+    def self.nb=(value : Bool) : Bool
+      self.set(nb: value)
+      value
+    end
+
+    # CAS latency
+    def cas : UInt8
+      UInt8.new!((@value >> 7) & 0x3_u32)
+    end
+
+    # CAS latency
+    def self.cas : UInt8
+      value.cas
+    end
+
+    # CAS latency
+    def self.cas=(value : UInt8) : UInt8
+      self.set(cas: value)
+      value
+    end
+
+    # Write protection
+    def wp : Bool
+      @value.bits_set?(0x200_u32)
+    end
+
+    # Write protection
+    def self.wp : Bool
+      value.wp
+    end
+
+    # Write protection
+    def self.wp=(value : Bool) : Bool
+      self.set(wp: value)
+      value
+    end
+
+    # SDRAM clock configuration
+    def sdclk : UInt8
+      UInt8.new!((@value >> 10) & 0x3_u32)
+    end
+
+    # SDRAM clock configuration
+    def self.sdclk : UInt8
+      value.sdclk
+    end
+
+    # SDRAM clock configuration
+    def self.sdclk=(value : UInt8) : UInt8
+      self.set(sdclk: value)
+      value
+    end
+
+    # Burst read
+    def rburst : Bool
+      @value.bits_set?(0x1000_u32)
+    end
+
+    # Burst read
+    def self.rburst : Bool
+      value.rburst
+    end
+
+    # Burst read
+    def self.rburst=(value : Bool) : Bool
+      self.set(rburst: value)
+      value
+    end
+
+    # Read pipe
+    def rpipe : UInt8
+      UInt8.new!((@value >> 13) & 0x3_u32)
+    end
+
+    # Read pipe
+    def self.rpipe : UInt8
+      value.rpipe
+    end
+
+    # Read pipe
+    def self.rpipe=(value : UInt8) : UInt8
+      self.set(rpipe: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      nc : UInt8? = nil,
+
+      nr : UInt8? = nil,
+
+      mwid : UInt8? = nil,
+
+      nb : Bool? = nil,
+
+      cas : UInt8? = nil,
+
+      wp : Bool? = nil,
+
+      sdclk : UInt8? = nil,
+
+      rburst : Bool? = nil,
+
+      rpipe : UInt8? = nil
+    ) : self
+      value = @value
+
+      unless nc.nil?
+        value = (value & 0xfffffffc_u32) |
+                UInt32.new!(nc.to_int).&(0x3_u32) << 0
+      end
+
+      unless nr.nil?
+        value = (value & 0xfffffff3_u32) |
+                UInt32.new!(nr.to_int).&(0x3_u32) << 2
+      end
+
+      unless mwid.nil?
+        value = (value & 0xffffffcf_u32) |
+                UInt32.new!(mwid.to_int).&(0x3_u32) << 4
+      end
+
+      unless nb.nil?
+        value = (value & 0xffffffbf_u32) |
+                UInt32.new!(nb.to_int).&(0x1_u32) << 6
+      end
+
+      unless cas.nil?
+        value = (value & 0xfffffe7f_u32) |
+                UInt32.new!(cas.to_int).&(0x3_u32) << 7
+      end
+
+      unless wp.nil?
+        value = (value & 0xfffffdff_u32) |
+                UInt32.new!(wp.to_int).&(0x1_u32) << 9
+      end
+
+      unless sdclk.nil?
+        value = (value & 0xfffff3ff_u32) |
+                UInt32.new!(sdclk.to_int).&(0x3_u32) << 10
+      end
+
+      unless rburst.nil?
+        value = (value & 0xffffefff_u32) |
+                UInt32.new!(rburst.to_int).&(0x1_u32) << 12
+      end
+
+      unless rpipe.nil?
+        value = (value & 0xffff9fff_u32) |
+                UInt32.new!(rpipe.to_int).&(0x3_u32) << 13
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      nc : UInt8? = nil,
+      nr : UInt8? = nil,
+      mwid : UInt8? = nil,
+      nb : Bool? = nil,
+      cas : UInt8? = nil,
+      wp : Bool? = nil,
+      sdclk : UInt8? = nil,
+      rburst : Bool? = nil,
+      rpipe : UInt8? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        nc: nc,
+        nr: nr,
+        mwid: mwid,
+        nb: nb,
+        cas: cas,
+        wp: wp,
+        sdclk: sdclk,
+        rburst: rburst,
+        rpipe: rpipe,
+      )
+    end
+  end # struct
+
+  # SDRAM Timing register 1
+  struct SDTR1
+    ADDRESS = BASE_ADDRESS + 0x148_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0xfffffff_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Load Mode Register to              Active
+    def tmrd : UInt8
+      UInt8.new!((@value >> 0) & 0xf_u32)
+    end
+
+    # Load Mode Register to              Active
+    def self.tmrd : UInt8
+      value.tmrd
+    end
+
+    # Load Mode Register to              Active
+    def self.tmrd=(value : UInt8) : UInt8
+      self.set(tmrd: value)
+      value
+    end
+
+    # Exit self-refresh delay
+    def txsr : UInt8
+      UInt8.new!((@value >> 4) & 0xf_u32)
+    end
+
+    # Exit self-refresh delay
+    def self.txsr : UInt8
+      value.txsr
+    end
+
+    # Exit self-refresh delay
+    def self.txsr=(value : UInt8) : UInt8
+      self.set(txsr: value)
+      value
+    end
+
+    # Self refresh time
+    def tras : UInt8
+      UInt8.new!((@value >> 8) & 0xf_u32)
+    end
+
+    # Self refresh time
+    def self.tras : UInt8
+      value.tras
+    end
+
+    # Self refresh time
+    def self.tras=(value : UInt8) : UInt8
+      self.set(tras: value)
+      value
+    end
+
+    # Row cycle delay
+    def trc : UInt8
+      UInt8.new!((@value >> 12) & 0xf_u32)
+    end
+
+    # Row cycle delay
+    def self.trc : UInt8
+      value.trc
+    end
+
+    # Row cycle delay
+    def self.trc=(value : UInt8) : UInt8
+      self.set(trc: value)
+      value
+    end
+
+    # Recovery delay
+    def twr : UInt8
+      UInt8.new!((@value >> 16) & 0xf_u32)
+    end
+
+    # Recovery delay
+    def self.twr : UInt8
+      value.twr
+    end
+
+    # Recovery delay
+    def self.twr=(value : UInt8) : UInt8
+      self.set(twr: value)
+      value
+    end
+
+    # Row precharge delay
+    def trp : UInt8
+      UInt8.new!((@value >> 20) & 0xf_u32)
+    end
+
+    # Row precharge delay
+    def self.trp : UInt8
+      value.trp
+    end
+
+    # Row precharge delay
+    def self.trp=(value : UInt8) : UInt8
+      self.set(trp: value)
+      value
+    end
+
+    # Row to column delay
+    def trcd : UInt8
+      UInt8.new!((@value >> 24) & 0xf_u32)
+    end
+
+    # Row to column delay
+    def self.trcd : UInt8
+      value.trcd
+    end
+
+    # Row to column delay
+    def self.trcd=(value : UInt8) : UInt8
+      self.set(trcd: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      tmrd : UInt8? = nil,
+
+      txsr : UInt8? = nil,
+
+      tras : UInt8? = nil,
+
+      trc : UInt8? = nil,
+
+      twr : UInt8? = nil,
+
+      trp : UInt8? = nil,
+
+      trcd : UInt8? = nil
+    ) : self
+      value = @value
+
+      unless tmrd.nil?
+        value = (value & 0xfffffff0_u32) |
+                UInt32.new!(tmrd.to_int).&(0xf_u32) << 0
+      end
+
+      unless txsr.nil?
+        value = (value & 0xffffff0f_u32) |
+                UInt32.new!(txsr.to_int).&(0xf_u32) << 4
+      end
+
+      unless tras.nil?
+        value = (value & 0xfffff0ff_u32) |
+                UInt32.new!(tras.to_int).&(0xf_u32) << 8
+      end
+
+      unless trc.nil?
+        value = (value & 0xffff0fff_u32) |
+                UInt32.new!(trc.to_int).&(0xf_u32) << 12
+      end
+
+      unless twr.nil?
+        value = (value & 0xfff0ffff_u32) |
+                UInt32.new!(twr.to_int).&(0xf_u32) << 16
+      end
+
+      unless trp.nil?
+        value = (value & 0xff0fffff_u32) |
+                UInt32.new!(trp.to_int).&(0xf_u32) << 20
+      end
+
+      unless trcd.nil?
+        value = (value & 0xf0ffffff_u32) |
+                UInt32.new!(trcd.to_int).&(0xf_u32) << 24
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      tmrd : UInt8? = nil,
+      txsr : UInt8? = nil,
+      tras : UInt8? = nil,
+      trc : UInt8? = nil,
+      twr : UInt8? = nil,
+      trp : UInt8? = nil,
+      trcd : UInt8? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        tmrd: tmrd,
+        txsr: txsr,
+        tras: tras,
+        trc: trc,
+        twr: twr,
+        trp: trp,
+        trcd: trcd,
+      )
+    end
+  end # struct
+
+  # SDRAM Timing register 2
+  struct SDTR2
+    ADDRESS = BASE_ADDRESS + 0x14c_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0xfffffff_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Load Mode Register to              Active
+    def tmrd : UInt8
+      UInt8.new!((@value >> 0) & 0xf_u32)
+    end
+
+    # Load Mode Register to              Active
+    def self.tmrd : UInt8
+      value.tmrd
+    end
+
+    # Load Mode Register to              Active
+    def self.tmrd=(value : UInt8) : UInt8
+      self.set(tmrd: value)
+      value
+    end
+
+    # Exit self-refresh delay
+    def txsr : UInt8
+      UInt8.new!((@value >> 4) & 0xf_u32)
+    end
+
+    # Exit self-refresh delay
+    def self.txsr : UInt8
+      value.txsr
+    end
+
+    # Exit self-refresh delay
+    def self.txsr=(value : UInt8) : UInt8
+      self.set(txsr: value)
+      value
+    end
+
+    # Self refresh time
+    def tras : UInt8
+      UInt8.new!((@value >> 8) & 0xf_u32)
+    end
+
+    # Self refresh time
+    def self.tras : UInt8
+      value.tras
+    end
+
+    # Self refresh time
+    def self.tras=(value : UInt8) : UInt8
+      self.set(tras: value)
+      value
+    end
+
+    # Row cycle delay
+    def trc : UInt8
+      UInt8.new!((@value >> 12) & 0xf_u32)
+    end
+
+    # Row cycle delay
+    def self.trc : UInt8
+      value.trc
+    end
+
+    # Row cycle delay
+    def self.trc=(value : UInt8) : UInt8
+      self.set(trc: value)
+      value
+    end
+
+    # Recovery delay
+    def twr : UInt8
+      UInt8.new!((@value >> 16) & 0xf_u32)
+    end
+
+    # Recovery delay
+    def self.twr : UInt8
+      value.twr
+    end
+
+    # Recovery delay
+    def self.twr=(value : UInt8) : UInt8
+      self.set(twr: value)
+      value
+    end
+
+    # Row precharge delay
+    def trp : UInt8
+      UInt8.new!((@value >> 20) & 0xf_u32)
+    end
+
+    # Row precharge delay
+    def self.trp : UInt8
+      value.trp
+    end
+
+    # Row precharge delay
+    def self.trp=(value : UInt8) : UInt8
+      self.set(trp: value)
+      value
+    end
+
+    # Row to column delay
+    def trcd : UInt8
+      UInt8.new!((@value >> 24) & 0xf_u32)
+    end
+
+    # Row to column delay
+    def self.trcd : UInt8
+      value.trcd
+    end
+
+    # Row to column delay
+    def self.trcd=(value : UInt8) : UInt8
+      self.set(trcd: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      tmrd : UInt8? = nil,
+
+      txsr : UInt8? = nil,
+
+      tras : UInt8? = nil,
+
+      trc : UInt8? = nil,
+
+      twr : UInt8? = nil,
+
+      trp : UInt8? = nil,
+
+      trcd : UInt8? = nil
+    ) : self
+      value = @value
+
+      unless tmrd.nil?
+        value = (value & 0xfffffff0_u32) |
+                UInt32.new!(tmrd.to_int).&(0xf_u32) << 0
+      end
+
+      unless txsr.nil?
+        value = (value & 0xffffff0f_u32) |
+                UInt32.new!(txsr.to_int).&(0xf_u32) << 4
+      end
+
+      unless tras.nil?
+        value = (value & 0xfffff0ff_u32) |
+                UInt32.new!(tras.to_int).&(0xf_u32) << 8
+      end
+
+      unless trc.nil?
+        value = (value & 0xffff0fff_u32) |
+                UInt32.new!(trc.to_int).&(0xf_u32) << 12
+      end
+
+      unless twr.nil?
+        value = (value & 0xfff0ffff_u32) |
+                UInt32.new!(twr.to_int).&(0xf_u32) << 16
+      end
+
+      unless trp.nil?
+        value = (value & 0xff0fffff_u32) |
+                UInt32.new!(trp.to_int).&(0xf_u32) << 20
+      end
+
+      unless trcd.nil?
+        value = (value & 0xf0ffffff_u32) |
+                UInt32.new!(trcd.to_int).&(0xf_u32) << 24
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      tmrd : UInt8? = nil,
+      txsr : UInt8? = nil,
+      tras : UInt8? = nil,
+      trc : UInt8? = nil,
+      twr : UInt8? = nil,
+      trp : UInt8? = nil,
+      trcd : UInt8? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        tmrd: tmrd,
+        txsr: txsr,
+        tras: tras,
+        trc: trc,
+        twr: twr,
+        trp: trp,
+        trcd: trcd,
+      )
+    end
+  end # struct
+
+  # SDRAM Command Mode register
+  struct SDCMR
+    ADDRESS = BASE_ADDRESS + 0x150_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Command mode
+    def self.mode=(value : UInt8) : UInt8
+      self.set(mode: value)
+      value
+    end
+
+    # Command target bank 2
+    def self.ctb2=(value : Bool) : Bool
+      self.set(ctb2: value)
+      value
+    end
+
+    # Command target bank 1
+    def self.ctb1=(value : Bool) : Bool
+      self.set(ctb1: value)
+      value
+    end
+
+    # Number of Auto-refresh
+    def nrfs : UInt8
+      UInt8.new!((@value >> 5) & 0xf_u32)
+    end
+
+    # Number of Auto-refresh
+    def self.nrfs : UInt8
+      value.nrfs
+    end
+
+    # Number of Auto-refresh
+    def self.nrfs=(value : UInt8) : UInt8
+      self.set(nrfs: value)
+      value
+    end
+
+    # Mode Register definition
+    def mrd : UInt16
+      UInt16.new!((@value >> 9) & 0x1fff_u32)
+    end
+
+    # Mode Register definition
+    def self.mrd : UInt16
+      value.mrd
+    end
+
+    # Mode Register definition
+    def self.mrd=(value : UInt16) : UInt16
+      self.set(mrd: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      mode : UInt8? = nil,
+
+      ctb2 : Bool? = nil,
+
+      ctb1 : Bool? = nil,
+
+      nrfs : UInt8? = nil,
+
+      mrd : UInt16? = nil
+    ) : self
+      value = @value
+
+      unless mode.nil?
+        value = (value & 0xfffffff8_u32) |
+                UInt32.new!(mode.to_int).&(0x7_u32) << 0
+      end
+
+      unless ctb2.nil?
+        value = (value & 0xfffffff7_u32) |
+                UInt32.new!(ctb2.to_int).&(0x1_u32) << 3
+      end
+
+      unless ctb1.nil?
+        value = (value & 0xffffffef_u32) |
+                UInt32.new!(ctb1.to_int).&(0x1_u32) << 4
+      end
+
+      unless nrfs.nil?
+        value = (value & 0xfffffe1f_u32) |
+                UInt32.new!(nrfs.to_int).&(0xf_u32) << 5
+      end
+
+      unless mrd.nil?
+        value = (value & 0xffc001ff_u32) |
+                UInt32.new!(mrd.to_int).&(0x1fff_u32) << 9
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      mode : UInt8? = nil,
+      ctb2 : Bool? = nil,
+      ctb1 : Bool? = nil,
+      nrfs : UInt8? = nil,
+      mrd : UInt16? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        mode: mode,
+        ctb2: ctb2,
+        ctb1: ctb1,
+        nrfs: nrfs,
+        mrd: mrd,
+      )
+    end
+  end # struct
+
+  # SDRAM Refresh Timer register
+  struct SDRTR
+    ADDRESS = BASE_ADDRESS + 0x154_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Clear Refresh error flag
+    def self.cre=(value : Bool) : Bool
+      self.set(cre: value)
+      value
+    end
+
+    # Refresh Timer Count
+    def count : UInt16
+      UInt16.new!((@value >> 1) & 0x1fff_u32)
+    end
+
+    # Refresh Timer Count
+    def self.count : UInt16
+      value.count
+    end
+
+    # Refresh Timer Count
+    def self.count=(value : UInt16) : UInt16
+      self.set(count: value)
+      value
+    end
+
+    # RES Interrupt Enable
+    def reie : Bool
+      @value.bits_set?(0x4000_u32)
+    end
+
+    # RES Interrupt Enable
+    def self.reie : Bool
+      value.reie
+    end
+
+    # RES Interrupt Enable
+    def self.reie=(value : Bool) : Bool
+      self.set(reie: value)
+      value
+    end
+
+    def copy_with(
+      *,
+
+      cre : Bool? = nil,
+
+      count : UInt16? = nil,
+
+      reie : Bool? = nil
+    ) : self
+      value = @value
+
+      unless cre.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(cre.to_int).&(0x1_u32) << 0
+      end
+
+      unless count.nil?
+        value = (value & 0xffffc001_u32) |
+                UInt32.new!(count.to_int).&(0x1fff_u32) << 1
+      end
+
+      unless reie.nil?
+        value = (value & 0xffffbfff_u32) |
+                UInt32.new!(reie.to_int).&(0x1_u32) << 14
+      end
+
+      self.class.new(value)
+    end
+
+    def self.set(
+      *,
+      cre : Bool? = nil,
+      count : UInt16? = nil,
+      reie : Bool? = nil
+    ) : Nil
+      self.value = self.value.copy_with(
+        cre: cre,
+        count: count,
+        reie: reie,
+      )
+    end
+  end # struct
+
+  # SDRAM Status register
+  struct SDSR
+    ADDRESS = BASE_ADDRESS + 0x158_u64
+
+    protected def self.address : UInt64
+      ADDRESS
+    end
+
+    @value : UInt32
+
+    def initialize(@value : UInt32)
+    end
+
+    def to_int : UInt32
+      @value
+    end
+
+    def self.reset_value : self
+      new(0x0_u64)
+    end
+
+    def self.pointer : Pointer(UInt32)
+      Pointer(UInt32).new(self.address)
+    end
+
+    def self.value : self
+      value = self.pointer.load(volatile: true)
+      new(value)
+    end
+
+    def self.value=(value : self) : self
+      self.pointer.store(value.to_int, volatile: true)
+      value
+    end
+
+    # Refresh error flag
+    def re : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Refresh error flag
+    def self.re : Bool
+      value.re
+    end
+
+    # Status Mode for Bank 1
+    def modes1 : UInt8
+      UInt8.new!((@value >> 1) & 0x3_u32)
+    end
+
+    # Status Mode for Bank 1
+    def self.modes1 : UInt8
+      value.modes1
+    end
+
+    # Status Mode for Bank 2
+    def modes2 : UInt8
+      UInt8.new!((@value >> 3) & 0x3_u32)
+    end
+
+    # Status Mode for Bank 2
+    def self.modes2 : UInt8
+      value.modes2
+    end
+
+    # Busy status
+    def busy : Bool
+      @value.bits_set?(0x20_u32)
+    end
+
+    # Busy status
+    def self.busy : Bool
+      value.busy
     end
   end # struct
 

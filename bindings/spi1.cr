@@ -1,4 +1,4 @@
-# Serial peripheral interface/Inter-IC      sound
+# Serial peripheral interface
 module SPI1
   VERSION      = nil
   BASE_ADDRESS = 0x40013000_u64
@@ -38,412 +38,226 @@ module SPI1
       value
     end
 
-    enum BIDIMODE : UInt8
-      # 2-line unidirectional data mode selected
-      UNIDIRECTIONAL = 0x0_u64
-
-      # 1-line bidirectional data mode selected
-      BIDIRECTIONAL = 0x1_u64
-
-      def self.reset_value : BIDIMODE
-        CR1.reset_value.bidimode
-      end
+    # Bidirectional data mode              enable
+    def bidimode : Bool
+      @value.bits_set?(0x8000_u32)
     end
 
     # Bidirectional data mode              enable
-    def bidimode : BIDIMODE
-      BIDIMODE.new!((@value >> 15) & 0x1_u32)
-    end
-
-    # Bidirectional data mode              enable
-    def self.bidimode : BIDIMODE
+    def self.bidimode : Bool
       value.bidimode
     end
 
     # Bidirectional data mode              enable
-    def self.bidimode=(value : BIDIMODE) : BIDIMODE
+    def self.bidimode=(value : Bool) : Bool
       self.set(bidimode: value)
       value
     end
 
-    enum BIDIOE : UInt8
-      # Output disabled (receive-only mode)
-      OUTPUTDISABLED = 0x0_u64
-
-      # Output enabled (transmit-only mode)
-      OUTPUTENABLED = 0x1_u64
-
-      def self.reset_value : BIDIOE
-        CR1.reset_value.bidioe
-      end
+    # Output enable in bidirectional              mode
+    def bidioe : Bool
+      @value.bits_set?(0x4000_u32)
     end
 
     # Output enable in bidirectional              mode
-    def bidioe : BIDIOE
-      BIDIOE.new!((@value >> 14) & 0x1_u32)
-    end
-
-    # Output enable in bidirectional              mode
-    def self.bidioe : BIDIOE
+    def self.bidioe : Bool
       value.bidioe
     end
 
     # Output enable in bidirectional              mode
-    def self.bidioe=(value : BIDIOE) : BIDIOE
+    def self.bidioe=(value : Bool) : Bool
       self.set(bidioe: value)
       value
     end
 
-    enum CRCEN : UInt8
-      # CRC calculation disabled
-      DISABLED = 0x0_u64
-
-      # CRC calculation enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : CRCEN
-        CR1.reset_value.crcen
-      end
+    # Hardware CRC calculation              enable
+    def crcen : Bool
+      @value.bits_set?(0x2000_u32)
     end
 
     # Hardware CRC calculation              enable
-    def crcen : CRCEN
-      CRCEN.new!((@value >> 13) & 0x1_u32)
-    end
-
-    # Hardware CRC calculation              enable
-    def self.crcen : CRCEN
+    def self.crcen : Bool
       value.crcen
     end
 
     # Hardware CRC calculation              enable
-    def self.crcen=(value : CRCEN) : CRCEN
+    def self.crcen=(value : Bool) : Bool
       self.set(crcen: value)
       value
     end
 
-    enum CRCNEXT : UInt8
-      # Next transmit value is from Tx buffer
-      TXBUFFER = 0x0_u64
-
-      # Next transmit value is from Tx CRC register
-      CRC = 0x1_u64
-
-      def self.reset_value : CRCNEXT
-        CR1.reset_value.crcnext
-      end
+    # CRC transfer next
+    def crcnext : Bool
+      @value.bits_set?(0x1000_u32)
     end
 
     # CRC transfer next
-    def crcnext : CRCNEXT
-      CRCNEXT.new!((@value >> 12) & 0x1_u32)
-    end
-
-    # CRC transfer next
-    def self.crcnext : CRCNEXT
+    def self.crcnext : Bool
       value.crcnext
     end
 
     # CRC transfer next
-    def self.crcnext=(value : CRCNEXT) : CRCNEXT
+    def self.crcnext=(value : Bool) : Bool
       self.set(crcnext: value)
       value
     end
 
-    enum CRCL : UInt8
-      # 8-bit CRC length
-      EIGHTBIT = 0x0_u64
-
-      # 16-bit CRC length
-      SIXTEENBIT = 0x1_u64
-
-      def self.reset_value : CRCL
-        CR1.reset_value.crcl
-      end
+    # Data frame format
+    def dff : Bool
+      @value.bits_set?(0x800_u32)
     end
 
-    # CRC length
-    def crcl : CRCL
-      CRCL.new!((@value >> 11) & 0x1_u32)
+    # Data frame format
+    def self.dff : Bool
+      value.dff
     end
 
-    # CRC length
-    def self.crcl : CRCL
-      value.crcl
-    end
-
-    # CRC length
-    def self.crcl=(value : CRCL) : CRCL
-      self.set(crcl: value)
+    # Data frame format
+    def self.dff=(value : Bool) : Bool
+      self.set(dff: value)
       value
     end
 
-    enum RXONLY : UInt8
-      # Full duplex (Transmit and receive)
-      FULLDUPLEX = 0x0_u64
-
-      # Output disabled (Receive-only mode)
-      OUTPUTDISABLED = 0x1_u64
-
-      def self.reset_value : RXONLY
-        CR1.reset_value.rxonly
-      end
+    # Receive only
+    def rxonly : Bool
+      @value.bits_set?(0x400_u32)
     end
 
     # Receive only
-    def rxonly : RXONLY
-      RXONLY.new!((@value >> 10) & 0x1_u32)
-    end
-
-    # Receive only
-    def self.rxonly : RXONLY
+    def self.rxonly : Bool
       value.rxonly
     end
 
     # Receive only
-    def self.rxonly=(value : RXONLY) : RXONLY
+    def self.rxonly=(value : Bool) : Bool
       self.set(rxonly: value)
       value
     end
 
-    enum SSM : UInt8
-      # Software slave management disabled
-      DISABLED = 0x0_u64
-
-      # Software slave management enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : SSM
-        CR1.reset_value.ssm
-      end
+    # Software slave management
+    def ssm : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Software slave management
-    def ssm : SSM
-      SSM.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Software slave management
-    def self.ssm : SSM
+    def self.ssm : Bool
       value.ssm
     end
 
     # Software slave management
-    def self.ssm=(value : SSM) : SSM
+    def self.ssm=(value : Bool) : Bool
       self.set(ssm: value)
       value
     end
 
-    enum SSI : UInt8
-      # 0 is forced onto the NSS pin and the I/O value of the NSS pin is ignored
-      SLAVESELECTED = 0x0_u64
-
-      # 1 is forced onto the NSS pin and the I/O value of the NSS pin is ignored
-      SLAVENOTSELECTED = 0x1_u64
-
-      def self.reset_value : SSI
-        CR1.reset_value.ssi
-      end
+    # Internal slave select
+    def ssi : Bool
+      @value.bits_set?(0x100_u32)
     end
 
     # Internal slave select
-    def ssi : SSI
-      SSI.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # Internal slave select
-    def self.ssi : SSI
+    def self.ssi : Bool
       value.ssi
     end
 
     # Internal slave select
-    def self.ssi=(value : SSI) : SSI
+    def self.ssi=(value : Bool) : Bool
       self.set(ssi: value)
       value
     end
 
-    enum LSBFIRST : UInt8
-      # Data is transmitted/received with the MSB first
-      MSBFIRST = 0x0_u64
-
-      # Data is transmitted/received with the LSB first
-      LSBFIRST = 0x1_u64
-
-      def self.reset_value : LSBFIRST
-        CR1.reset_value.lsbfirst
-      end
+    # Frame format
+    def lsbfirst : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # Frame format
-    def lsbfirst : LSBFIRST
-      LSBFIRST.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Frame format
-    def self.lsbfirst : LSBFIRST
+    def self.lsbfirst : Bool
       value.lsbfirst
     end
 
     # Frame format
-    def self.lsbfirst=(value : LSBFIRST) : LSBFIRST
+    def self.lsbfirst=(value : Bool) : Bool
       self.set(lsbfirst: value)
       value
     end
 
-    enum SPE : UInt8
-      # Peripheral disabled
-      DISABLED = 0x0_u64
-
-      # Peripheral enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : SPE
-        CR1.reset_value.spe
-      end
+    # SPI enable
+    def spe : Bool
+      @value.bits_set?(0x40_u32)
     end
 
     # SPI enable
-    def spe : SPE
-      SPE.new!((@value >> 6) & 0x1_u32)
-    end
-
-    # SPI enable
-    def self.spe : SPE
+    def self.spe : Bool
       value.spe
     end
 
     # SPI enable
-    def self.spe=(value : SPE) : SPE
+    def self.spe=(value : Bool) : Bool
       self.set(spe: value)
       value
     end
 
-    enum BR : UInt8
-      # f_PCLK / 2
-      DIV2 = 0x0_u64
-
-      # f_PCLK / 4
-      DIV4 = 0x1_u64
-
-      # f_PCLK / 8
-      DIV8 = 0x2_u64
-
-      # f_PCLK / 16
-      DIV16 = 0x3_u64
-
-      # f_PCLK / 32
-      DIV32 = 0x4_u64
-
-      # f_PCLK / 64
-      DIV64 = 0x5_u64
-
-      # f_PCLK / 128
-      DIV128 = 0x6_u64
-
-      # f_PCLK / 256
-      DIV256 = 0x7_u64
-
-      def self.reset_value : BR
-        CR1.reset_value.br
-      end
+    # Baud rate control
+    def br : UInt8
+      UInt8.new!((@value >> 3) & 0x7_u32)
     end
 
     # Baud rate control
-    def br : BR
-      BR.new!((@value >> 3) & 0x7_u32)
-    end
-
-    # Baud rate control
-    def self.br : BR
+    def self.br : UInt8
       value.br
     end
 
     # Baud rate control
-    def self.br=(value : BR) : BR
+    def self.br=(value : UInt8) : UInt8
       self.set(br: value)
       value
     end
 
-    enum MSTR : UInt8
-      # Slave configuration
-      SLAVE = 0x0_u64
-
-      # Master configuration
-      MASTER = 0x1_u64
-
-      def self.reset_value : MSTR
-        CR1.reset_value.mstr
-      end
+    # Master selection
+    def mstr : Bool
+      @value.bits_set?(0x4_u32)
     end
 
     # Master selection
-    def mstr : MSTR
-      MSTR.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # Master selection
-    def self.mstr : MSTR
+    def self.mstr : Bool
       value.mstr
     end
 
     # Master selection
-    def self.mstr=(value : MSTR) : MSTR
+    def self.mstr=(value : Bool) : Bool
       self.set(mstr: value)
       value
     end
 
-    enum CPOL : UInt8
-      # CK to 0 when idle
-      IDLELOW = 0x0_u64
-
-      # CK to 1 when idle
-      IDLEHIGH = 0x1_u64
-
-      def self.reset_value : CPOL
-        CR1.reset_value.cpol
-      end
+    # Clock polarity
+    def cpol : Bool
+      @value.bits_set?(0x2_u32)
     end
 
     # Clock polarity
-    def cpol : CPOL
-      CPOL.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Clock polarity
-    def self.cpol : CPOL
+    def self.cpol : Bool
       value.cpol
     end
 
     # Clock polarity
-    def self.cpol=(value : CPOL) : CPOL
+    def self.cpol=(value : Bool) : Bool
       self.set(cpol: value)
       value
     end
 
-    enum CPHA : UInt8
-      # The first clock transition is the first data capture edge
-      FIRSTEDGE = 0x0_u64
-
-      # The second clock transition is the first data capture edge
-      SECONDEDGE = 0x1_u64
-
-      def self.reset_value : CPHA
-        CR1.reset_value.cpha
-      end
+    # Clock phase
+    def cpha : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Clock phase
-    def cpha : CPHA
-      CPHA.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Clock phase
-    def self.cpha : CPHA
+    def self.cpha : Bool
       value.cpha
     end
 
     # Clock phase
-    def self.cpha=(value : CPHA) : CPHA
+    def self.cpha=(value : Bool) : Bool
       self.set(cpha: value)
       value
     end
@@ -451,33 +265,33 @@ module SPI1
     def copy_with(
       *,
 
-      bidimode : BIDIMODE? = nil,
+      bidimode : Bool? = nil,
 
-      bidioe : BIDIOE? = nil,
+      bidioe : Bool? = nil,
 
-      crcen : CRCEN? = nil,
+      crcen : Bool? = nil,
 
-      crcnext : CRCNEXT? = nil,
+      crcnext : Bool? = nil,
 
-      crcl : CRCL? = nil,
+      dff : Bool? = nil,
 
-      rxonly : RXONLY? = nil,
+      rxonly : Bool? = nil,
 
-      ssm : SSM? = nil,
+      ssm : Bool? = nil,
 
-      ssi : SSI? = nil,
+      ssi : Bool? = nil,
 
-      lsbfirst : LSBFIRST? = nil,
+      lsbfirst : Bool? = nil,
 
-      spe : SPE? = nil,
+      spe : Bool? = nil,
 
-      br : BR? = nil,
+      br : UInt8? = nil,
 
-      mstr : MSTR? = nil,
+      mstr : Bool? = nil,
 
-      cpol : CPOL? = nil,
+      cpol : Bool? = nil,
 
-      cpha : CPHA? = nil
+      cpha : Bool? = nil
     ) : self
       value = @value
 
@@ -501,9 +315,9 @@ module SPI1
                 UInt32.new!(crcnext.to_int).&(0x1_u32) << 12
       end
 
-      unless crcl.nil?
+      unless dff.nil?
         value = (value & 0xfffff7ff_u32) |
-                UInt32.new!(crcl.to_int).&(0x1_u32) << 11
+                UInt32.new!(dff.to_int).&(0x1_u32) << 11
       end
 
       unless rxonly.nil?
@@ -556,27 +370,27 @@ module SPI1
 
     def self.set(
       *,
-      bidimode : BIDIMODE? = nil,
-      bidioe : BIDIOE? = nil,
-      crcen : CRCEN? = nil,
-      crcnext : CRCNEXT? = nil,
-      crcl : CRCL? = nil,
-      rxonly : RXONLY? = nil,
-      ssm : SSM? = nil,
-      ssi : SSI? = nil,
-      lsbfirst : LSBFIRST? = nil,
-      spe : SPE? = nil,
-      br : BR? = nil,
-      mstr : MSTR? = nil,
-      cpol : CPOL? = nil,
-      cpha : CPHA? = nil
+      bidimode : Bool? = nil,
+      bidioe : Bool? = nil,
+      crcen : Bool? = nil,
+      crcnext : Bool? = nil,
+      dff : Bool? = nil,
+      rxonly : Bool? = nil,
+      ssm : Bool? = nil,
+      ssi : Bool? = nil,
+      lsbfirst : Bool? = nil,
+      spe : Bool? = nil,
+      br : UInt8? = nil,
+      mstr : Bool? = nil,
+      cpol : Bool? = nil,
+      cpha : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         bidimode: bidimode,
         bidioe: bidioe,
         crcen: crcen,
         crcnext: crcnext,
-        crcl: crcl,
+        dff: dff,
         rxonly: rxonly,
         ssm: ssm,
         ssi: ssi,
@@ -625,432 +439,140 @@ module SPI1
       value
     end
 
-    enum RXDMAEN : UInt8
-      # Rx buffer DMA disabled
-      DISABLED = 0x0_u64
-
-      # Rx buffer DMA enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : RXDMAEN
-        CR2.reset_value.rxdmaen
-      end
-    end
-
-    # Rx buffer DMA enable
-    def rxdmaen : RXDMAEN
-      RXDMAEN.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Rx buffer DMA enable
-    def self.rxdmaen : RXDMAEN
-      value.rxdmaen
-    end
-
-    # Rx buffer DMA enable
-    def self.rxdmaen=(value : RXDMAEN) : RXDMAEN
-      self.set(rxdmaen: value)
-      value
-    end
-
-    enum TXDMAEN : UInt8
-      # Tx buffer DMA disabled
-      DISABLED = 0x0_u64
-
-      # Tx buffer DMA enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : TXDMAEN
-        CR2.reset_value.txdmaen
-      end
-    end
-
-    # Tx buffer DMA enable
-    def txdmaen : TXDMAEN
-      TXDMAEN.new!((@value >> 1) & 0x1_u32)
-    end
-
-    # Tx buffer DMA enable
-    def self.txdmaen : TXDMAEN
-      value.txdmaen
-    end
-
-    # Tx buffer DMA enable
-    def self.txdmaen=(value : TXDMAEN) : TXDMAEN
-      self.set(txdmaen: value)
-      value
-    end
-
-    enum SSOE : UInt8
-      # SS output is disabled in master mode
-      DISABLED = 0x0_u64
-
-      # SS output is enabled in master mode
-      ENABLED = 0x1_u64
-
-      def self.reset_value : SSOE
-        CR2.reset_value.ssoe
-      end
-    end
-
-    # SS output enable
-    def ssoe : SSOE
-      SSOE.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # SS output enable
-    def self.ssoe : SSOE
-      value.ssoe
-    end
-
-    # SS output enable
-    def self.ssoe=(value : SSOE) : SSOE
-      self.set(ssoe: value)
-      value
-    end
-
-    enum NSSP : UInt8
-      # No NSS pulse
-      NOPULSE = 0x0_u64
-
-      # NSS pulse generated
-      PULSEGENERATED = 0x1_u64
-
-      def self.reset_value : NSSP
-        CR2.reset_value.nssp
-      end
-    end
-
-    # NSS pulse management
-    def nssp : NSSP
-      NSSP.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # NSS pulse management
-    def self.nssp : NSSP
-      value.nssp
-    end
-
-    # NSS pulse management
-    def self.nssp=(value : NSSP) : NSSP
-      self.set(nssp: value)
-      value
-    end
-
-    enum FRF : UInt8
-      # SPI Motorola mode
-      MOTOROLA = 0x0_u64
-
-      # SPI TI mode
-      TI = 0x1_u64
-
-      def self.reset_value : FRF
-        CR2.reset_value.frf
-      end
-    end
-
-    # Frame format
-    def frf : FRF
-      FRF.new!((@value >> 4) & 0x1_u32)
-    end
-
-    # Frame format
-    def self.frf : FRF
-      value.frf
-    end
-
-    # Frame format
-    def self.frf=(value : FRF) : FRF
-      self.set(frf: value)
-      value
-    end
-
-    enum ERRIE : UInt8
-      # Error interrupt masked
-      MASKED = 0x0_u64
-
-      # Error interrupt not masked
-      NOTMASKED = 0x1_u64
-
-      def self.reset_value : ERRIE
-        CR2.reset_value.errie
-      end
-    end
-
-    # Error interrupt enable
-    def errie : ERRIE
-      ERRIE.new!((@value >> 5) & 0x1_u32)
-    end
-
-    # Error interrupt enable
-    def self.errie : ERRIE
-      value.errie
-    end
-
-    # Error interrupt enable
-    def self.errie=(value : ERRIE) : ERRIE
-      self.set(errie: value)
-      value
-    end
-
-    enum RXNEIE : UInt8
-      # RXE interrupt masked
-      MASKED = 0x0_u64
-
-      # RXE interrupt not masked
-      NOTMASKED = 0x1_u64
-
-      def self.reset_value : RXNEIE
-        CR2.reset_value.rxneie
-      end
-    end
-
-    # RX buffer not empty interrupt              enable
-    def rxneie : RXNEIE
-      RXNEIE.new!((@value >> 6) & 0x1_u32)
-    end
-
-    # RX buffer not empty interrupt              enable
-    def self.rxneie : RXNEIE
-      value.rxneie
-    end
-
-    # RX buffer not empty interrupt              enable
-    def self.rxneie=(value : RXNEIE) : RXNEIE
-      self.set(rxneie: value)
-      value
-    end
-
-    enum TXEIE : UInt8
-      # TXE interrupt masked
-      MASKED = 0x0_u64
-
-      # TXE interrupt not masked
-      NOTMASKED = 0x1_u64
-
-      def self.reset_value : TXEIE
-        CR2.reset_value.txeie
-      end
+    # Tx buffer empty interrupt              enable
+    def txeie : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # Tx buffer empty interrupt              enable
-    def txeie : TXEIE
-      TXEIE.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Tx buffer empty interrupt              enable
-    def self.txeie : TXEIE
+    def self.txeie : Bool
       value.txeie
     end
 
     # Tx buffer empty interrupt              enable
-    def self.txeie=(value : TXEIE) : TXEIE
+    def self.txeie=(value : Bool) : Bool
       self.set(txeie: value)
       value
     end
 
-    enum DS : UInt8
-      # 4-bit
-      FOURBIT = 0x3_u64
-
-      # 5-bit
-      FIVEBIT = 0x4_u64
-
-      # 6-bit
-      SIXBIT = 0x5_u64
-
-      # 7-bit
-      SEVENBIT = 0x6_u64
-
-      # 8-bit
-      EIGHTBIT = 0x7_u64
-
-      # 9-bit
-      NINEBIT = 0x8_u64
-
-      # 10-bit
-      TENBIT = 0x9_u64
-
-      # 11-bit
-      ELEVENBIT = 0xa_u64
-
-      # 12-bit
-      TWELVEBIT = 0xb_u64
-
-      # 13-bit
-      THIRTEENBIT = 0xc_u64
-
-      # 14-bit
-      FOURTEENBIT = 0xd_u64
-
-      # 15-bit
-      FIFTEENBIT = 0xe_u64
-
-      # 16-bit
-      SIXTEENBIT = 0xf_u64
-
-      def self.reset_value : DS
-        CR2.reset_value.ds
-      end
+    # RX buffer not empty interrupt              enable
+    def rxneie : Bool
+      @value.bits_set?(0x40_u32)
     end
 
-    # Data size
-    def ds : DS
-      DS.new!((@value >> 8) & 0xf_u32)
+    # RX buffer not empty interrupt              enable
+    def self.rxneie : Bool
+      value.rxneie
     end
 
-    # Data size
-    def self.ds : DS
-      value.ds
-    end
-
-    # Data size
-    def self.ds=(value : DS) : DS
-      self.set(ds: value)
+    # RX buffer not empty interrupt              enable
+    def self.rxneie=(value : Bool) : Bool
+      self.set(rxneie: value)
       value
     end
 
-    enum FRXTH : UInt8
-      # RXNE event is generated if the FIFO level is greater than or equal to 1/2 (16-bit)
-      HALF = 0x0_u64
-
-      # RXNE event is generated if the FIFO level is greater than or equal to 1/4 (8-bit)
-      QUARTER = 0x1_u64
-
-      def self.reset_value : FRXTH
-        CR2.reset_value.frxth
-      end
+    # Error interrupt enable
+    def errie : Bool
+      @value.bits_set?(0x20_u32)
     end
 
-    # FIFO reception threshold
-    def frxth : FRXTH
-      FRXTH.new!((@value >> 12) & 0x1_u32)
+    # Error interrupt enable
+    def self.errie : Bool
+      value.errie
     end
 
-    # FIFO reception threshold
-    def self.frxth : FRXTH
-      value.frxth
-    end
-
-    # FIFO reception threshold
-    def self.frxth=(value : FRXTH) : FRXTH
-      self.set(frxth: value)
+    # Error interrupt enable
+    def self.errie=(value : Bool) : Bool
+      self.set(errie: value)
       value
     end
 
-    enum LDMA_RX : UInt8
-      # Number of data to transfer for receive is even
-      EVEN = 0x0_u64
-
-      # Number of data to transfer for receive is odd
-      ODD = 0x1_u64
-
-      def self.reset_value : LDMA_RX
-        CR2.reset_value.ldma_rx
-      end
+    # Frame format
+    def frf : Bool
+      @value.bits_set?(0x10_u32)
     end
 
-    # Last DMA transfer for              reception
-    def ldma_rx : LDMA_RX
-      LDMA_RX.new!((@value >> 13) & 0x1_u32)
+    # Frame format
+    def self.frf : Bool
+      value.frf
     end
 
-    # Last DMA transfer for              reception
-    def self.ldma_rx : LDMA_RX
-      value.ldma_rx
-    end
-
-    # Last DMA transfer for              reception
-    def self.ldma_rx=(value : LDMA_RX) : LDMA_RX
-      self.set(ldma_rx: value)
+    # Frame format
+    def self.frf=(value : Bool) : Bool
+      self.set(frf: value)
       value
     end
 
-    enum LDMA_TX : UInt8
-      # Number of data to transfer for transmit is even
-      EVEN = 0x0_u64
-
-      # Number of data to transfer for transmit is odd
-      ODD = 0x1_u64
-
-      def self.reset_value : LDMA_TX
-        CR2.reset_value.ldma_tx
-      end
+    # SS output enable
+    def ssoe : Bool
+      @value.bits_set?(0x4_u32)
     end
 
-    # Last DMA transfer for              transmission
-    def ldma_tx : LDMA_TX
-      LDMA_TX.new!((@value >> 14) & 0x1_u32)
+    # SS output enable
+    def self.ssoe : Bool
+      value.ssoe
     end
 
-    # Last DMA transfer for              transmission
-    def self.ldma_tx : LDMA_TX
-      value.ldma_tx
+    # SS output enable
+    def self.ssoe=(value : Bool) : Bool
+      self.set(ssoe: value)
+      value
     end
 
-    # Last DMA transfer for              transmission
-    def self.ldma_tx=(value : LDMA_TX) : LDMA_TX
-      self.set(ldma_tx: value)
+    # Tx buffer DMA enable
+    def txdmaen : Bool
+      @value.bits_set?(0x2_u32)
+    end
+
+    # Tx buffer DMA enable
+    def self.txdmaen : Bool
+      value.txdmaen
+    end
+
+    # Tx buffer DMA enable
+    def self.txdmaen=(value : Bool) : Bool
+      self.set(txdmaen: value)
+      value
+    end
+
+    # Rx buffer DMA enable
+    def rxdmaen : Bool
+      @value.bits_set?(0x1_u32)
+    end
+
+    # Rx buffer DMA enable
+    def self.rxdmaen : Bool
+      value.rxdmaen
+    end
+
+    # Rx buffer DMA enable
+    def self.rxdmaen=(value : Bool) : Bool
+      self.set(rxdmaen: value)
       value
     end
 
     def copy_with(
       *,
 
-      rxdmaen : RXDMAEN? = nil,
+      txeie : Bool? = nil,
 
-      txdmaen : TXDMAEN? = nil,
+      rxneie : Bool? = nil,
 
-      ssoe : SSOE? = nil,
+      errie : Bool? = nil,
 
-      nssp : NSSP? = nil,
+      frf : Bool? = nil,
 
-      frf : FRF? = nil,
+      ssoe : Bool? = nil,
 
-      errie : ERRIE? = nil,
+      txdmaen : Bool? = nil,
 
-      rxneie : RXNEIE? = nil,
-
-      txeie : TXEIE? = nil,
-
-      ds : DS? = nil,
-
-      frxth : FRXTH? = nil,
-
-      ldma_rx : LDMA_RX? = nil,
-
-      ldma_tx : LDMA_TX? = nil
+      rxdmaen : Bool? = nil
     ) : self
       value = @value
 
-      unless rxdmaen.nil?
-        value = (value & 0xfffffffe_u32) |
-                UInt32.new!(rxdmaen.to_int).&(0x1_u32) << 0
-      end
-
-      unless txdmaen.nil?
-        value = (value & 0xfffffffd_u32) |
-                UInt32.new!(txdmaen.to_int).&(0x1_u32) << 1
-      end
-
-      unless ssoe.nil?
-        value = (value & 0xfffffffb_u32) |
-                UInt32.new!(ssoe.to_int).&(0x1_u32) << 2
-      end
-
-      unless nssp.nil?
-        value = (value & 0xfffffff7_u32) |
-                UInt32.new!(nssp.to_int).&(0x1_u32) << 3
-      end
-
-      unless frf.nil?
-        value = (value & 0xffffffef_u32) |
-                UInt32.new!(frf.to_int).&(0x1_u32) << 4
-      end
-
-      unless errie.nil?
-        value = (value & 0xffffffdf_u32) |
-                UInt32.new!(errie.to_int).&(0x1_u32) << 5
+      unless txeie.nil?
+        value = (value & 0xffffff7f_u32) |
+                UInt32.new!(txeie.to_int).&(0x1_u32) << 7
       end
 
       unless rxneie.nil?
@@ -1058,29 +580,29 @@ module SPI1
                 UInt32.new!(rxneie.to_int).&(0x1_u32) << 6
       end
 
-      unless txeie.nil?
-        value = (value & 0xffffff7f_u32) |
-                UInt32.new!(txeie.to_int).&(0x1_u32) << 7
+      unless errie.nil?
+        value = (value & 0xffffffdf_u32) |
+                UInt32.new!(errie.to_int).&(0x1_u32) << 5
       end
 
-      unless ds.nil?
-        value = (value & 0xfffff0ff_u32) |
-                UInt32.new!(ds.to_int).&(0xf_u32) << 8
+      unless frf.nil?
+        value = (value & 0xffffffef_u32) |
+                UInt32.new!(frf.to_int).&(0x1_u32) << 4
       end
 
-      unless frxth.nil?
-        value = (value & 0xffffefff_u32) |
-                UInt32.new!(frxth.to_int).&(0x1_u32) << 12
+      unless ssoe.nil?
+        value = (value & 0xfffffffb_u32) |
+                UInt32.new!(ssoe.to_int).&(0x1_u32) << 2
       end
 
-      unless ldma_rx.nil?
-        value = (value & 0xffffdfff_u32) |
-                UInt32.new!(ldma_rx.to_int).&(0x1_u32) << 13
+      unless txdmaen.nil?
+        value = (value & 0xfffffffd_u32) |
+                UInt32.new!(txdmaen.to_int).&(0x1_u32) << 1
       end
 
-      unless ldma_tx.nil?
-        value = (value & 0xffffbfff_u32) |
-                UInt32.new!(ldma_tx.to_int).&(0x1_u32) << 14
+      unless rxdmaen.nil?
+        value = (value & 0xfffffffe_u32) |
+                UInt32.new!(rxdmaen.to_int).&(0x1_u32) << 0
       end
 
       self.class.new(value)
@@ -1088,32 +610,22 @@ module SPI1
 
     def self.set(
       *,
-      rxdmaen : RXDMAEN? = nil,
-      txdmaen : TXDMAEN? = nil,
-      ssoe : SSOE? = nil,
-      nssp : NSSP? = nil,
-      frf : FRF? = nil,
-      errie : ERRIE? = nil,
-      rxneie : RXNEIE? = nil,
-      txeie : TXEIE? = nil,
-      ds : DS? = nil,
-      frxth : FRXTH? = nil,
-      ldma_rx : LDMA_RX? = nil,
-      ldma_tx : LDMA_TX? = nil
+      txeie : Bool? = nil,
+      rxneie : Bool? = nil,
+      errie : Bool? = nil,
+      frf : Bool? = nil,
+      ssoe : Bool? = nil,
+      txdmaen : Bool? = nil,
+      rxdmaen : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
-        rxdmaen: rxdmaen,
-        txdmaen: txdmaen,
-        ssoe: ssoe,
-        nssp: nssp,
-        frf: frf,
-        errie: errie,
-        rxneie: rxneie,
         txeie: txeie,
-        ds: ds,
-        frxth: frxth,
-        ldma_rx: ldma_rx,
-        ldma_tx: ldma_tx,
+        rxneie: rxneie,
+        errie: errie,
+        frf: frf,
+        ssoe: ssoe,
+        txdmaen: txdmaen,
+        rxdmaen: rxdmaen,
       )
     end
   end # struct
@@ -1153,270 +665,106 @@ module SPI1
       value
     end
 
-    enum RXNE : UInt8
-      # Rx buffer empty
-      EMPTY = 0x0_u64
-
-      # Rx buffer not empty
-      NOTEMPTY = 0x1_u64
-
-      def self.reset_value : RXNE
-        SR.reset_value.rxne
-      end
+    # TI frame format error
+    def tifrfe : Bool
+      @value.bits_set?(0x100_u32)
     end
 
-    # Receive buffer not empty
-    def rxne : RXNE
-      RXNE.new!((@value >> 0) & 0x1_u32)
+    # TI frame format error
+    def self.tifrfe : Bool
+      value.tifrfe
     end
 
-    # Receive buffer not empty
-    def self.rxne : RXNE
-      value.rxne
+    # Busy flag
+    def bsy : Bool
+      @value.bits_set?(0x80_u32)
     end
 
-    enum TXE : UInt8
-      # Tx buffer not empty
-      NOTEMPTY = 0x0_u64
-
-      # Tx buffer empty
-      EMPTY = 0x1_u64
-
-      def self.reset_value : TXE
-        SR.reset_value.txe
-      end
+    # Busy flag
+    def self.bsy : Bool
+      value.bsy
     end
 
-    # Transmit buffer empty
-    def txe : TXE
-      TXE.new!((@value >> 1) & 0x1_u32)
+    # Overrun flag
+    def ovr : Bool
+      @value.bits_set?(0x40_u32)
     end
 
-    # Transmit buffer empty
-    def self.txe : TXE
-      value.txe
+    # Overrun flag
+    def self.ovr : Bool
+      value.ovr
     end
 
-    enum CHSIDE : UInt8
-      # Channel left has to be transmitted or has been received
-      LEFT = 0x0_u64
-
-      # Channel right has to be transmitted or has been received
-      RIGHT = 0x1_u64
-
-      def self.reset_value : CHSIDE
-        SR.reset_value.chside
-      end
+    # Mode fault
+    def modf : Bool
+      @value.bits_set?(0x20_u32)
     end
 
-    # Channel side
-    def chside : CHSIDE
-      CHSIDE.new!((@value >> 2) & 0x1_u32)
-    end
-
-    # Channel side
-    def self.chside : CHSIDE
-      value.chside
-    end
-
-    enum UDR : UInt8
-      # No underrun occurred
-      NOUNDERRUN = 0x0_u64
-
-      # Underrun occurred
-      UNDERRUN = 0x1_u64
-
-      def self.reset_value : UDR
-        SR.reset_value.udr
-      end
-    end
-
-    # Underrun flag
-    def udr : UDR
-      UDR.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # Underrun flag
-    def self.udr : UDR
-      value.udr
-    end
-
-    enum CRCERR : UInt8
-      # CRC value received matches the SPIx_RXCRCR value
-      MATCH = 0x0_u64
-
-      # CRC value received does not match the SPIx_RXCRCR value
-      NOMATCH = 0x1_u64
-
-      def self.reset_value : CRCERR
-        SR.reset_value.crcerr
-      end
+    # Mode fault
+    def self.modf : Bool
+      value.modf
     end
 
     # CRC error flag
-    def crcerr : CRCERR
-      CRCERR.new!((@value >> 4) & 0x1_u32)
+    def crcerr : Bool
+      @value.bits_set?(0x10_u32)
     end
 
     # CRC error flag
-    def self.crcerr : CRCERR
+    def self.crcerr : Bool
       value.crcerr
     end
 
     # CRC error flag
-    def self.crcerr=(value : CRCERR) : CRCERR
+    def self.crcerr=(value : Bool) : Bool
       self.set(crcerr: value)
       value
     end
 
-    enum MODF : UInt8
-      # No mode fault occurred
-      NOFAULT = 0x0_u64
-
-      # Mode fault occurred
-      FAULT = 0x1_u64
-
-      def self.reset_value : MODF
-        SR.reset_value.modf
-      end
+    # Underrun flag
+    def udr : Bool
+      @value.bits_set?(0x8_u32)
     end
 
-    # Mode fault
-    def modf : MODF
-      MODF.new!((@value >> 5) & 0x1_u32)
+    # Underrun flag
+    def self.udr : Bool
+      value.udr
     end
 
-    # Mode fault
-    def self.modf : MODF
-      value.modf
+    # Channel side
+    def chside : Bool
+      @value.bits_set?(0x4_u32)
     end
 
-    enum OVR : UInt8
-      # No overrun occurred
-      NOOVERRUN = 0x0_u64
-
-      # Overrun occurred
-      OVERRUN = 0x1_u64
-
-      def self.reset_value : OVR
-        SR.reset_value.ovr
-      end
+    # Channel side
+    def self.chside : Bool
+      value.chside
     end
 
-    # Overrun flag
-    def ovr : OVR
-      OVR.new!((@value >> 6) & 0x1_u32)
+    # Transmit buffer empty
+    def txe : Bool
+      @value.bits_set?(0x2_u32)
     end
 
-    # Overrun flag
-    def self.ovr : OVR
-      value.ovr
+    # Transmit buffer empty
+    def self.txe : Bool
+      value.txe
     end
 
-    enum BSY : UInt8
-      # SPI not busy
-      NOTBUSY = 0x0_u64
-
-      # SPI busy
-      BUSY = 0x1_u64
-
-      def self.reset_value : BSY
-        SR.reset_value.bsy
-      end
+    # Receive buffer not empty
+    def rxne : Bool
+      @value.bits_set?(0x1_u32)
     end
 
-    # Busy flag
-    def bsy : BSY
-      BSY.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # Busy flag
-    def self.bsy : BSY
-      value.bsy
-    end
-
-    enum FRE : UInt8
-      # No frame format error
-      NOERROR = 0x0_u64
-
-      # A frame format error occurred
-      ERROR = 0x1_u64
-
-      def self.reset_value : FRE
-        SR.reset_value.fre
-      end
-    end
-
-    # TI frame format error
-    def fre : FRE
-      FRE.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # TI frame format error
-    def self.fre : FRE
-      value.fre
-    end
-
-    enum FRLVL : UInt8
-      # Rx FIFO Empty
-      EMPTY = 0x0_u64
-
-      # Rx 1/4 FIFO
-      QUARTER = 0x1_u64
-
-      # Rx 1/2 FIFO
-      HALF = 0x2_u64
-
-      # Rx FIFO full
-      FULL = 0x3_u64
-
-      def self.reset_value : FRLVL
-        SR.reset_value.frlvl
-      end
-    end
-
-    # FIFO reception level
-    def frlvl : FRLVL
-      FRLVL.new!((@value >> 9) & 0x3_u32)
-    end
-
-    # FIFO reception level
-    def self.frlvl : FRLVL
-      value.frlvl
-    end
-
-    enum FTLVL : UInt8
-      # Tx FIFO Empty
-      EMPTY = 0x0_u64
-
-      # Tx 1/4 FIFO
-      QUARTER = 0x1_u64
-
-      # Tx 1/2 FIFO
-      HALF = 0x2_u64
-
-      # Tx FIFO full
-      FULL = 0x3_u64
-
-      def self.reset_value : FTLVL
-        SR.reset_value.ftlvl
-      end
-    end
-
-    # FIFO transmission level
-    def ftlvl : FTLVL
-      FTLVL.new!((@value >> 11) & 0x3_u32)
-    end
-
-    # FIFO transmission level
-    def self.ftlvl : FTLVL
-      value.ftlvl
+    # Receive buffer not empty
+    def self.rxne : Bool
+      value.rxne
     end
 
     def copy_with(
       *,
 
-      crcerr : CRCERR? = nil
+      crcerr : Bool? = nil
     ) : self
       value = @value
 
@@ -1430,7 +778,7 @@ module SPI1
 
     def self.set(
       *,
-      crcerr : CRCERR? = nil
+      crcerr : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         crcerr: crcerr,
@@ -1717,241 +1065,130 @@ module SPI1
       value
     end
 
-    enum I2SMOD : UInt8
-      # SPI mode is selected
-      SPIMODE = 0x0_u64
-
-      # I2S mode is selected
-      I2SMODE = 0x1_u64
-
-      def self.reset_value : I2SMOD
-        I2SCFGR.reset_value.i2_smod
-      end
+    # I2S mode selection
+    def i2_smod : Bool
+      @value.bits_set?(0x800_u32)
     end
 
     # I2S mode selection
-    def i2_smod : I2SMOD
-      I2SMOD.new!((@value >> 11) & 0x1_u32)
-    end
-
-    # I2S mode selection
-    def self.i2_smod : I2SMOD
+    def self.i2_smod : Bool
       value.i2_smod
     end
 
     # I2S mode selection
-    def self.i2_smod=(value : I2SMOD) : I2SMOD
+    def self.i2_smod=(value : Bool) : Bool
       self.set(i2_smod: value)
       value
     end
 
-    enum I2SE : UInt8
-      # I2S peripheral is disabled
-      DISABLED = 0x0_u64
-
-      # I2S peripheral is enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : I2SE
-        I2SCFGR.reset_value.i2_se
-      end
+    # I2S Enable
+    def i2_se : Bool
+      @value.bits_set?(0x400_u32)
     end
 
     # I2S Enable
-    def i2_se : I2SE
-      I2SE.new!((@value >> 10) & 0x1_u32)
-    end
-
-    # I2S Enable
-    def self.i2_se : I2SE
+    def self.i2_se : Bool
       value.i2_se
     end
 
     # I2S Enable
-    def self.i2_se=(value : I2SE) : I2SE
+    def self.i2_se=(value : Bool) : Bool
       self.set(i2_se: value)
       value
     end
 
-    enum I2SCFG : UInt8
-      # Slave - transmit
-      SLAVETX = 0x0_u64
-
-      # Slave - receive
-      SLAVERX = 0x1_u64
-
-      # Master - transmit
-      MASTERTX = 0x2_u64
-
-      # Master - receive
-      MASTERRX = 0x3_u64
-
-      def self.reset_value : I2SCFG
-        I2SCFGR.reset_value.i2_scfg
-      end
+    # I2S configuration mode
+    def i2_scfg : UInt8
+      UInt8.new!((@value >> 8) & 0x3_u32)
     end
 
     # I2S configuration mode
-    def i2_scfg : I2SCFG
-      I2SCFG.new!((@value >> 8) & 0x3_u32)
-    end
-
-    # I2S configuration mode
-    def self.i2_scfg : I2SCFG
+    def self.i2_scfg : UInt8
       value.i2_scfg
     end
 
     # I2S configuration mode
-    def self.i2_scfg=(value : I2SCFG) : I2SCFG
+    def self.i2_scfg=(value : UInt8) : UInt8
       self.set(i2_scfg: value)
       value
     end
 
-    enum PCMSYNC : UInt8
-      # Short frame synchronisation
-      SHORT = 0x0_u64
-
-      # Long frame synchronisation
-      LONG = 0x1_u64
-
-      def self.reset_value : PCMSYNC
-        I2SCFGR.reset_value.pcmsync
-      end
+    # PCM frame synchronization
+    def pcmsync : Bool
+      @value.bits_set?(0x80_u32)
     end
 
     # PCM frame synchronization
-    def pcmsync : PCMSYNC
-      PCMSYNC.new!((@value >> 7) & 0x1_u32)
-    end
-
-    # PCM frame synchronization
-    def self.pcmsync : PCMSYNC
+    def self.pcmsync : Bool
       value.pcmsync
     end
 
     # PCM frame synchronization
-    def self.pcmsync=(value : PCMSYNC) : PCMSYNC
+    def self.pcmsync=(value : Bool) : Bool
       self.set(pcmsync: value)
       value
     end
 
-    enum I2SSTD : UInt8
-      # I2S Philips standard
-      PHILIPS = 0x0_u64
-
-      # MSB justified standard
-      MSB = 0x1_u64
-
-      # LSB justified standard
-      LSB = 0x2_u64
-
-      # PCM standard
-      PCM = 0x3_u64
-
-      def self.reset_value : I2SSTD
-        I2SCFGR.reset_value.i2_sstd
-      end
+    # I2S standard selection
+    def i2_sstd : UInt8
+      UInt8.new!((@value >> 4) & 0x3_u32)
     end
 
     # I2S standard selection
-    def i2_sstd : I2SSTD
-      I2SSTD.new!((@value >> 4) & 0x3_u32)
-    end
-
-    # I2S standard selection
-    def self.i2_sstd : I2SSTD
+    def self.i2_sstd : UInt8
       value.i2_sstd
     end
 
     # I2S standard selection
-    def self.i2_sstd=(value : I2SSTD) : I2SSTD
+    def self.i2_sstd=(value : UInt8) : UInt8
       self.set(i2_sstd: value)
       value
     end
 
-    enum CKPOL : UInt8
-      # I2S clock inactive state is low level
-      IDLELOW = 0x0_u64
-
-      # I2S clock inactive state is high level
-      IDLEHIGH = 0x1_u64
-
-      def self.reset_value : CKPOL
-        I2SCFGR.reset_value.ckpol
-      end
+    # Steady state clock              polarity
+    def ckpol : Bool
+      @value.bits_set?(0x8_u32)
     end
 
     # Steady state clock              polarity
-    def ckpol : CKPOL
-      CKPOL.new!((@value >> 3) & 0x1_u32)
-    end
-
-    # Steady state clock              polarity
-    def self.ckpol : CKPOL
+    def self.ckpol : Bool
       value.ckpol
     end
 
     # Steady state clock              polarity
-    def self.ckpol=(value : CKPOL) : CKPOL
+    def self.ckpol=(value : Bool) : Bool
       self.set(ckpol: value)
       value
     end
 
-    enum DATLEN : UInt8
-      # 16-bit data length
-      SIXTEENBIT = 0x0_u64
-
-      # 24-bit data length
-      TWENTYFOURBIT = 0x1_u64
-
-      # 32-bit data length
-      THIRTYTWOBIT = 0x2_u64
-
-      def self.reset_value : DATLEN
-        I2SCFGR.reset_value.datlen
-      end
+    # Data length to be              transferred
+    def datlen : UInt8
+      UInt8.new!((@value >> 1) & 0x3_u32)
     end
 
     # Data length to be              transferred
-    def datlen : DATLEN
-      DATLEN.new!((@value >> 1) & 0x3_u32)
-    end
-
-    # Data length to be              transferred
-    def self.datlen : DATLEN
+    def self.datlen : UInt8
       value.datlen
     end
 
     # Data length to be              transferred
-    def self.datlen=(value : DATLEN) : DATLEN
+    def self.datlen=(value : UInt8) : UInt8
       self.set(datlen: value)
       value
     end
 
-    enum CHLEN : UInt8
-      # 16-bit wide
-      SIXTEENBIT = 0x0_u64
-
-      # 32-bit wide
-      THIRTYTWOBIT = 0x1_u64
-
-      def self.reset_value : CHLEN
-        I2SCFGR.reset_value.chlen
-      end
+    # Channel length (number of bits per audio              channel)
+    def chlen : Bool
+      @value.bits_set?(0x1_u32)
     end
 
     # Channel length (number of bits per audio              channel)
-    def chlen : CHLEN
-      CHLEN.new!((@value >> 0) & 0x1_u32)
-    end
-
-    # Channel length (number of bits per audio              channel)
-    def self.chlen : CHLEN
+    def self.chlen : Bool
       value.chlen
     end
 
     # Channel length (number of bits per audio              channel)
-    def self.chlen=(value : CHLEN) : CHLEN
+    def self.chlen=(value : Bool) : Bool
       self.set(chlen: value)
       value
     end
@@ -1959,21 +1196,21 @@ module SPI1
     def copy_with(
       *,
 
-      i2_smod : I2SMOD? = nil,
+      i2_smod : Bool? = nil,
 
-      i2_se : I2SE? = nil,
+      i2_se : Bool? = nil,
 
-      i2_scfg : I2SCFG? = nil,
+      i2_scfg : UInt8? = nil,
 
-      pcmsync : PCMSYNC? = nil,
+      pcmsync : Bool? = nil,
 
-      i2_sstd : I2SSTD? = nil,
+      i2_sstd : UInt8? = nil,
 
-      ckpol : CKPOL? = nil,
+      ckpol : Bool? = nil,
 
-      datlen : DATLEN? = nil,
+      datlen : UInt8? = nil,
 
-      chlen : CHLEN? = nil
+      chlen : Bool? = nil
     ) : self
       value = @value
 
@@ -2022,14 +1259,14 @@ module SPI1
 
     def self.set(
       *,
-      i2_smod : I2SMOD? = nil,
-      i2_se : I2SE? = nil,
-      i2_scfg : I2SCFG? = nil,
-      pcmsync : PCMSYNC? = nil,
-      i2_sstd : I2SSTD? = nil,
-      ckpol : CKPOL? = nil,
-      datlen : DATLEN? = nil,
-      chlen : CHLEN? = nil
+      i2_smod : Bool? = nil,
+      i2_se : Bool? = nil,
+      i2_scfg : UInt8? = nil,
+      pcmsync : Bool? = nil,
+      i2_sstd : UInt8? = nil,
+      ckpol : Bool? = nil,
+      datlen : UInt8? = nil,
+      chlen : Bool? = nil
     ) : Nil
       self.value = self.value.copy_with(
         i2_smod: i2_smod,
@@ -2062,7 +1299,7 @@ module SPI1
     end
 
     def self.reset_value : self
-      new(0x10_u64)
+      new(0xa_u64)
     end
 
     def self.pointer : Pointer(UInt32)
@@ -2079,58 +1316,34 @@ module SPI1
       value
     end
 
-    enum MCKOE : UInt8
-      # Master clock output is disabled
-      DISABLED = 0x0_u64
-
-      # Master clock output is enabled
-      ENABLED = 0x1_u64
-
-      def self.reset_value : MCKOE
-        I2SPR.reset_value.mckoe
-      end
+    # Master clock output enable
+    def mckoe : Bool
+      @value.bits_set?(0x200_u32)
     end
 
     # Master clock output enable
-    def mckoe : MCKOE
-      MCKOE.new!((@value >> 9) & 0x1_u32)
-    end
-
-    # Master clock output enable
-    def self.mckoe : MCKOE
+    def self.mckoe : Bool
       value.mckoe
     end
 
     # Master clock output enable
-    def self.mckoe=(value : MCKOE) : MCKOE
+    def self.mckoe=(value : Bool) : Bool
       self.set(mckoe: value)
       value
     end
 
-    enum ODD : UInt8
-      # Real divider value is I2SDIV * 2
-      EVEN = 0x0_u64
-
-      # Real divider value is (I2SDIV * 2) + 1
-      ODD = 0x1_u64
-
-      def self.reset_value : ODD
-        I2SPR.reset_value.odd
-      end
+    # Odd factor for the              prescaler
+    def odd : Bool
+      @value.bits_set?(0x100_u32)
     end
 
     # Odd factor for the              prescaler
-    def odd : ODD
-      ODD.new!((@value >> 8) & 0x1_u32)
-    end
-
-    # Odd factor for the              prescaler
-    def self.odd : ODD
+    def self.odd : Bool
       value.odd
     end
 
     # Odd factor for the              prescaler
-    def self.odd=(value : ODD) : ODD
+    def self.odd=(value : Bool) : Bool
       self.set(odd: value)
       value
     end
@@ -2154,9 +1367,9 @@ module SPI1
     def copy_with(
       *,
 
-      mckoe : MCKOE? = nil,
+      mckoe : Bool? = nil,
 
-      odd : ODD? = nil,
+      odd : Bool? = nil,
 
       i2_sdiv : UInt8? = nil
     ) : self
@@ -2182,8 +1395,8 @@ module SPI1
 
     def self.set(
       *,
-      mckoe : MCKOE? = nil,
-      odd : ODD? = nil,
+      mckoe : Bool? = nil,
+      odd : Bool? = nil,
       i2_sdiv : UInt8? = nil
     ) : Nil
       self.value = self.value.copy_with(
