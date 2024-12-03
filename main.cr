@@ -17,10 +17,10 @@ STM32.init
 RCC::AHB1ENR.set(gpioben: true, gpiocen: true)
 wait
 LEDS.each &.configure
-# BTNS[0].configure
+BTNS[0].configure
 while true
   LEDS[0].turn(true)             # works
   LEDS[1].turn(!LEDS[1].read) # works
-  LEDS[2].turn(!LEDS[1].read)
+  LEDS[2].turn(!BTNS[0].read)
   wait
 end

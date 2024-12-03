@@ -3987,7 +3987,7 @@ module GPIOB
 end
 
 module GPIOC
-  BASE_ADDRESS = 0x48020800_u64
+  BASE_ADDRESS = 0x40020800_u64
   extend Peripheral
   extend GPIO
 
@@ -3997,7 +3997,7 @@ module GPIOC
 end
 
 module GPIOD
-  BASE_ADDRESS = 0x48020c00_u64
+  BASE_ADDRESS = 0x40020c00_u64
   extend Peripheral
   extend GPIO
 
@@ -4007,7 +4007,7 @@ module GPIOD
 end
 
 module GPIOE
-  BASE_ADDRESS = 0x48021000_u64
+  BASE_ADDRESS = 0x40021000_u64
   extend Peripheral
   extend GPIO
 
@@ -4017,7 +4017,7 @@ module GPIOE
 end
 
 module GPIOF
-  BASE_ADDRESS = 0x48021400_u64
+  BASE_ADDRESS = 0x40021400_u64
   extend Peripheral
   extend GPIO
 
@@ -4027,7 +4027,7 @@ module GPIOF
 end
 
 module GPIOG
-  BASE_ADDRESS = 0x48021800_u64
+  BASE_ADDRESS = 0x40021800_u64
   extend Peripheral
   extend GPIO
 
@@ -4037,7 +4037,7 @@ module GPIOG
 end
 
 module GPIOH
-  BASE_ADDRESS = 0x48021c00_u64
+  BASE_ADDRESS = 0x40021c00_u64
   extend Peripheral
   extend GPIO
 
