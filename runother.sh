@@ -1,0 +1,1 @@
+CRYSTAL_PATH=/mnt/crystal/stm32/kecil crystal build --cross-compile --release --no-debug --target arm-none-eabi --mcpu cortex-m3 -Dlibrary -o crystal.o $1 
